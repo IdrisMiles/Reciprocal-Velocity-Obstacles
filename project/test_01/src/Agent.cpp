@@ -10,8 +10,11 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
 
     ngl::Random *r = ngl::Random::instance();
     m_currentState.m_pos = r->getRandomVec3();
+    m_currentState.m_pos *= 5.0f;
 
-    m_rad = 1.0f;
+    m_origState = m_currentState;
+
+    m_rad = 0.1f;
 
     // linking system to agent
     m_system = _system;
@@ -35,6 +38,11 @@ void Agent::update()
     m_integrator.update();
     //m_currentState.m_pos.m_x += 0.01f;
     //m_currentState.m_orien += 0.5f;
+}
+
+void Agent::updateState()
+{
+    m_origState = m_currentState;
 }
 
 void Agent::draw()
@@ -78,9 +86,13 @@ Brain *Agent::getBrain()
     return m_brain;
 }
 
-State Agent::getState()const
+State Agent::getCurrentState()const
 {
     return m_currentState;
+}
+State Agent::getOrigState()const
+{
+    return m_origState;
 }
 
 float Agent::getRad()const

@@ -19,6 +19,8 @@ public:
     void addNeighbours();
     void addBoundaries();
 
+    void setGloablGoal(const ngl::Vec3 &_goal);
+
     void draw();
     void setUpDraw(const ngl::Camera &_cam, const ngl::Mat4 &_tx);
     ngl::Camera getCam()const;
@@ -28,7 +30,7 @@ public:
 
 private:
 
-    std::vector<Agent*> m_agents;
+    std::vector< boost::shared_ptr<Agent> > m_agents;
     std::vector<Boundary*> m_Boundaries;
     AgentOctree *m_octree;
 

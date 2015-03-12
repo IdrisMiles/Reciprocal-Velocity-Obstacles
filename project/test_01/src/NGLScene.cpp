@@ -108,7 +108,7 @@ void NGLScene::initialize()
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
   // First create Values for the camera position
-  ngl::Vec3 from(0,0,1);
+  ngl::Vec3 from(0,0,10);
   ngl::Vec3 to(0,0,0);
   ngl::Vec3 up(0,1,0);
   // now load to our new camera
@@ -133,10 +133,11 @@ void NGLScene::initialize()
 
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
-  for(int i=0;i<10;i++)
+  for(int i=0;i<20;i++)
   {
       m_system.addAgent(FLOCKING);
   }
+  m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.5f));
 
   startTimer(10);
 }

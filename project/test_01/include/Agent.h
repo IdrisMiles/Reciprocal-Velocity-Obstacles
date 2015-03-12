@@ -1,6 +1,9 @@
 #ifndef _AGENT__H_
 #define _AGENT__H_
 
+
+#include<boost/shared_ptr.hpp>
+
 #include <ngl/Camera.h>
 #include <ngl/Transformation.h>
 #include <ngl/Mat4.h>
@@ -23,11 +26,13 @@ public:
     ~Agent();
 
     void update();
+    void updateState();
     void draw();
     void loadMatricesToShader();
 
     Brain *getBrain();
-    State getState()const;
+    State getCurrentState()const;
+    State getOrigState()const;
     float getRad()const;
 
     void setState(const State &_state);
@@ -38,6 +43,7 @@ public:
 private:
 
     State m_currentState;
+    State m_origState;
     System *m_system;
     Brain *m_brain;
     Integrator m_integrator;

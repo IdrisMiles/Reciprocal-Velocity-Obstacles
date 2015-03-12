@@ -2,6 +2,7 @@
 #define _BRAIN__H_
 
 #include <vector>
+#include<boost/shared_ptr.hpp>
 #include <ngl/Vec3.h>
 
 class System;
@@ -34,7 +35,7 @@ public:
 
     void clearNeighbours();
     void clearBoundary();
-    void addNeighbour(Agent *_neighbour);
+    void addNeighbour(boost::shared_ptr<Agent> _neighbour);
     void addBoundary(Boundary *_boundary);
 
 private:
@@ -43,8 +44,9 @@ private:
     Agent *m_agent;
     Avoidance m_avoidanceType;
 
-    std::vector<Agent*> m_neighbours;
+    std::vector< boost::shared_ptr<Agent> > m_neighbours;
     std::vector<Boundary*> m_Boundaries;
+
 
     ngl::Vec3 m_desVel;
     //ngl::Vec3 m_newVel;

@@ -2,6 +2,7 @@
 #define ABSTRACTOCTREE__H_
 #include <vector>
 #include <iostream>
+#include <boost/smart_ptr.hpp>
 #include <cstdlib>
 #include <ngl/Vec2.h>
 #include <ngl/Vec3.h>
@@ -41,7 +42,7 @@ protected :
   public:
       BoundingBox m_limit;
       int m_height;
-      std::vector<V *> m_objectList;
+      std::vector< boost::shared_ptr<V> > m_objectList;
       TreeNode *m_child[8];
   };
 
@@ -141,7 +142,7 @@ public:
     }
 
     /// @brief add a T into the tree, add the partile to all the leaves collide with
-    void addObject(T *_p)
+    void addObject(boost::shared_ptr<T> _p)
     {
       addObjectToNode(m_root, _p);
     }
@@ -183,7 +184,7 @@ public:
 
 
     }
-    void addObjectToNode(TreeNode <T>  *_node, T *_p)
+    void addObjectToNode(TreeNode <T>  *_node, boost::shared_ptr<T> _p)
     {
       if(_node->m_height == 1) // this is the leaves level
       {
@@ -191,7 +192,7 @@ public:
       }
       else
       {
-        VEC pos = _p->getState().m_pos;//getPos();
+        VEC pos = _p->getOrigState().m_pos;//getPos();
         ngl::Real   r = _p->getRad();
         BoundingBox limit;
         for(int i=0;i<8;++i)

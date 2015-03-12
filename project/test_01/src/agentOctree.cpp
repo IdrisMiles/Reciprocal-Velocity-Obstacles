@@ -19,10 +19,11 @@ void AgentOctree::checkAgentNeighbours(TreeNode<Agent> *node)
         {
             return;
         }
-        BOOST_FOREACH(Agent *currentAgent,node->m_objectList)
+        BOOST_FOREACH(boost::shared_ptr<Agent> currentAgent,node->m_objectList)
         {
+            currentAgent->getBrain()->clearNeighbours();
 
-            BOOST_FOREACH(Agent *testAgent,node->m_objectList )
+            BOOST_FOREACH(boost::shared_ptr<Agent> testAgent,node->m_objectList )
             {
                 // no need to self test
                 if(testAgent==currentAgent)

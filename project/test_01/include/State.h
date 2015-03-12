@@ -16,6 +16,7 @@ public:
         m_mass    = 1.0f;
         m_invMass = 1.0f;
         m_orien   = 0.0f;
+        m_rad     = 0.01f;
     }
 
     State(const State &_state)
@@ -27,6 +28,7 @@ public:
         m_mass    = _state.m_mass;
         m_invMass = _state.m_invMass;
         m_orien   = _state.m_orien;
+        m_rad     = _state.m_rad;
     }
 
     ~State(){}
@@ -38,6 +40,7 @@ public:
     float m_mass;
     float m_invMass;
     float m_orien;
+    float m_rad;
 
 
 private:

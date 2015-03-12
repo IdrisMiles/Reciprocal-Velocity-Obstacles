@@ -5,8 +5,8 @@
 System::System()
 {
     BoundingBox bb;
-    bb.m_minx = bb.m_miny = bb.m_minz = -5.0;
-    bb.m_maxx = bb.m_maxy = bb.m_maxz = 5.0;
+    bb.m_minx = bb.m_miny = bb.m_minz = -10.0;
+    bb.m_maxx = bb.m_maxy = bb.m_maxz = 10.0;
     m_octree = new AgentOctree (3, bb);
 
 }
@@ -20,22 +20,31 @@ void System::update()
 {
     addNeighbours();
 
-    BOOST_FOREACH(Agent *a, m_agents)
+    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
     {
         a->update();
+    }
+
+    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+    {
+        a->updateState();
+        a->getBrain()->clearNeighbours();
+        //a->getBrain()->clearBoundary();
     }
 }
 
 void System::addAgent(const Avoidance &_avoidType)
 {
-    m_agents.push_back(new Agent(this,_avoidType));
+    boost::shared_ptr<Agent> tAgent(new Agent(this,_avoidType));
+    //m_agents.push_back(new Agent(this,_avoidType));
+    m_agents.push_back(tAgent);
 }
 
 void System::addNeighbours()
 {
     m_octree->clearTree();
 
-    BOOST_FOREACH(Agent *a, m_agents)
+    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
     {
         m_octree->addObject(a);
     }
@@ -44,19 +53,29 @@ void System::addNeighbours()
 
 //void System::addBoundaries()
 //{
-//    m_octree->clearTree();
-
-
 //    BOOST_FOREACH(Agent *a, m_agents)
 //    {
-//        m_octree->addObject(a);
+//        BOOST_FOREACH(Boundary *b, m_Boundaries)
+//        {
+//            // check distance to boundary
+//            // add if within perceive rad
+//        }
 //    }
-//    m_octree->add
+
 //}
+
+
+void System::setGloablGoal(const ngl::Vec3 &_goal)
+{
+    BOOST_FOREACH(boost::shared_ptr<Agent> a,m_agents)
+    {
+        a->getBrain()->setGoal(_goal);
+    }
+}
 
 void System::draw()
 {
-    BOOST_FOREACH(Agent *a, m_agents)
+    BOOST_FOREACH(boost::shared_ptr<Agent> a, m_agents)
     {
         a->loadMatricesToShader();
         a->draw();

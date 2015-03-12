@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <boost/foreach.hpp>
 
 #include "Agent.h"
 
@@ -11,7 +12,8 @@ Brain::Brain(Agent *_agent, System *_system)
     m_agent = _agent;
     m_system = _system;
 
-    // randomly place Agent
+    m_perceiveRad = 1.0f;
+    m_perceiveAng = 360.0f;
 }
 
 Brain::~Brain()
@@ -21,7 +23,13 @@ Brain::~Brain()
 
 void Brain::update()
 {
+    static float z = 0.0f;
+    static float x = 0.0f;
+
     findNextGoal();
+    m_goal.m_z = sin(z+=0.001)*10-5;
+    m_goal.m_x = cos(x+=0.001)*10 -5;
+
 
     switch (m_avoidanceType)
     {
@@ -35,10 +43,10 @@ void Brain::update()
             break;
     }
 
-    //std::cout<<"num neighbours "<<m_neighbours.size()<<"\n";
+    std::cout<<"num neighbours "<<m_neighbours.size()<<"\n";
 
-    clearNeighbours();
-    clearBoundary();
+    //clearNeighbours();
+//    clearBoundary();
 }
 
 void Brain::setSystem(System *_system)
@@ -63,7 +71,7 @@ void Brain::mapRoute()
 
 void Brain::findNextGoal()
 {
-
+    //m_goal = ?
 }
 
 void Brain::findNeighbours()
@@ -76,29 +84,95 @@ void Brain::findBoundaries()
 
 }
 
+//===============RVO==================
 void Brain::rvo()
 {
     //std::cout<<"RVO avoidance in use\n"<<std::endl;
 }
 
+//=============flocking===============
 void Brain::flocking()
 {
-    static float f = 0.0f;
-    //std::cout<<"flocking avoidance in use\n"<<std::endl;
+    float goalWeight = 0.1f;
+    //---------------goal rule----------------------
+    ngl::Vec3 goal = m_goal - m_agent->getOrigState().m_pos;
+    goal *= goalWeight;
+    if(goal != ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        goal.normalize();
+    }
+    else
+    {
+        m_agent->setForce(goal);
+        return;
+    }
+    //----------------------------------------------
+
+    //-------------check for neigbours--------------
+    if(m_neighbours.size() == 0)
+    {
+        m_agent->setForce(goal);
+        return;
+    }
+    //----------------------------------------------
+
+    float alignmentWeight = 0.2f;
+    float cohesionWeight = 0.1f;
+    float separationWeight = 1.0f;
+
+    //------------separation rule-------------------
     ngl::Vec3 separation;
+    BOOST_FOREACH(boost::shared_ptr<Agent> n, m_neighbours)
+    {
+        float dist2 = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).lengthSquared() -
+                     pow((m_agent->getOrigState().m_rad + n->getOrigState().m_rad),2);
+        if(dist2 < pow(m_perceiveRad,2))
+        {
+            separation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
+            separation *= (m_perceiveRad/dist2);
+        }
+    }
     //separation.normalize();
+    separation *= separationWeight;
+
+    //----------------------------------------------
+
+    //------------Alignment rule--------------------
     ngl::Vec3 alignment;
+    BOOST_FOREACH(boost::shared_ptr<Agent> n, m_neighbours)
+    {
+        alignment += n->getOrigState().m_vel;
+    }
     //alignment.normalize();
+    alignment /= m_neighbours.size();
+    alignment *= alignmentWeight;
+    //----------------------------------------------
+
+    //----------Cohesion rule----------------------
     ngl::Vec3 cohesion;
+    BOOST_FOREACH(boost::shared_ptr<Agent> n, m_neighbours)
+    {
+        cohesion += n->getOrigState().m_pos;
+    }
     //cohesion.normalize();
+    cohesion /= m_neighbours.size();
+    cohesion *= cohesionWeight;
+    //----------------------------------------------
 
-    //ngl::Vec3 finalForce = 0.01 * (separation + alignment + cohesion);
-    ngl::Vec3 finalForce = ngl::Vec3(f,0.0f,0.0f);
-    f=0.1;
+    //-------------Final force----------------------
+    ngl::Vec3 finalForce = (separation + alignment + cohesion + (goal));
+    //finalForce.normalize();
+    if(finalForce != ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        finalForce.normalize();
+    }
 
-    m_agent->setForce(finalForce);
+    m_agent->setForce(2*finalForce);
+    //m_agent->setVel(0.01*finalForce);
+    //----------------------------------------------
 }
 
+//----------------Social forces-----------------------
 void Brain::socialForces()
 {
     //std::cout<<"social forces avoidance in use\n"<<std::endl;
@@ -117,15 +191,28 @@ float Brain::getPerceiveAng()const
 
 void Brain::clearNeighbours()
 {
+    for(unsigned int i=0;i<m_neighbours.size();i++)
+    {
+        //delete [] m_neighbours[i];
+        //m_neighbours.pop_back();
+    }
     m_neighbours.clear();
+    //m_neighbours.erase(m_neighbours.begin(),m_neighbours.end());
 }
 
 void Brain::clearBoundary()
 {
-    m_Boundaries.clear();
+    //m_Boundaries.clear();
+    //m_Boundaries.erase(m_Boundaries.begin(),m_Boundaries.end());
+
+    for(unsigned int i=0;i<m_Boundaries.size();i++)
+    {
+        m_Boundaries[i] == NULL;
+        m_Boundaries.pop_back();
+    }
 }
 
-void Brain::addNeighbour(Agent *_neighbour)
+void Brain::addNeighbour( boost::shared_ptr<Agent> _neighbour)
 {
     m_neighbours.push_back(_neighbour);
 }
