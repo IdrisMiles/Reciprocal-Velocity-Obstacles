@@ -16,7 +16,7 @@ public:
         m_mass    = 1.0f;
         m_invMass = 1.0f;
         m_orien   = 0.0f;
-        m_rad     = 0.01f;
+        m_rad     = 0.1f;
     }
 
     State(const State &_state)

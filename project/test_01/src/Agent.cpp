@@ -25,6 +25,9 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
     // setting up integrator
     m_integrator.setType(EULER);
     m_integrator.setState(&m_currentState);
+
+    ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
+    prim->createCylinder("cylinder",m_currentState.m_rad,1.0,20,20);
 }
 
 Agent::~Agent()
@@ -48,7 +51,7 @@ void Agent::updateState()
 void Agent::draw()
 {
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-    prim->draw("troll");
+    prim->draw("cylinder");
 }
 
 void Agent::loadMatricesToShader()
@@ -61,7 +64,8 @@ void Agent::loadMatricesToShader()
   ngl::Mat4 worldM;
   ngl::Mat4 M;
   M.identity();
-
+  ngl::Mat4 stand;
+  stand.rotateX(90);
   // add agents orientation
   M.rotateY(m_currentState.m_orien);
   // add agents position
@@ -69,7 +73,7 @@ void Agent::loadMatricesToShader()
   //M.m_m[3][1] = m_currentState.m_pos.m_y;
   M.m_m[3][2] = m_currentState.m_pos.m_z;
 
-  worldM   = M * m_system->getGlobalTX();
+  worldM   = stand * M * m_system->getGlobalTX();
   MV  = worldM * m_system->getCam().getViewMatrix();
   MVP = worldM * m_system->getCam().getVPMatrix();
   normalMatrix = MV;

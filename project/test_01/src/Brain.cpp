@@ -27,8 +27,8 @@ void Brain::update()
     static float x = 0.0f;
 
     findNextGoal();
-    m_goal.m_z = sin(z+=0.001)*10-5;
-    m_goal.m_x = cos(x+=0.001)*10 -5;
+    //m_goal.m_z = sin(z+=0.0001)*10-5;
+    //m_goal.m_x = cos(x+=0.0001)*10 -5;
 
 
     switch (m_avoidanceType)
@@ -93,13 +93,13 @@ void Brain::rvo()
 //=============flocking===============
 void Brain::flocking()
 {
-    float goalWeight = 0.1f;
+    float goalWeight = 0.05f;
     //---------------goal rule----------------------
     ngl::Vec3 goal = m_goal - m_agent->getOrigState().m_pos;
-    goal *= goalWeight;
     if(goal != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         goal.normalize();
+        goal *= goalWeight;
     }
     else
     {
@@ -116,9 +116,9 @@ void Brain::flocking()
     }
     //----------------------------------------------
 
-    float alignmentWeight = 0.2f;
-    float cohesionWeight = 0.1f;
-    float separationWeight = 1.0f;
+    float alignmentWeight = 0.1f;
+    float cohesionWeight = 0.5f;
+    float separationWeight = 0.1f;
 
     //------------separation rule-------------------
     ngl::Vec3 separation;
@@ -126,14 +126,18 @@ void Brain::flocking()
     {
         float dist2 = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).lengthSquared() -
                      pow((m_agent->getOrigState().m_rad + n->getOrigState().m_rad),2);
-        if(dist2 < pow(m_perceiveRad,2))
+        if(dist2 < pow(2*m_perceiveRad,1))
         {
             separation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
             separation *= (m_perceiveRad/dist2);
         }
     }
-    //separation.normalize();
-    separation *= separationWeight;
+    if(separation != ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        separation.normalize();
+        separation /= m_neighbours.size();
+        goal *= separationWeight;
+    }
 
     //----------------------------------------------
 
@@ -143,9 +147,12 @@ void Brain::flocking()
     {
         alignment += n->getOrigState().m_vel;
     }
-    //alignment.normalize();
-    alignment /= m_neighbours.size();
-    alignment *= alignmentWeight;
+    if(alignment != ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        alignment.normalize();
+        alignment /= m_neighbours.size();
+        alignment*= alignmentWeight;
+    }
     //----------------------------------------------
 
     //----------Cohesion rule----------------------
@@ -154,9 +161,12 @@ void Brain::flocking()
     {
         cohesion += n->getOrigState().m_pos;
     }
-    //cohesion.normalize();
-    cohesion /= m_neighbours.size();
-    cohesion *= cohesionWeight;
+    if(cohesion!= ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        cohesion.normalize();
+        cohesion /= m_neighbours.size();
+        cohesion *= cohesionWeight;
+    }
     //----------------------------------------------
 
     //-------------Final force----------------------

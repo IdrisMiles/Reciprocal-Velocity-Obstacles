@@ -95,6 +95,6 @@ void Integrator::integrateEuler(const float &_dt)
     tmpVel *= -1.0f;
     tmpVel.normalize();
     float alpha = (tmpVel.m_x);
-    m_state->m_orien = sinh((alpha*180.0f)/3.14f);
-    std::cout<<m_state->m_orien<<" orienttion\n";
+    //m_state->m_orien = sinh((alpha*180.0f)/3.14f);
+    //std::cout<<m_state->m_orien<<" orienttion\n";
 }
