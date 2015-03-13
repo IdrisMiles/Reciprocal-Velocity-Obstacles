@@ -7,6 +7,7 @@
 #include <ngl/Camera.h>
 #include <ngl/Transformation.h>
 #include <ngl/Mat4.h>
+#include <ngl/Material.h>
 #include "State.h"
 #include "Brain.h"
 #include "Integrator.h"
@@ -48,6 +49,7 @@ private:
     Brain *m_brain;
     Integrator m_integrator;
     float m_rad;
+    ngl::Material m_material;
 
 };
 

@@ -7,7 +7,7 @@ System::System()
     BoundingBox bb;
     bb.m_minx = bb.m_miny = bb.m_minz = -10.0;
     bb.m_maxx = bb.m_maxy = bb.m_maxz = 10.0;
-    m_octree = new AgentOctree (3, bb);
+    m_octree = new AgentOctree (5, bb);
 
 }
 

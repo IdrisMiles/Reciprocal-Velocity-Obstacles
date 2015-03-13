@@ -28,6 +28,28 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
 
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
     prim->createCylinder("cylinder",m_currentState.m_rad,1.0,20,20);
+
+    switch (_avoidType)
+    {
+      case FLOCKING:
+        {
+          m_material.set(ngl::BRONZE);
+          break;
+        }
+
+      case RVO:
+        {m_material.set(ngl::GOLD);
+        break;}
+
+      case SOCIAL:
+        {m_material.set(ngl::SILVER);
+        break;}
+
+      default:
+        break;
+    }
+
+
 }
 
 Agent::~Agent()
@@ -57,6 +79,7 @@ void Agent::draw()
 void Agent::loadMatricesToShader()
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
+  m_material.loadToShader("material");
 
   ngl::Mat4 MV;
   ngl::Mat4 MVP;

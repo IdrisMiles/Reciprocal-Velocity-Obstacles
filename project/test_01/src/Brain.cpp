@@ -117,20 +117,19 @@ void Brain::flocking()
     //----------------------------------------------
 
     float alignmentWeight = 0.5f;
-    float cohesionWeight = 0.8f;
-    float separationWeight = 0.2f;
+    float cohesionWeight = 0.2f;
+    float separationWeight = 0.8f;
 
     //------------separation rule-------------------
     ngl::Vec3 separation;
     BOOST_FOREACH(boost::shared_ptr<Agent> n, m_neighbours)
     {
-        float dist2 = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).lengthSquared() -
-                     pow((m_agent->getOrigState().m_rad + n->getOrigState().m_rad),2);
-        if(dist2 < pow(2*m_perceiveRad,1))
-        {
-            separation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
-            separation *= (m_perceiveRad/dist2);
-        }
+        float dist = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).length() -
+                     (m_agent->getOrigState().m_rad + n->getOrigState().m_rad);
+
+        separation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
+        separation *= (m_perceiveRad/dist);
+
     }
     if(separation != ngl::Vec3(0.0f,0.0f,0.0f))
     {
@@ -177,7 +176,7 @@ void Brain::flocking()
         finalForce.normalize();
     }
 
-    m_agent->setForce(finalForce);
+    m_agent->setForce(1*finalForce);
     //m_agent->setVel(0.01*finalForce);
     //----------------------------------------------
 }

@@ -14,7 +14,7 @@
 /// correct template type and
 /// a getRadius method to return a bounding radius of the object as a float
 /// may update this to do bounding radius or bounding box at some stage
-/// @author Xiaosong Yang modifed by Jon Macey, Idris Miles
+/// @author Xiaosong Yang modifed by Jon Macey and Idris Miles
 /// @version 1.0
 /// @date 11/3/15
 /// @class AbstractOctree

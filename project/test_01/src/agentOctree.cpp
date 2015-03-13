@@ -31,9 +31,13 @@ void AgentOctree::checkAgentNeighbours(TreeNode<Agent> *node)
                   // continue to next foor loop iteration
                   continue;
                 }
-
-                // add agent to neighbours if within perceive radius
-                currentAgent->getBrain()->addNeighbour(testAgent);
+                float dist = (currentAgent->getOrigState().m_pos - testAgent->getOrigState().m_pos).length() -
+                              (currentAgent->getOrigState().m_rad + testAgent->getOrigState().m_rad);
+                if(dist <= currentAgent->getBrain()->getPerceiveRad())
+                  {
+                    // add agent to neighbours if within perceive radius
+                    currentAgent->getBrain()->addNeighbour(testAgent);
+                  }
             }
         }
     }

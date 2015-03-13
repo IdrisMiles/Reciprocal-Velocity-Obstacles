@@ -102,10 +102,7 @@ void NGLScene::initialize()
   shader->linkProgramObject("Phong");
   // and make it active ready to load values
   (*shader)["Phong"]->use();
-  // the shader will use the currently active material and light0 so set them
-  ngl::Material m(ngl::GOLD);
-  // load our material values to the shader into the structure material (see Vertex shader)
-  m.loadToShader("material");
+
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
   // First create Values for the camera position
@@ -137,6 +134,8 @@ void NGLScene::initialize()
   for(int i=0;i<30;i++)
   {
       m_system.addAgent(FLOCKING);
+      m_system.addAgent(RVO);
+      m_system.addAgent(SOCIAL);
   }
   m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.2f));
 
