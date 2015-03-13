@@ -93,7 +93,7 @@ void Brain::rvo()
 //=============flocking===============
 void Brain::flocking()
 {
-    float goalWeight = 0.05f;
+    float goalWeight = 0.1f;
     //---------------goal rule----------------------
     ngl::Vec3 goal = m_goal - m_agent->getOrigState().m_pos;
     if(goal != ngl::Vec3(0.0f,0.0f,0.0f))
@@ -116,9 +116,9 @@ void Brain::flocking()
     }
     //----------------------------------------------
 
-    float alignmentWeight = 0.1f;
-    float cohesionWeight = 0.5f;
-    float separationWeight = 0.1f;
+    float alignmentWeight = 0.5f;
+    float cohesionWeight = 0.8f;
+    float separationWeight = 0.2f;
 
     //------------separation rule-------------------
     ngl::Vec3 separation;
@@ -135,7 +135,7 @@ void Brain::flocking()
     if(separation != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         separation.normalize();
-        separation /= m_neighbours.size();
+        //separation /= m_neighbours.size();
         goal *= separationWeight;
     }
 
@@ -150,7 +150,7 @@ void Brain::flocking()
     if(alignment != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         alignment.normalize();
-        alignment /= m_neighbours.size();
+        //alignment /= m_neighbours.size();
         alignment*= alignmentWeight;
     }
     //----------------------------------------------
@@ -164,20 +164,20 @@ void Brain::flocking()
     if(cohesion!= ngl::Vec3(0.0f,0.0f,0.0f))
     {
         cohesion.normalize();
-        cohesion /= m_neighbours.size();
+        //cohesion /= m_neighbours.size();
         cohesion *= cohesionWeight;
     }
     //----------------------------------------------
 
     //-------------Final force----------------------
-    ngl::Vec3 finalForce = (separation + alignment + cohesion + (goal));
+    ngl::Vec3 finalForce = (separation + alignment + cohesion + goal);
     //finalForce.normalize();
     if(finalForce != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         finalForce.normalize();
     }
 
-    m_agent->setForce(2*finalForce);
+    m_agent->setForce(finalForce);
     //m_agent->setVel(0.01*finalForce);
     //----------------------------------------------
 }

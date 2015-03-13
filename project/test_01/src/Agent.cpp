@@ -51,7 +51,7 @@ void Agent::updateState()
 void Agent::draw()
 {
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-    prim->draw("cylinder");
+    prim->draw("troll");
 }
 
 void Agent::loadMatricesToShader()
@@ -65,7 +65,7 @@ void Agent::loadMatricesToShader()
   ngl::Mat4 M;
   M.identity();
   ngl::Mat4 stand;
-  stand.rotateX(90);
+  //stand.rotateX(90);
   // add agents orientation
   M.rotateY(m_currentState.m_orien);
   // add agents position

@@ -27,6 +27,7 @@ NGLScene::NGLScene(QWindow *_parent) : OpenGLWindow(_parent)
   m_spinXFace=0;
   m_spinYFace=0;
   setTitle("Qt5 Simple NGL Demo");
+  m_pause = true;
  
 }
 
@@ -133,17 +134,18 @@ void NGLScene::initialize()
 
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
-  for(int i=0;i<200;i++)
+  for(int i=0;i<30;i++)
   {
       m_system.addAgent(FLOCKING);
   }
-  m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.5f));
+  m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.2f));
 
   startTimer(10);
 }
 
 void NGLScene::update()
 {
+    if(!m_pause){return;}
     m_system.update();
 }
 
@@ -300,6 +302,10 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   case Qt::Key_F : showFullScreen(); break;
   // show windowed
   case Qt::Key_N : showNormal(); break;
+  case Qt::Key_P : m_pause = !(m_pause&true);break;
+  case Qt::Key_1 : /*scene 1*/;break;
+  case Qt::Key_2 : /*scene 2*/;break;
+  case Qt::Key_3 : /*scene 3*/;break;
   default : break;
   }
   // finally update the GLWindow and re-draw

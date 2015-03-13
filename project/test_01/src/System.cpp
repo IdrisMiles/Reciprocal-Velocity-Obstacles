@@ -19,6 +19,14 @@ System::~System()
 void System::update()
 {
     addNeighbours();
+//    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+//    {
+//        BOOST_FOREACH( boost::shared_ptr<Agent> b, m_agents)
+//        {
+//            if(a == b){continue;}
+//            a->getBrain()->addNeighbour(b);
+//        }
+//    }
 
     BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
     {
