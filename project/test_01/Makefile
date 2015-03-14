@@ -473,7 +473,7 @@ compiler_clean: compiler_moc_header_clean
 ####### Compile
 
 obj/Agent.o: src/Agent.cpp include/Agent.h \
-		/home/i7283718/NGL/include/ngl/Camera.h \
+		/home/i7283718/NGL/include/ngl/Obj.h \
 		/home/i7283718/NGL/include/ngl/Types.h \
 		/home/i7283718/NGL/include/ngl/glew.h \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/QGLContext \
@@ -589,15 +589,22 @@ obj/Agent.o: src/Agent.cpp include/Agent.h \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/i7283718/NGL/include/ngl/Texture.h \
+		/home/i7283718/NGL/include/ngl/Colour.h \
 		/home/i7283718/NGL/include/ngl/Vec4.h \
 		/home/i7283718/NGL/include/ngl/Vec2.h \
 		/home/i7283718/NGL/include/ngl/Vec3.h \
+		/home/i7283718/NGL/include/ngl/AbstractMesh.h \
+		/home/i7283718/NGL/include/ngl/BBox.h \
+		/home/i7283718/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7283718/NGL/include/ngl/RibExport.h \
+		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Camera.h \
 		/home/i7283718/NGL/include/ngl/Mat4.h \
 		/home/i7283718/NGL/include/ngl/rapidxml/rapidxml.hpp \
-		/home/i7283718/NGL/include/ngl/RibExport.h \
 		/home/i7283718/NGL/include/ngl/Plane.h \
 		/home/i7283718/NGL/include/ngl/Transformation.h \
-		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/Brain.h \
 		include/Integrator.h \
@@ -605,12 +612,9 @@ obj/Agent.o: src/Agent.cpp include/Agent.h \
 		include/agentOctree.h \
 		include/AbstractOctree.h \
 		include/Boundary.h \
-		/home/i7283718/NGL/include/ngl/Material.h \
-		/home/i7283718/NGL/include/ngl/Colour.h \
 		/home/i7283718/NGL/include/ngl/VAOPrimitives.h \
 		/home/i7283718/NGL/include/ngl/Singleton.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QMutexLocker \
-		/home/i7283718/NGL/include/ngl/VertexArrayObject.h \
 		/home/i7283718/NGL/include/ngl/ShaderLib.h \
 		/home/i7283718/NGL/include/ngl/Shader.h \
 		/home/i7283718/NGL/include/ngl/ShaderProgram.h \
@@ -740,13 +744,20 @@ obj/agentOctree.o: src/agentOctree.cpp include/agentOctree.h \
 		/home/i7283718/NGL/include/ngl/Vec3.h \
 		/home/i7283718/NGL/include/ngl/Vec4.h \
 		include/Agent.h \
+		/home/i7283718/NGL/include/ngl/Obj.h \
+		/home/i7283718/NGL/include/ngl/Texture.h \
+		/home/i7283718/NGL/include/ngl/Colour.h \
+		/home/i7283718/NGL/include/ngl/AbstractMesh.h \
+		/home/i7283718/NGL/include/ngl/BBox.h \
+		/home/i7283718/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7283718/NGL/include/ngl/RibExport.h \
+		/home/i7283718/NGL/include/ngl/NGLassert.h \
 		/home/i7283718/NGL/include/ngl/Camera.h \
 		/home/i7283718/NGL/include/ngl/Mat4.h \
 		/home/i7283718/NGL/include/ngl/rapidxml/rapidxml.hpp \
-		/home/i7283718/NGL/include/ngl/RibExport.h \
 		/home/i7283718/NGL/include/ngl/Plane.h \
 		/home/i7283718/NGL/include/ngl/Transformation.h \
-		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/Brain.h \
 		include/Integrator.h \
@@ -992,15 +1003,22 @@ obj/Brain.o: src/Brain.cpp include/Brain.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
 		include/Agent.h \
-		/home/i7283718/NGL/include/ngl/Camera.h \
+		/home/i7283718/NGL/include/ngl/Obj.h \
+		/home/i7283718/NGL/include/ngl/Texture.h \
+		/home/i7283718/NGL/include/ngl/Colour.h \
 		/home/i7283718/NGL/include/ngl/Vec4.h \
 		/home/i7283718/NGL/include/ngl/Vec2.h \
+		/home/i7283718/NGL/include/ngl/AbstractMesh.h \
+		/home/i7283718/NGL/include/ngl/BBox.h \
+		/home/i7283718/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7283718/NGL/include/ngl/RibExport.h \
+		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Camera.h \
 		/home/i7283718/NGL/include/ngl/Mat4.h \
 		/home/i7283718/NGL/include/ngl/rapidxml/rapidxml.hpp \
-		/home/i7283718/NGL/include/ngl/RibExport.h \
 		/home/i7283718/NGL/include/ngl/Plane.h \
 		/home/i7283718/NGL/include/ngl/Transformation.h \
-		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/Integrator.h \
 		include/System.h \
@@ -1275,8 +1293,13 @@ obj/main.o: src/main.cpp /opt/Qt/5.3/gcc_64/include/QtGui/QGuiApplication \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QFont \
 		include/System.h \
 		include/Agent.h \
-		/home/i7283718/NGL/include/ngl/Transformation.h \
+		/home/i7283718/NGL/include/ngl/Obj.h \
+		/home/i7283718/NGL/include/ngl/Texture.h \
+		/home/i7283718/NGL/include/ngl/AbstractMesh.h \
+		/home/i7283718/NGL/include/ngl/BBox.h \
 		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Transformation.h \
+		/home/i7283718/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/Brain.h \
 		include/Integrator.h \
@@ -1432,15 +1455,19 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/Qt/5.3/gcc_64/include/QtGui/QMouseEvent \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QFont \
 		include/System.h \
 		include/Agent.h \
-		/home/i7283718/NGL/include/ngl/Transformation.h \
+		/home/i7283718/NGL/include/ngl/Obj.h \
+		/home/i7283718/NGL/include/ngl/Texture.h \
+		/home/i7283718/NGL/include/ngl/AbstractMesh.h \
+		/home/i7283718/NGL/include/ngl/BBox.h \
 		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Transformation.h \
+		/home/i7283718/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/Brain.h \
 		include/Integrator.h \
 		include/agentOctree.h \
 		include/AbstractOctree.h \
 		include/Boundary.h \
-		/home/i7283718/NGL/include/ngl/Material.h \
 		/home/i7283718/NGL/include/ngl/NGLInit.h \
 		/home/i7283718/NGL/include/ngl/Singleton.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QMutexLocker \
@@ -1807,8 +1834,15 @@ obj/System.o: src/System.cpp include/System.h \
 		/home/i7283718/NGL/include/ngl/RibExport.h \
 		/home/i7283718/NGL/include/ngl/Plane.h \
 		include/Agent.h \
-		/home/i7283718/NGL/include/ngl/Transformation.h \
+		/home/i7283718/NGL/include/ngl/Obj.h \
+		/home/i7283718/NGL/include/ngl/Texture.h \
+		/home/i7283718/NGL/include/ngl/Colour.h \
+		/home/i7283718/NGL/include/ngl/AbstractMesh.h \
+		/home/i7283718/NGL/include/ngl/BBox.h \
+		/home/i7283718/NGL/include/ngl/VertexArrayObject.h \
 		/home/i7283718/NGL/include/ngl/NGLassert.h \
+		/home/i7283718/NGL/include/ngl/Transformation.h \
+		/home/i7283718/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/Brain.h \
 		include/Integrator.h \
