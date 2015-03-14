@@ -134,8 +134,6 @@ void NGLScene::initialize()
   for(int i=0;i<30;i++)
   {
       m_system.addAgent(FLOCKING);
-      m_system.addAgent(RVO);
-      m_system.addAgent(SOCIAL);
   }
   m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.2f));
 

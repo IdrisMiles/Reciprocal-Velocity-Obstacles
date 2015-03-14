@@ -49,7 +49,6 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
         break;
     }
 
-
 }
 
 Agent::~Agent()
@@ -74,6 +73,7 @@ void Agent::draw()
 {
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
     prim->draw("troll");
+
 }
 
 void Agent::loadMatricesToShader()

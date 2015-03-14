@@ -4,10 +4,13 @@
 
 #include<boost/shared_ptr.hpp>
 
+#include <ngl/Obj.h>
 #include <ngl/Camera.h>
 #include <ngl/Transformation.h>
 #include <ngl/Mat4.h>
 #include <ngl/Material.h>
+#include <ngl/BBox.h>
+
 #include "State.h"
 #include "Brain.h"
 #include "Integrator.h"
