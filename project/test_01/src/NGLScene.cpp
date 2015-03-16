@@ -134,8 +134,6 @@ void NGLScene::initialize()
   for(int i=0;i<30;i++)
   {
       m_system.addAgent(FLOCKING);
-      m_system.addAgent(RVO);
-      m_system.addAgent(SOCIAL);
   }
   m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.2f));
 
@@ -302,9 +300,9 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_P : m_pause = !(m_pause&true);break;
-  case Qt::Key_1 : /*scene 1*/;break;
-  case Qt::Key_2 : /*scene 2*/;break;
-  case Qt::Key_3 : /*scene 3*/;break;
+  case Qt::Key_1 : m_system.addAgent(FLOCKING);break;
+  case Qt::Key_2 : m_system.addAgent(RVO);break;
+  case Qt::Key_3 : m_system.addAgent(SOCIAL);break;
   default : break;
   }
   // finally update the GLWindow and re-draw
