@@ -5,7 +5,7 @@
 
 Integrator::Integrator()
 {
-
+  m_type = EULER;
 }
 
 Integrator::~Integrator()
@@ -86,13 +86,13 @@ void Integrator::integrateRK4(const float &_dt)
 void Integrator::integrateEuler(const float &_dt)
 {
     m_state->m_acc = m_state->m_invMass * m_state->m_force;
-    m_state->m_vel = m_state->m_acc * _dt;
+    m_state->m_vel += m_state->m_acc * _dt;
     ngl::Vec3 oldPos = m_state->m_pos;
     m_state->m_pos += m_state->m_vel * _dt;
     ngl::Vec3 newPos = m_state->m_pos;
 
     ngl::Vec3 tmpVel = newPos - oldPos;
-    tmpVel *= -1.0f;
+    //tmpVel *= -1.0f;
     tmpVel.normalize();
     float alpha = (tmpVel.m_x);
     //m_state->m_orien = sinh((alpha*180.0f)/3.14f);

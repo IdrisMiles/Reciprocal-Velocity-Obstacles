@@ -3,6 +3,7 @@
 #include <iostream>
 #include <math.h>
 #include <boost/foreach.hpp>
+#include <ngl/NGLStream.h>
 
 #include "Agent.h"
 
@@ -43,10 +44,8 @@ void Brain::update()
             break;
     }
 
-    std::cout<<"num neighbours "<<m_neighbours.size()<<"\n";
+    //std::cout<<"num neighbours "<<m_neighbours.size()<<"\n";
 
-    //clearNeighbours();
-//    clearBoundary();
 }
 
 void Brain::setSystem(System *_system)
@@ -109,33 +108,38 @@ void Brain::flocking()
     //----------------------------------------------
 
     //-------------check for neigbours--------------
-    if(m_neighbours.size() == 0)
+    if(m_neighbours.size() <1)
     {
-        m_agent->setForce(goal);
-        return;
+        //m_agent->setForce(goal);
+        //return;
     }
     //----------------------------------------------
 
-    float alignmentWeight = 0.5f;
-    float cohesionWeight = 0.2f;
-    float separationWeight = 0.8f;
+    float alignmentWeight = 0.1f;
+    float cohesionWeight = 0.1f;
+    float separationWeight = 0.2f;
 
     //------------separation rule-------------------
     ngl::Vec3 separation;
+    ngl::Vec3 tmpSeparation;
     BOOST_FOREACH(boost::shared_ptr<Agent> n, m_neighbours)
     {
         float dist = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).length() -
                      (m_agent->getOrigState().m_rad + n->getOrigState().m_rad);
 
-        separation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
-        separation *= (m_perceiveRad/dist);
+        if(dist < m_perceiveRad)
+        {
+            tmpSeparation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
+            tmpSeparation *= (m_perceiveRad/dist);
+        }
 
     }
+    separation = tmpSeparation;
     if(separation != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         separation.normalize();
         //separation /= m_neighbours.size();
-        goal *= separationWeight;
+        separation *= separationWeight;
     }
 
     //----------------------------------------------
@@ -155,17 +159,19 @@ void Brain::flocking()
     //----------------------------------------------
 
     //----------Cohesion rule----------------------
-    ngl::Vec3 cohesion;
+    ngl::Vec3 cohesion = ngl::Vec3(0.0f,0.0f,0.0f);
     BOOST_FOREACH(boost::shared_ptr<Agent> n, m_neighbours)
     {
-        cohesion += n->getOrigState().m_pos;
+        cohesion += n->getOrigState().m_pos - m_agent->getOrigState().m_pos;
     }
+    cohesion /= m_neighbours.size();
     if(cohesion!= ngl::Vec3(0.0f,0.0f,0.0f))
     {
+        //cohesion - m_agent->getOrigState().m_pos;
         cohesion.normalize();
-        //cohesion /= m_neighbours.size();
         cohesion *= cohesionWeight;
     }
+    std::cout<<cohesion<<" cohesion vector\n";
     //----------------------------------------------
 
     //-------------Final force----------------------
@@ -176,7 +182,7 @@ void Brain::flocking()
         finalForce.normalize();
     }
 
-    m_agent->setForce(1*finalForce);
+    m_agent->setForce(0.01*finalForce);
     //m_agent->setVel(0.01*finalForce);
     //----------------------------------------------
 }
@@ -187,6 +193,7 @@ void Brain::socialForces()
     //std::cout<<"social forces avoidance in use\n"<<std::endl;
 }
 
+//-----------------------------------------------------
 float Brain::getPerceiveRad()const
 {
     return m_perceiveRad;

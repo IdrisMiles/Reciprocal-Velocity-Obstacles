@@ -131,11 +131,12 @@ void NGLScene::initialize()
 
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
-  for(int i=0;i<30;i++)
+  for(int i=0;i<10;i++)
   {
       m_system.addAgent(FLOCKING);
+      //m_system.addAgent(RVO);
   }
-  m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.2f));
+  m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.0f));
 
   startTimer(10);
 }
@@ -300,6 +301,9 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_P : m_pause = !(m_pause&true);break;
+  case Qt::Key_O : m_system.setSpatialDivision(OCTREE);break;
+  case Qt::Key_I : m_system.setSpatialDivision(BRUTE);break;
+
   case Qt::Key_1 : m_system.addAgent(FLOCKING);break;
   case Qt::Key_2 : m_system.addAgent(RVO);break;
   case Qt::Key_3 : m_system.addAgent(SOCIAL);break;

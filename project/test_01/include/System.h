@@ -7,6 +7,8 @@
 #include "Agent.h"
 #include "agentOctree.h"
 #include "Boundary.h"
+
+enum SpatialDivision {BRUTE,OCTREE};
 class AgentOctree;
 class System
 {
@@ -19,6 +21,7 @@ public:
     void addNeighbours();
     void addBoundaries();
 
+    void setSpatialDivision(const SpatialDivision &_type);
     void setGloablGoal(const ngl::Vec3 &_goal);
 
     void draw();
@@ -32,6 +35,8 @@ private:
 
     std::vector< boost::shared_ptr<Agent> > m_agents;
     std::vector<Boundary*> m_Boundaries;
+
+    SpatialDivision m_spatialDivision;
     AgentOctree *m_octree;
 
     ngl::Vec3 m_groundPlane[4];

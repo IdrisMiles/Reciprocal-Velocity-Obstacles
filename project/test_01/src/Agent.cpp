@@ -4,6 +4,7 @@
 #include <ngl/ShaderLib.h>
 #include <ngl/Random.h>
 
+
 Agent::Agent(System *_system, const Avoidance &_avoidType)
 {
     // ctor that should be used

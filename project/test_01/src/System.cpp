@@ -4,10 +4,12 @@
 
 System::System()
 {
+    m_spatialDivision = BRUTE;
+
     BoundingBox bb;
     bb.m_minx = bb.m_miny = bb.m_minz = -10.0;
     bb.m_maxx = bb.m_maxy = bb.m_maxz = 10.0;
-    m_octree = new AgentOctree (5, bb);
+    m_octree = new AgentOctree (3, bb);
 
 }
 
@@ -19,14 +21,6 @@ System::~System()
 void System::update()
 {
     addNeighbours();
-//    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
-//    {
-//        BOOST_FOREACH( boost::shared_ptr<Agent> b, m_agents)
-//        {
-//            if(a == b){continue;}
-//            a->getBrain()->addNeighbour(b);
-//        }
-//    }
 
     BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
     {
@@ -37,26 +31,39 @@ void System::update()
     {
         a->updateState();
         a->getBrain()->clearNeighbours();
-        //a->getBrain()->clearBoundary();
     }
 }
 
 void System::addAgent(const Avoidance &_avoidType)
 {
     boost::shared_ptr<Agent> tAgent(new Agent(this,_avoidType));
-    //m_agents.push_back(new Agent(this,_avoidType));
     m_agents.push_back(tAgent);
 }
 
 void System::addNeighbours()
 {
-    m_octree->clearTree();
-
-    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+  switch (m_spatialDivision)
     {
-        m_octree->addObject(a);
+    case BRUTE :
+      BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+      {
+          BOOST_FOREACH( boost::shared_ptr<Agent> b, m_agents)
+          {
+              if(a == b){continue;}
+              a->getBrain()->addNeighbour(b);
+          }
+      }
+      break;
+
+    case OCTREE :
+      m_octree->clearTree();
+      BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+      {
+          m_octree->addObject(a);
+      }
+      m_octree->addNeighbours();
+      break;
     }
-    m_octree->addNeighbours();
 }
 
 //void System::addBoundaries()
@@ -72,6 +79,11 @@ void System::addNeighbours()
 
 //}
 
+
+void System::setSpatialDivision(const SpatialDivision &_type)
+{
+  m_spatialDivision = _type;
+}
 
 void System::setGloablGoal(const ngl::Vec3 &_goal)
 {
