@@ -193,7 +193,7 @@ public:
       else
       {
         VEC pos = _p->getOrigState().m_pos;//getPos();
-        ngl::Real   r = _p->getRad();
+        ngl::Real   r = _p->getOrigState().m_rad;
         BoundingBox limit;
         for(int i=0;i<8;++i)
         {

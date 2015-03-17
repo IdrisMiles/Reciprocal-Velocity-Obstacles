@@ -32,6 +32,7 @@ public:
 
     float getPerceiveRad()const;
     float getPerceiveAng()const;
+    float getDesSpeed()const;
 
     void clearNeighbours();
     void clearBoundary();
@@ -49,6 +50,7 @@ private:
 
 
     ngl::Vec3 m_desVel;
+    float m_desSpeed;
     //ngl::Vec3 m_newVel;
     ngl::Vec3 m_goal;
     ngl::Vec3 m_nextGoal;

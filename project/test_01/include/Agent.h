@@ -51,7 +51,7 @@ private:
     System *m_system;
     Brain *m_brain;
     Integrator m_integrator;
-    float m_rad;
+    //float m_rad;
     ngl::Material m_material;
 
 };

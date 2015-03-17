@@ -20,6 +20,8 @@ public:
     void addAgent(const Avoidance &_avoidType);
     void addNeighbours();
     void addBoundaries();
+    void clearNeighbours();
+    void clearBoundaries();
 
     void setSpatialDivision(const SpatialDivision &_type);
     void setGloablGoal(const ngl::Vec3 &_goal);

@@ -1,5 +1,6 @@
 #include "System.h"
 
+#include <ngl/Random.h>
 #include <boost/foreach.hpp>
 
 System::System()
@@ -21,6 +22,7 @@ System::~System()
 void System::update()
 {
     addNeighbours();
+    addBoundaries();
 
     BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
     {
@@ -30,8 +32,10 @@ void System::update()
     BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
     {
         a->updateState();
-        a->getBrain()->clearNeighbours();
     }
+
+    clearNeighbours();
+    clearBoundaries();
 }
 
 void System::addAgent(const Avoidance &_avoidType)
@@ -56,7 +60,7 @@ void System::addNeighbours()
       break;
 
     case OCTREE :
-      m_octree->clearTree();
+     m_octree->clearTree();
       BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
       {
           m_octree->addObject(a);
@@ -66,19 +70,49 @@ void System::addNeighbours()
     }
 }
 
-//void System::addBoundaries()
-//{
-//    BOOST_FOREACH(Agent *a, m_agents)
-//    {
-//        BOOST_FOREACH(Boundary *b, m_Boundaries)
-//        {
-//            // check distance to boundary
-//            // add if within perceive rad
-//        }
-//    }
+void System::addBoundaries()
+{
+    switch (m_spatialDivision)
+      {
+      case BRUTE :
+        BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+        {
+            BOOST_FOREACH(Boundary *b, m_Boundaries)
+            {
+                // check distance to boundary
+                // add if within perceive rad
+                a->getBrain()->addBoundary(b);
+            }
+        }
+        break;
 
-//}
+      case OCTREE :
+       m_octree->clearTree();
+        BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+        {
+            m_octree->addObject(a);
+        }
+        m_octree->addNeighbours();
+        break;
+      }
 
+}
+
+void System::clearNeighbours()
+{
+    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+    {
+        a->getBrain()->clearNeighbours();
+    }
+}
+
+void System::clearBoundaries()
+{
+    BOOST_FOREACH( boost::shared_ptr<Agent> a, m_agents)
+    {
+        a->getBrain()->clearBoundary();
+    }
+}
 
 void System::setSpatialDivision(const SpatialDivision &_type)
 {
@@ -90,6 +124,9 @@ void System::setGloablGoal(const ngl::Vec3 &_goal)
     BOOST_FOREACH(boost::shared_ptr<Agent> a,m_agents)
     {
         a->getBrain()->setGoal(_goal);
+
+//        ngl::Random *r = ngl::Random::instance();
+//        a->getBrain()->setGoal(r->getRandomVec3()*10);
     }
 }
 

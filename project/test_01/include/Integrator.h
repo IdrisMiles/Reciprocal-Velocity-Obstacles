@@ -15,6 +15,7 @@ public:
 
     void setType(const integratorType &_type);
     void setState(State *_state);
+    void setDesSpeed(const float &_desSpeed);
     State *getState()const;
 
     //--------RK4 integrating methods-----------
@@ -30,6 +31,7 @@ private:
 
     State *m_state;
     State m_deriv;
+    float m_desSpeed;
 
     integratorType m_type;
 

@@ -15,7 +15,7 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
 
     m_origState = m_currentState;
 
-    m_rad = 0.1f;
+    //m_rad = 0.2f;
 
     // linking system to agent
     m_system = _system;
@@ -25,6 +25,7 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
 
     // setting up integrator
     m_integrator.setType(EULER);
+    m_integrator.setDesSpeed(m_brain->getDesSpeed());
     m_integrator.setState(&m_currentState);
 
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
@@ -123,10 +124,10 @@ State Agent::getOrigState()const
     return m_origState;
 }
 
-float Agent::getRad()const
-{
-    return m_rad;
-}
+//float Agent::getRad()const
+//{
+//    //return m_rad;
+//}
 
 
 void Agent::setState(const State &_state)

@@ -6,6 +6,7 @@
 Integrator::Integrator()
 {
   m_type = EULER;
+  m_desSpeed = 1.0f;
 }
 
 Integrator::~Integrator()
@@ -34,6 +35,11 @@ void Integrator::setType(const integratorType &_type)
 void Integrator::setState(State *_state)
 {
     m_state = _state;
+}
+
+void Integrator::setDesSpeed(const float &_desSpeed)
+{
+    m_desSpeed = _desSpeed;
 }
 
 State *Integrator::getState()const
@@ -87,6 +93,11 @@ void Integrator::integrateEuler(const float &_dt)
 {
     m_state->m_acc = m_state->m_invMass * m_state->m_force;
     m_state->m_vel += m_state->m_acc * _dt;
+    if(m_state->m_vel.length() > m_desSpeed)
+    {
+        m_state->m_vel.normalize();
+        m_state->m_vel *= m_desSpeed;
+    }
     ngl::Vec3 oldPos = m_state->m_pos;
     m_state->m_pos += m_state->m_vel * _dt;
     ngl::Vec3 newPos = m_state->m_pos;
