@@ -13,11 +13,11 @@
 
 #include "State.h"
 #include "Brain.h"
-#include "Integrator.h"
 #include "System.h"
+#include "Integrator.h"
 
 
-class State;
+
 class Brain;
 class System;
 
@@ -48,11 +48,17 @@ private:
 
     State m_currentState;
     State m_origState;
+
+    ngl::BBox m_bbox;
+    ngl::Obj *m_mesh;
+    ngl::Material m_material;
+
     System *m_system;
     Brain *m_brain;
     Integrator m_integrator;
-    //float m_rad;
-    ngl::Material m_material;
+
+    int m_hashTableID;
+    int m_cellID;
 
 };
 
