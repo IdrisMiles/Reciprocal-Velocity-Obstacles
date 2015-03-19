@@ -7,15 +7,14 @@
 
 Agent::Agent(System *_system, const Avoidance &_avoidType)
 {
-    // ctor that should be used
-
     ngl::Random *r = ngl::Random::instance();
-    m_currentState.m_pos = r->getRandomVec3();
-    m_currentState.m_pos *= 5.0f;
-
+    m_currentState.m_pos = 5.0f * r->getRandomVec3();
     m_origState = m_currentState;
 
-    //m_rad = 0.2f;
+    // set up AABB - will be used for spatial hashing
+    m_bbox = ngl::BBox(m_currentState.m_pos,m_currentState.m_rad,
+                       m_currentState.m_rad,m_currentState.m_rad);
+
 
     // linking system to agent
     m_system = _system;
@@ -28,9 +27,13 @@ Agent::Agent(System *_system, const Avoidance &_avoidType)
     m_integrator.setDesSpeed(m_brain->getDesSpeed());
     m_integrator.setState(&m_currentState);
 
+    // setting up basic mesh from ngl::vaoprimitive
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-    prim->createCylinder("cylinder",m_currentState.m_rad,1.0,20,20);
+    prim->createCylinder("cylinder",0.5*m_currentState.m_rad,m_currentState.m_rad,4,1);
 
+    // TODO: set up obj mesh
+
+    // Setting up avoidant specific attributes
     switch (_avoidType)
     {
       case FLOCKING:
@@ -58,12 +61,13 @@ Agent::~Agent()
     delete [] m_brain;
 }
 
+//-------------update stuff-----------------
 void Agent::update()
 {
+    // update brain, find new path/forces/velocity etc
     m_brain->update();
+    // update position and move agent
     m_integrator.update();
-    //m_currentState.m_pos.m_x += 0.01f;
-    //m_currentState.m_orien += 0.5f;
 }
 
 void Agent::updateState()
@@ -71,10 +75,11 @@ void Agent::updateState()
     m_origState = m_currentState;
 }
 
+//-------------drawing stuff-------------
 void Agent::draw()
 {
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-    prim->draw("troll");
+    prim->draw("cylinder");
 
 }
 
@@ -90,7 +95,7 @@ void Agent::loadMatricesToShader()
   ngl::Mat4 M;
   M.identity();
   ngl::Mat4 stand;
-  //stand.rotateX(90);
+  stand.rotateX(90);
   // add agents orientation
   M.rotateY(m_currentState.m_orien);
   // add agents position
@@ -110,6 +115,7 @@ void Agent::loadMatricesToShader()
   shader->setShaderParamFromMat4("M",worldM);
 }
 
+//------------getters-----------------
 Brain *Agent::getBrain()
 {
     return m_brain;
@@ -124,12 +130,7 @@ State Agent::getOrigState()const
     return m_origState;
 }
 
-//float Agent::getRad()const
-//{
-//    //return m_rad;
-//}
-
-
+//-------------setters------------------
 void Agent::setState(const State &_state)
 {
     m_currentState = _state;

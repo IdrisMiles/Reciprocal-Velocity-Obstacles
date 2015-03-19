@@ -25,13 +25,7 @@ Brain::~Brain()
 
 void Brain::update()
 {
-    static float z = 0.0f;
-    static float x = 0.0f;
-
     findNextGoal();
-    //m_goal.m_z = sin(z+=0.0001)*10-5;
-    //m_goal.m_x = cos(x+=0.0001)*10 -5;
-
 
     switch (m_avoidanceType)
     {
@@ -44,6 +38,8 @@ void Brain::update()
         default:
             break;
     }
+
+    // collision response goes here
 
     //std::cout<<"num neighbours "<<m_neighbours.size()<<"\n";
 
@@ -114,8 +110,10 @@ void Brain::flocking()
     //-------------check for neigbours--------------
     if(m_neighbours.size() <1)
     {
-        //m_agent->setForce(goal);
-        //return;
+        // no neightbours, only goal force will apply
+        goal.normalize();
+        m_agent->setForce(goal);
+        return;
     }
     //----------------------------------------------
 
@@ -141,14 +139,56 @@ void Brain::flocking()
                 distV.normalize();
                 distV * m_agent->getOrigState().m_rad;
                 m_agent->setVel(tmpVel+0.5*distV);
-                std::cout<<"TOO CLOSE \n";
+                //std::cout<<"TOO CLOSE \n";
+            }
+        }
+        separation += tmpSeparation;
+    }
+    BOOST_FOREACH(Boundary *b,m_Boundaries)
+    {
+        // find closest perpendicular point to boundary
+        // use this distance for repulsion
+        ngl::Vec3 tmpSeparation;
+        // separation from neighbouring boids
+        ngl::Vec3 bPoints1 = b->getBoundaryPoint(0);
+        ngl::Vec3 bPoints2 = b->getBoundaryPoint(1);
+        ngl::Vec3 bEdge1 = bPoints1 - bPoints2;
+        ngl::Vec3 perpEdge = ngl::Vec3(-bEdge1.m_z,0,bEdge1.m_x);
+        //ngl::Vec3 edge2 = m_agent->getOrigState().m_pos + perpEdge;
+
+        // To find perpendicular point:
+        // bounddary p+tr = q+us agent
+        // t = (q − p) × s / (r × s)
+        // if 0<t<1  point exists
+        float t = (m_agent->getCurrentState().m_pos - bPoints2).cross(perpEdge).m_y /
+                  (bEdge1.cross(perpEdge).m_y);
+        // nearest point on boundary
+        ngl::Vec3 iPoint = bPoints2 + (t*bEdge1);
+
+        ngl::Vec3 distV = m_agent->getOrigState().m_pos - iPoint;
+
+        float distF = (m_agent->getOrigState().m_pos - iPoint).length() -
+                     (m_agent->getOrigState().m_rad);
+
+        if(distF < m_perceiveRad)
+        {
+            tmpSeparation -= (iPoint - m_agent->getOrigState().m_pos);
+            tmpSeparation *= (m_perceiveRad/distF);
+
+            if(distF <= m_agent->getOrigState().m_rad)
+            {
+                //m_agent->setVel(ngl::Vec3(0.0f,0.0f,0.0f));
+                ngl::Vec3 tmpVel = m_agent->getOrigState().m_vel;
+                distV.normalize();
+                distV * m_agent->getOrigState().m_rad;
+                m_agent->setVel(tmpVel+1*distV);
+                //std::cout<<"TOO CLOSE \n";
             }
         }
         separation += tmpSeparation;
 
-        // separation from boundaries
-
     }
+
     if(separation != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         separation.normalize();

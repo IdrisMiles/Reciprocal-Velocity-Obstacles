@@ -9,6 +9,7 @@ class Boundary
 public:
 
     Boundary();
+    Boundary(const ngl::Vec3 &_p1, const ngl::Vec3 &_p2);
     ~Boundary();
 
     void setBoundary(const ngl::Vec3 &_p1, const ngl::Vec3 &_p2);
@@ -19,8 +20,6 @@ public:
 
 private:
 
-//        ngl::Vec3 m_p1;
-//        ngl::Vec3 m_p2;
         ngl::Vec3 m_p[2];
 };
 

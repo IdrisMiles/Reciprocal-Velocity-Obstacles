@@ -98,7 +98,7 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     ngl::VertexArrayObject *m_vao;
 
-    System m_system;
+    System *m_system;
 
     bool m_pause;
 

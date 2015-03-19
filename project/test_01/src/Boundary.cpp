@@ -5,6 +5,12 @@ Boundary::Boundary()
 
 }
 
+Boundary::Boundary(const ngl::Vec3 &_p1, const ngl::Vec3 &_p2)
+{
+    m_p[0] = _p1;
+    m_p[1] = _p2;
+}
+
 Boundary::~Boundary()
 {
 

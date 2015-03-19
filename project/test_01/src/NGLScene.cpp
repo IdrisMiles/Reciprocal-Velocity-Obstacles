@@ -131,12 +131,15 @@ void NGLScene::initialize()
 
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
-  for(int i=0;i<10;i++)
+  m_system = new System();
+  for(int i=0;i<20;i++)
   {
-      m_system.addAgent(FLOCKING);
-      //m_system.addAgent(RVO);
+      m_system->addAgent(FLOCKING);
+//      m_system->addAgent(RVO);
+//      m_system->addAgent(SOCIAL);
   }
-  m_system.setGloablGoal(ngl::Vec3(0.0f,0.0f,-1.0f));
+  ngl::Vec3 goal = ngl::Vec3(1.0f,0.0f,-10.0f);
+  m_system->setGloablGoal(goal);
 
   startTimer(10);
 }
@@ -144,7 +147,7 @@ void NGLScene::initialize()
 void NGLScene::update()
 {
     if(!m_pause){return;}
-    m_system.update();
+    m_system->update();
 }
 
 
@@ -193,8 +196,8 @@ void NGLScene::render()
   m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
 
   //---------System drawing methods------------
-  m_system.setUpDraw(*m_cam,m_mouseGlobalTX);
-  m_system.draw();
+  m_system->setUpDraw(*m_cam,m_mouseGlobalTX);
+  m_system->draw();
 
 }
 
@@ -301,12 +304,12 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_P : m_pause = !(m_pause&true);break;
-  case Qt::Key_O : m_system.setSpatialDivision(OCTREE);break;
-  case Qt::Key_I : m_system.setSpatialDivision(BRUTE);break;
+  case Qt::Key_O : m_system->setSpatialDivision(OCTREE);break;
+  case Qt::Key_I : m_system->setSpatialDivision(BRUTE);break;
 
-  case Qt::Key_1 : m_system.addAgent(FLOCKING);break;
-  case Qt::Key_2 : m_system.addAgent(RVO);break;
-  case Qt::Key_3 : m_system.addAgent(SOCIAL);break;
+  case Qt::Key_1 : m_system->addAgent(FLOCKING);break;
+  case Qt::Key_2 : m_system->addAgent(RVO);break;
+  case Qt::Key_3 : m_system->addAgent(SOCIAL);break;
   default : break;
   }
   // finally update the GLWindow and re-draw
