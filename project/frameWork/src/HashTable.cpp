@@ -1,7 +1,7 @@
 #include "HashTable.h"
 #include <iostream>
 
-HashTable::HashTable(int _width, int _height, int _cellSize, const ngl::Vec3 &_centre)
+HashTable::HashTable(int _width, int _height, float _cellSize, const ngl::Vec3 &_centre)
 {
     m_width = _width;
     m_height = _height;

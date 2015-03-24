@@ -145,14 +145,16 @@ void Brain::flocking()
         if(distF < m_perceiveRad)
         {
             tmpSeparation -= (n->getOrigState().m_pos - m_agent->getOrigState().m_pos);
-            tmpSeparation *= (m_perceiveRad/distF);
+            if(distF!=0) {tmpSeparation *= (m_perceiveRad/distF);}
+            else         {tmpSeparation *= 1000;}
 
             if(distF <= m_agent->getOrigState().m_rad)
             {
+                // TOO CLOSE
                 ngl::Vec3 tmpVel = m_agent->getOrigState().m_vel;
-                distV.normalize();
+                if(distV != ngl::Vec3(0,0,0)){distV.normalize();}
                 distV * m_agent->getOrigState().m_rad;
-                //m_agent->setVel(tmpVel+0.1*distV);
+                m_agent->setVel(tmpVel+0.1*distV);
             }
         }
         separation += tmpSeparation;
@@ -190,9 +192,8 @@ void Brain::flocking()
 
             if(distF <= m_agent->getOrigState().m_rad)
             {
-                //m_agent->setVel(ngl::Vec3(0.0f,0.0f,0.0f));
                 ngl::Vec3 tmpVel = m_agent->getOrigState().m_vel;
-                distV.normalize();
+                if(distV != ngl::Vec3(0,0,0)) {distV.normalize();}
                 distV * m_agent->getOrigState().m_rad;
                 m_agent->setVel(tmpVel+1*distV);
             }
@@ -240,7 +241,6 @@ void Brain::flocking()
 
     //-------------Final force----------------------
     ngl::Vec3 finalForce = (separation + alignment + cohesion + goal);
-    //finalForce.normalize();
     if(finalForce != ngl::Vec3(0.0f,0.0f,0.0f))
     {
         finalForce.normalize();

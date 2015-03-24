@@ -18,7 +18,7 @@ class HashTable
 {
 
 public:
-    HashTable(int _width, int _height, int _cellSize,
+    HashTable(int _width, int _height, float _cellSize,
               const ngl::Vec3 &_centre = ngl::Vec3(0.0f,0.0f,0.0f));
     HashTable(const ngl::BBox &_bound, int _cellSize);
     ~HashTable();
@@ -41,7 +41,7 @@ public:
 private:
 
     std::vector<Cell> m_cells;
-    int m_cellSize;
+    float m_cellSize;
     int m_width;
     int m_height;
     int m_numXcells;

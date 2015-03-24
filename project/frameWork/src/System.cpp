@@ -19,7 +19,7 @@ System::System()
     setSpatialDivision(HASH);
 
     m_octree = new AgentOctree (5, bb);
-    m_hashTable = new HashTable(20,20,1,ngl::Vec3(0,0,0));
+    m_hashTable = new HashTable(20,20,0.5,ngl::Vec3(0,0,0));
 
     // setting up basic mesh from ngl::vaoprimitive
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
