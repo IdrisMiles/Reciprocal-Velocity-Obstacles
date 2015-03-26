@@ -5,13 +5,17 @@
 #include<boost/shared_ptr.hpp>
 #include <ngl/Vec3.h>
 #include <ngl/BBox.h>
+#include <ngl/VertexArrayObject.h>
+#include <ngl/VAOPrimitives.h>
 
 #include "Agent.h"
+#include "Boundary.h"
 
 
 struct Cell
 {
     std::vector<Agent*> m_agents;
+    //std::vector<Boundary*> m_bounds;
 };
 
 class HashTable
@@ -26,6 +30,7 @@ public:
     void addAgent(Agent* _agent);
     void addAgent(Agent* _agent, Cell* _cell);
     void removeAgent(Agent* _agent);
+    void emptyTable();
 
     Cell *getCell(int _x, int _y);
     Cell *getCell(const ngl::Vec3 &_pos);
@@ -33,8 +38,9 @@ public:
     std::vector<Cell> getCells()const;
 
     void addNeighbours();
-
     void checkCollisionOnCell(Agent *currentAgent, std::vector<Agent *> _testAgents, int startIndex);
+
+    void initVAO();
 
     void printInfo()const;
 
@@ -47,6 +53,10 @@ private:
     int m_numXcells;
     int m_numYcells;
     ngl::Vec3 m_centre; //real world centre
+
+
+    ngl::VertexArrayObject *m_vao;
+
 
 };
 

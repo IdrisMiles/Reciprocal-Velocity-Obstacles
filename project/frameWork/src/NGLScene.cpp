@@ -135,7 +135,7 @@ void NGLScene::initialize()
   for(int i=0;i<100;i++)
   {
       m_system->addAgent(FLOCKING);
-//      m_system->addAgent(RVO);
+      //m_system->addAgent(RVO);
 //      m_system->addAgent(SOCIAL);
   }
   ngl::Vec3 goal = ngl::Vec3(1.0f,0.0f,-5.0f);

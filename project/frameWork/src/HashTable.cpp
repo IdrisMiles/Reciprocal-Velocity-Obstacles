@@ -58,13 +58,13 @@ void HashTable::removeAgent(Agent* _agent)
     if(_agent->getCellID() == -1){return;}
 
     // swap current agent with agent at back of cell
-    //_agent->getCell()->m_agents[_agent->getCellID()] = _agent->getCell()->m_agents.back();
-    std::swap(_agent->getCell()->m_agents[_agent->getCellID()],_agent->getCell()->m_agents.back());
+    _agent->getCell()->m_agents[_agent->getCellID()] = _agent->getCell()->m_agents.back();
+    //std::swap(_agent->getCell()->m_agents[_agent->getCellID()],_agent->getCell()->m_agents.back());
 
-    // push last element (this agent) off
+    // push last element off
     _agent->getCell()->m_agents.pop_back();
 
-    // if the agent was the only agent in the cell
+    // if the agent was not the only agent in the cell
     if(_agent->getCell()->m_agents.size() != 0)
     {
         // update swapped agents cellID
@@ -74,6 +74,14 @@ void HashTable::removeAgent(Agent* _agent)
     // update current agents cellID
     _agent->setCellID(-1);
 
+}
+
+void HashTable::emptyTable()
+{
+    for(unsigned int i=0;i<m_cells.size();i++)
+    {
+        m_cells[i].m_agents.clear();
+    }
 }
 
 
@@ -124,18 +132,26 @@ void HashTable::addNeighbours()
             checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i].m_agents,j+1);
 
             // check neighbouring cells
-//            if(x>0)
-//            {
-//                //check left hand side cells
-//                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[].m_agents,0);
-//                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[].m_agents,0);
-//                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[].m_agents,0);
-//            }
-//            if(y>0)
-//            {
-//                // cehck bottom cell
-//                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[].m_agents,0);
-//            }
+            if(x>0)
+            {
+                //check left hand side cells
+                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1              ].m_agents,0);
+            }
+            if(x>0 && y< m_numYcells)
+            {
+                // check top left cell
+                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1 + m_numXcells].m_agents,0);
+            }
+            if(x>0 && y>0)
+            {
+                // check bottom left cell
+                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1 - m_numXcells].m_agents,0);
+            }
+            if(y>0)
+            {
+                // cehck bottom cell
+                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - m_numXcells].m_agents,0);
+            }
         }
 
     }
@@ -143,6 +159,7 @@ void HashTable::addNeighbours()
 
 void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_testAgents,int startIndex)
 {
+    if(_testAgents.size() == 0){return;}
     // iterate through agents in cell
     for(unsigned int i=startIndex;i<_testAgents.size();i++)
     {
@@ -162,7 +179,22 @@ void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_tes
 
 }
 
+void HashTable::initVAO()
+{
+    std::vector<ngl::Vec3> hashtableVerts;
+    for(int i=0;i<m_numXcells+1;i++)
+    {
+        ngl::Vec3 p1,p2;
+        p1 = ngl::Vec3(i,0,0.5*m_height);
+        p2 = ngl::Vec3(i,0,-0.5*m_height);
+        hashtableVerts.push_back(p1);
+        hashtableVerts.push_back(p2);
+    }
 
+    m_vao->createVOA(GL_LINE);
+    m_vao->bind();
+    m_vao->setData(hashtableVerts.size()*sizeof(ngl::Vec3),hashtableVerts[0].m_x);
+}
 
 void HashTable::printInfo()const
 {
