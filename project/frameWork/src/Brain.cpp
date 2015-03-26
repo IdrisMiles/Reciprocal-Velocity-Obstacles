@@ -62,7 +62,7 @@ void Brain::setAvoidanceType(const Avoidance &_avoidance)
             m_goalWeight = 0.1f;
             m_alignmentWeight = 0.1f;
             m_cohesionWeight = 0.1f;
-            m_separationWeight = 0.1f;
+            m_separationWeight = 0.9f;
             break;
         case RVO:
             break;
