@@ -26,9 +26,18 @@ public:
     void findNextGoal();
     void findNeighbours();
     void findBoundaries();
+
     void rvo();
+    float cross2D(const ngl::Vec3 &_v1,const ngl::Vec3 &_v2);
+
     void flocking();
+    ngl::Vec3 flockSeparation();
+    ngl::Vec3 flockCohesion();
+    ngl::Vec3 flockAlignment();
+    ngl::Vec3 flockGoal();
+
     void socialForces();
+
 
     float getPerceiveRad()const;
     float getPerceiveAng()const;
@@ -51,6 +60,8 @@ private:
 
     ngl::Vec3 m_desVel;
     float m_desSpeed;
+    float m_maxVel;
+    float m_maxAcc;
     //ngl::Vec3 m_newVel;
     ngl::Vec3 m_goal;
     ngl::Vec3 m_nextGoal;

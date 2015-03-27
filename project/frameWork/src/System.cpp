@@ -56,8 +56,8 @@ void System::update()
 
 void System::addAgent(const Avoidance &_avoidType)
 {
-    Agent* tAgent(new Agent(this,_avoidType));
-    m_agents.push_back(tAgent);
+    //Agent* tAgent(new Agent(this,_avoidType));
+    m_agents.push_back(new Agent(this,_avoidType));
     m_agents.back()->getBrain()->setGoal(m_globalGoal);
 }
 

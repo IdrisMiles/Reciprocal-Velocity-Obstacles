@@ -16,6 +16,8 @@ Brain::Brain(Agent *_agent, System *_system)
     m_perceiveRad = 1.0f;
     m_perceiveAng = 360.0f;
     m_desSpeed = 0.1;
+    m_maxVel = 0.1;
+    m_maxAcc = 0.1;
 
 }
 
@@ -77,6 +79,10 @@ void Brain::setAvoidanceType(const Avoidance &_avoidance)
 void Brain::setGoal(const ngl::Vec3 &_goal)
 {
     m_goal = _goal;
+
+    m_desVel = m_goal - m_agent->getOrigState().m_pos;
+    m_desVel.normalize();
+    m_desVel *= m_desSpeed;
 }
 
 void Brain::mapRoute()
@@ -87,6 +93,10 @@ void Brain::mapRoute()
 void Brain::findNextGoal()
 {
     //m_goal = ?
+
+    m_desVel = m_goal - m_agent->getOrigState().m_pos;
+    m_desVel.normalize();
+    m_desVel *= m_desSpeed;
 }
 
 void Brain::findNeighbours()
@@ -102,7 +112,43 @@ void Brain::findBoundaries()
 //===============RVO==================
 void Brain::rvo()
 {
+    // Ray intersection test for current agent with circle around neighbour agent
+    // with radius aRad + bRad.
+
+    float time;
+    time = 1.0f;
     //std::cout<<"RVO avoidance in use\n"<<std::endl;
+    BOOST_FOREACH(Agent *n, m_neighbours)
+    {
+        float t,u;
+        //t = (q − p) × s / (r × s)
+        //u = (q − p) × r / (r × s)
+        // replace with desired direction
+        float dirCross = cross2D(m_agent->getOrigState().m_vel,n->getOrigState().m_vel);
+        if(dirCross != 0)
+        {
+            ngl::Vec3 dist = n->getOrigState().m_pos - m_agent->getOrigState().m_pos;
+            float tCross = cross2D(dist,n->getOrigState().m_vel);
+            float uCross = cross2D(dist,m_agent->getOrigState().m_vel);
+
+            t = tCross / dirCross;
+            u = uCross / dirCross;
+
+            if(t == u)
+            {
+                if(t>=0 && t<=time)
+                {
+                    // Agent is going to collide with neighbour in t amount of time
+                }
+            }
+        }
+    }
+
+}
+
+float Brain::cross2D(const ngl::Vec3 &_v1, const ngl::Vec3 &_v2)
+{
+    return (_v1.m_x * _v2.m_z) - (_v1.m_z * _v2.m_x);
 }
 
 //=============flocking===============
@@ -130,9 +176,30 @@ void Brain::flocking()
         m_agent->setForce(goal);
         return;
     }
-    //----------------------------------------------
 
     //------------separation rule-------------------
+    ngl::Vec3 separation = flockSeparation();
+
+    //------------Alignment rule--------------------
+    ngl::Vec3 alignment = flockAlignment();
+
+    //----------Cohesion rule----------------------
+    ngl::Vec3 cohesion = ngl::Vec3(0,0,0);//flockCohesion();
+
+    //-------------Final force----------------------
+    ngl::Vec3 finalForce = (separation + alignment + cohesion + goal);
+    if(finalForce != ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        finalForce.normalize();
+    }
+
+    m_agent->setForce(0.01*finalForce);
+    //m_agent->setVel(0.01*finalForce);
+    //----------------------------------------------
+}
+
+ngl::Vec3 Brain::flockSeparation()
+{
     ngl::Vec3 separation;
     BOOST_FOREACH(Agent* n, m_neighbours)
     {
@@ -208,23 +275,11 @@ void Brain::flocking()
         separation *= m_separationWeight;
     }
 
-    //----------------------------------------------
+    return separation;
+}
 
-    //------------Alignment rule--------------------
-    ngl::Vec3 alignment;
-    BOOST_FOREACH(Agent* n, m_neighbours)
-    {
-        alignment += n->getOrigState().m_vel;
-    }
-    if(alignment != ngl::Vec3(0.0f,0.0f,0.0f))
-    {
-        alignment.normalize();
-        //alignment /= m_neighbours.size();
-        alignment*= m_alignmentWeight;
-    }
-    //----------------------------------------------
-
-    //----------Cohesion rule----------------------
+ngl::Vec3 Brain::flockCohesion()
+{
     ngl::Vec3 cohesion = ngl::Vec3(0.0f,0.0f,0.0f);
     BOOST_FOREACH(Agent* n, m_neighbours)
     {
@@ -237,18 +292,30 @@ void Brain::flocking()
         cohesion.normalize();
         cohesion *= m_cohesionWeight;
     }
-    //----------------------------------------------
 
-    //-------------Final force----------------------
-    ngl::Vec3 finalForce = (separation + alignment + cohesion + goal);
-    if(finalForce != ngl::Vec3(0.0f,0.0f,0.0f))
+    return cohesion;
+}
+
+ngl::Vec3 Brain::flockAlignment()
+{
+    ngl::Vec3 alignment;
+    BOOST_FOREACH(Agent* n, m_neighbours)
     {
-        finalForce.normalize();
+        alignment += n->getOrigState().m_vel;
+    }
+    if(alignment != ngl::Vec3(0.0f,0.0f,0.0f))
+    {
+        alignment.normalize();
+        //alignment /= m_neighbours.size();
+        alignment*= m_alignmentWeight;
     }
 
-    m_agent->setForce(0.01*finalForce);
-    //m_agent->setVel(0.01*finalForce);
-    //----------------------------------------------
+    return alignment;
+}
+
+ngl::Vec3 Brain::flockGoal()
+{
+
 }
 
 //----------------Social forces-----------------------
