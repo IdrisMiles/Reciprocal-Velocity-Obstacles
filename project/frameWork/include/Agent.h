@@ -39,6 +39,7 @@ public:
     void setForce(const ngl::Vec3 &_force);
     void setVel(const ngl::Vec3 &_vel);
     void setPos(const ngl::Vec3 &_pos);
+    void setGoal(const ngl::Vec3 &_goal);
 
     Brain *getBrain();
     State getCurrentState()const;
@@ -52,6 +53,8 @@ public:
 
     Cell* getCell();
     int getCellID();
+
+    void printInfo()const;
 
 private:
 

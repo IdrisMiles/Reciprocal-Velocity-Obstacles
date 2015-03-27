@@ -18,6 +18,7 @@ Brain::Brain(Agent *_agent, System *_system)
     m_desSpeed = 0.1;
     m_maxVel = 0.1;
     m_maxAcc = 0.1;
+    m_goal = -m_agent->getCurrentState().m_pos;
 
 }
 
@@ -343,11 +344,6 @@ float Brain::getDesSpeed()const
 
 void Brain::clearNeighbours()
 {
-    for(unsigned int i=0;i<m_neighbours.size();i++)
-    {
-        //delete [] m_neighbours[i];
-        //m_neighbours.pop_back();
-    }
     m_neighbours.clear();
     //m_neighbours.erase(m_neighbours.begin(),m_neighbours.end());
 }
@@ -365,4 +361,10 @@ void Brain::addNeighbour( Agent* _neighbour)
 void Brain::addBoundary(Boundary *_boundary)
 {
     m_Boundaries.push_back(_boundary);
+}
+
+
+void Brain::printInfo()
+{
+  std::cout<<"num neighbours: "<<m_neighbours.size()<<"\n";
 }

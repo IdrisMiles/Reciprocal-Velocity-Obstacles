@@ -35,8 +35,9 @@ public:
     ngl::Camera getCam()const;
     ngl::Mat4 getGlobalTX()const;
 
-
     void updateHashTable();
+
+    void setScene(const int &_scene);
 
     void printInfo()const;
 
@@ -45,6 +46,7 @@ private:
 
     std::vector< Agent* > m_agents;
     std::vector<Boundary*> m_Boundaries;
+    int m_scene;
 
     SpatialDivision m_spatialDivision;
     AgentOctree *m_octree;
@@ -56,8 +58,8 @@ private:
     ngl::Camera m_cam;
     ngl::Mat4 m_globalTX;
 
-    int numAgents;
-    int numBoundaries;
+    int m_numAgents;
+    int m_numBoundaries;
 
 };
 

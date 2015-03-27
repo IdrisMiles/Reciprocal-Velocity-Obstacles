@@ -128,8 +128,8 @@ Cell *HashTable::getCell(const ngl::Vec3 &_pos)
     // work out the index value to look into table from agents pos
     // must shift by half width and half height because hash table starts at the origin, not centred at origin
     int x,y;
-    x = (int)(_pos.m_x / m_cellSize) + (int)(0.5 * m_width);
-    y = (int)(_pos.m_z / m_cellSize) + (int)(0.5 * m_height);
+    x = (int)(_pos.m_x + 0.5 * m_width) / m_cellSize;
+    y = (int)(_pos.m_z + 0.5 * m_height) / m_cellSize;
 
     // return cell
     return getCell(x,y);
@@ -192,17 +192,17 @@ void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_tes
     for(unsigned int i=startIndex;i<_testAgents.size();i++)
     {
         // work out distance between agents
-//        ngl::Vec3 distV = currentAgent->getCurrentState().m_pos - _testAgents[i]->getCurrentState().m_pos;
-//        float distL = distV.length();
-//        distL -= (currentAgent->getCurrentState().m_rad + _testAgents[i]->getCurrentState().m_rad);
+        ngl::Vec3 distV = currentAgent->getCurrentState().m_pos - _testAgents[i]->getCurrentState().m_pos;
+        float distL = distV.length();
+        distL -= (currentAgent->getCurrentState().m_rad + _testAgents[i]->getCurrentState().m_rad);
 
-//        // if distance+radius is less than perceived radius add to neighbour list
-//        if(distL <= currentAgent->getBrain()->getPerceiveRad())
-//        {
+        // if distance+radius is less than perceived radius add to neighbour list
+        if(distL <= /*currentAgent->getBrain()->getPerceiveRad()*/0)
+        {
             // add to each others neighbours
             currentAgent->getBrain()->addNeighbour(_testAgents[i]);
             _testAgents[i]->getBrain()->addNeighbour(currentAgent);
-//        }
+        }
     }
 
 }

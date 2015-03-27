@@ -10,6 +10,9 @@
 
 System::System()
 {
+    m_numAgents = 0;
+    m_numBoundaries = 0;
+
     //m_bounds = ngl::BBox(ngl::Vec3(0,0,0),20,20,20);
     BoundingBox bb;
     bb.m_minx = bb.m_miny = bb.m_minz = -10.0;
@@ -45,22 +48,24 @@ void System::update()
     BOOST_FOREACH( Agent* a, m_agents)
     {
         a->update();
-    }
-
-    BOOST_FOREACH( Agent* a, m_agents)
-    {
-        a->updateState();
+        //a->printInfo();
     }
 
     clearNeighbours();
     clearBoundaries();
+
+    BOOST_FOREACH( Agent* a, m_agents)
+    {
+        a->updateState();
+        //a->printInfo();
+    }
 }
 
 void System::addAgent(const Avoidance &_avoidType)
 {
     //Agent* tAgent(new Agent(this,_avoidType));
     m_agents.push_back(new Agent(this,_avoidType));
-    m_agents.back()->getBrain()->setGoal(m_globalGoal);
+    m_numAgents++;
 }
 
 void System::addNeighbours()
@@ -196,6 +201,8 @@ void System::setBounds(ngl::BBox _bounds)
     m_Boundaries.push_back(new Boundary(TL,TR));
     // bottom side
     m_Boundaries.push_back(new Boundary(BR,BL));
+
+    m_numBoundaries += 4;
 }
 
 void System::setGloablGoal(const ngl::Vec3 &_goal)
@@ -255,7 +262,6 @@ void System::setUpDraw(const ngl::Camera &_cam, const ngl::Mat4 &_tx)
 {
     m_cam = _cam;
     m_globalTX = _tx;
-    //m_globalTX;
 }
 
 ngl::Camera System::getCam()const
@@ -280,6 +286,39 @@ void System::updateHashTable()
             m_hashTable->addAgent(a,newCell);
         }
     }
+}
+
+
+void System::setScene(const int &_scene)
+{
+  m_scene = _scene;
+  if(m_scene == 0)
+  {
+      for(int i=0;i<m_numAgents;i++)
+      {
+          ngl::Vec3 pos = ngl::Vec3(9*sin((i*360)/m_numAgents),0,9*cos((i*360)/m_numAgents));
+          m_agents[i]->setPos(pos);
+          m_agents[i]->setGoal(-pos);
+      }
+      return;
+  }
+  else if(m_scene == 1)
+  {
+      for(int i=0;i<m_numAgents;i++)
+      {
+          ngl::Random *r = ngl::Random::instance();
+          ngl::Vec3 pos = 7.0f * r->getRandomVec3();
+          m_agents[i]->setPos(pos);
+      }
+      setRandomGoal();
+      return;
+  }
+  else if(m_scene == 2)
+  {
+    return;
+  }
+
+  updateHashTable();
 }
 
 void System::printInfo()const

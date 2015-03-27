@@ -27,6 +27,7 @@ NGLScene::NGLScene(QWindow *_parent) : OpenGLWindow(_parent)
   m_spinXFace=0;
   m_spinYFace=0;
   setTitle("Qt5 Simple NGL Demo");
+  m_scene = 0;
   m_pause = true;
  
 }
@@ -120,7 +121,7 @@ void NGLScene::initialize()
   // transformations
   ngl::Mat4 iv=m_cam->getViewMatrix();
   iv.transpose();
-  m_light = new ngl::Light(ngl::Vec3(-2,5,2),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::POINTLIGHT );
+  m_light = new ngl::Light(ngl::Vec3(0,5,10),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::POINTLIGHT );
   m_light->setTransform(iv);
   // load these values to the shader as well
   m_light->loadToShader("light");
@@ -132,15 +133,12 @@ void NGLScene::initialize()
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
   m_system = new System();
-  for(int i=0;i<100;i++)
+  for(int i=0;i<200;i++)
   {
       m_system->addAgent(FLOCKING);
       //m_system->addAgent(RVO);
 //      m_system->addAgent(SOCIAL);
   }
-  ngl::Vec3 goal = ngl::Vec3(1.0f,0.0f,-5.0f);
-  m_system->setGloablGoal(goal);
-  //m_system->setRandomGoal();
 
   startTimer(10);
 }
@@ -311,8 +309,10 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   case Qt::Key_Space : m_system->printInfo();break;
 
   case Qt::Key_Z : {ngl::Vec3 goal = ngl::Vec3(1.0f,0.0f,-5.0f);
-                   m_system->setGloablGoal(goal);} break;
+                    m_system->setGloablGoal(goal);} break;
   case Qt::Key_X : m_system->setRandomGoal(); break;
+
+  case Qt::Key_Tab : m_system->setScene((m_scene++)%3);break;
 
   case Qt::Key_1 : m_system->addAgent(FLOCKING);break;
   case Qt::Key_2 : m_system->addAgent(RVO);break;

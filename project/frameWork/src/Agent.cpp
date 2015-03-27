@@ -3,12 +3,13 @@
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
 #include <ngl/Random.h>
+#include <ngl/NGLStream.h>
 
 
 Agent::Agent(System *_system, const Avoidance &_avoidType)
 {
     ngl::Random *r = ngl::Random::instance();
-    m_currentState.m_pos = 5.0f * r->getRandomVec3();
+    m_currentState.m_pos = 7.0f * r->getRandomVec3();
     m_origState = m_currentState;
 
     // set up AABB - will be used for spatial hashing
@@ -152,6 +153,11 @@ void Agent::setPos(const ngl::Vec3 &_pos)
     m_currentState.m_pos = _pos;
 }
 
+void Agent::setGoal(const ngl::Vec3 &_goal)
+{
+  m_brain->setGoal(_goal);
+}
+
 
 void Agent::setHashID(const int &_id)
 {
@@ -177,4 +183,15 @@ Cell *Agent::getCell()
 int Agent::getCellID()
 {
     return m_cellID;
+}
+
+
+void Agent::printInfo()const
+{
+  std::cout<<"Agent info:\n";
+  std::cout<<"Cell ID: "<<m_cellID<<"\n";
+  std::cout<<"orig pos: "<<m_origState.m_pos<<"\n";
+  std::cout<<"orig vel: "<<m_origState.m_vel<<"\n";
+  m_brain->printInfo();
+  std::cout<<"-------------------------------\n\n";
 }

@@ -48,6 +48,8 @@ public:
     void addNeighbour(Agent* _neighbour);
     void addBoundary(Boundary *_boundary);
 
+    void printInfo();
+
 private:
 
     System *m_system;
