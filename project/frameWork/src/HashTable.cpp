@@ -3,6 +3,7 @@
 
 HashTable::HashTable(int _width, int _height, float _cellSize, const ngl::Vec3 &_centre)
 {
+  m_isVAOinit = false;
     m_width = _width;
     m_height = _height;
     m_cellSize = _cellSize;
@@ -16,12 +17,12 @@ HashTable::HashTable(int _width, int _height, float _cellSize, const ngl::Vec3 &
 
 HashTable::HashTable(const ngl::BBox &_bound, int _cellSize)
 {
-
+  m_isVAOinit = false;
 }
 
 HashTable::~HashTable()
 {
-
+  m_vao->removeVOA();
 }
 
 
@@ -76,6 +77,14 @@ void HashTable::removeAgent(Agent* _agent)
 
 }
 
+void HashTable::emptyAgents()
+{
+    for(unsigned int i=0;i<m_cells.size();i++)
+    {
+        m_cells[i].m_agents.clear();
+    }
+}
+
 void HashTable::emptyTable()
 {
     for(unsigned int i=0;i<m_cells.size();i++)
@@ -84,6 +93,24 @@ void HashTable::emptyTable()
     }
 }
 
+void HashTable::addBoundary(Boundary* _boundary)
+{
+
+  // find the range along the x axis
+  int deltaX = ceil(_boundary->getBoundaryPoint(0).m_x - _boundary->getBoundaryPoint(1).m_x);
+  int x = ceil(_boundary->getBoundaryPoint(0).m_x);
+  int deltaY = ceil(_boundary->getBoundaryPoint(0).m_z - _boundary->getBoundaryPoint(1).m_z);
+  for(int i=0; i<deltaX; i++)
+  {
+      // find y coordinate for current x coord into the hashtable
+      int y = (int)( ( (deltaY/deltaX) * i ) + _boundary->getBoundaryPoint(0).m_z );
+      ngl::Vec3 point = ngl::Vec3(x,0,y);
+      Cell *tmpCell = getCell(point);
+
+      x++;
+
+  }
+}
 
 Cell *HashTable::getCell(int _x, int _y)
 {
@@ -99,6 +126,7 @@ Cell *HashTable::getCell(int _x, int _y)
 Cell *HashTable::getCell(const ngl::Vec3 &_pos)
 {
     // work out the index value to look into table from agents pos
+    // must shift by half width and half height because hash table starts at the origin, not centred at origin
     int x,y;
     x = (int)(_pos.m_x / m_cellSize) + (int)(0.5 * m_width);
     y = (int)(_pos.m_z / m_cellSize) + (int)(0.5 * m_height);
@@ -164,36 +192,63 @@ void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_tes
     for(unsigned int i=startIndex;i<_testAgents.size();i++)
     {
         // work out distance between agents
-        ngl::Vec3 distV = currentAgent->getCurrentState().m_pos - _testAgents[i]->getCurrentState().m_pos;
-        float distL = distV.length();
-        distL -= (currentAgent->getCurrentState().m_rad + _testAgents[i]->getCurrentState().m_rad);
+//        ngl::Vec3 distV = currentAgent->getCurrentState().m_pos - _testAgents[i]->getCurrentState().m_pos;
+//        float distL = distV.length();
+//        distL -= (currentAgent->getCurrentState().m_rad + _testAgents[i]->getCurrentState().m_rad);
 
-        // if distance+radius is less than perceived radius add to neighbour list
-        if(distL <= currentAgent->getBrain()->getPerceiveRad())
-        {
+//        // if distance+radius is less than perceived radius add to neighbour list
+//        if(distL <= currentAgent->getBrain()->getPerceiveRad())
+//        {
             // add to each others neighbours
             currentAgent->getBrain()->addNeighbour(_testAgents[i]);
             _testAgents[i]->getBrain()->addNeighbour(currentAgent);
-        }
+//        }
     }
 
 }
 
 void HashTable::initVAO()
 {
-    std::vector<ngl::Vec3> hashtableVerts;
+  if(m_isVAOinit){return;}
+    std::vector<ngl::Vec3> verts;
+
     for(int i=0;i<m_numXcells+1;i++)
     {
         ngl::Vec3 p1,p2;
-        p1 = ngl::Vec3(i,0,0.5*m_height);
-        p2 = ngl::Vec3(i,0,-0.5*m_height);
-        hashtableVerts.push_back(p1);
-        hashtableVerts.push_back(p2);
+        p1 = ngl::Vec3((i*m_cellSize) - (0.5*m_width),0,0.5*m_height);
+        p2 = ngl::Vec3((i*m_cellSize) - (0.5*m_width),0,-0.5*m_height);
+        verts.push_back(p1);
+        verts.push_back(p2);
     }
 
-    m_vao->createVOA(GL_LINE);
+    for(int i=0;i<m_numYcells+1;i++)
+    {
+        ngl::Vec3 p1,p2;
+        p1 = ngl::Vec3(0.5*m_width,0,(i*m_cellSize) - (0.5*m_height));
+        p2 = ngl::Vec3(-0.5*m_width,0,(i*m_cellSize) - (0.5*m_height));
+        verts.push_back(p1);
+        verts.push_back(p2);
+    }
+
+    //m_vao->createVOA(GL_LINES);
+    m_vao = ngl::VertexArrayObject::createVOA(GL_LINES);
     m_vao->bind();
-    m_vao->setData(hashtableVerts.size()*sizeof(ngl::Vec3),hashtableVerts[0].m_x);
+
+    m_vao->setData(verts.size()*sizeof(ngl::Vec3),verts[0].m_x);
+    m_vao->setVertexAttributePointer(0,3,GL_FLOAT,0,0);
+    m_vao->setNumIndices(verts.size());
+
+    m_vao->unbind();
+
+    m_isVAOinit = true;
+}
+void HashTable::draw()
+{
+  if(!m_isVAOinit){return;}
+
+  m_vao->bind();
+  m_vao->draw();
+  m_vao->unbind();
 }
 
 void HashTable::printInfo()const

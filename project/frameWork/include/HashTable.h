@@ -15,7 +15,7 @@
 struct Cell
 {
     std::vector<Agent*> m_agents;
-    //std::vector<Boundary*> m_bounds;
+    std::vector<Boundary*> m_bounds;
 };
 
 class HashTable
@@ -30,7 +30,10 @@ public:
     void addAgent(Agent* _agent);
     void addAgent(Agent* _agent, Cell* _cell);
     void removeAgent(Agent* _agent);
+    void emptyAgents();
     void emptyTable();
+
+    void addBoundary(Boundary* _boundary);
 
     Cell *getCell(int _x, int _y);
     Cell *getCell(const ngl::Vec3 &_pos);
@@ -41,6 +44,8 @@ public:
     void checkCollisionOnCell(Agent *currentAgent, std::vector<Agent *> _testAgents, int startIndex);
 
     void initVAO();
+    void updateVAO();
+    void draw();
 
     void printInfo()const;
 
@@ -55,8 +60,8 @@ private:
     ngl::Vec3 m_centre; //real world centre
 
 
+    bool m_isVAOinit;
     ngl::VertexArrayObject *m_vao;
-
 
 };
 

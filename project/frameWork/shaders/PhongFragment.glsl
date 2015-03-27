@@ -75,7 +75,8 @@ return ambient + diffuse + specular;
 void main ()
 {
 
-fragColour=pointLight();
+
+    fragColour=pointLight();
 //fragColour = vec4(fragmentNormal,1.0f);
 }
 

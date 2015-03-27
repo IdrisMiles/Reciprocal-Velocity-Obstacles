@@ -19,11 +19,13 @@ System::System()
     setSpatialDivision(HASH);
 
     m_octree = new AgentOctree (5, bb);
+
     m_hashTable = new HashTable(20,20,0.5,ngl::Vec3(0,0,0));
+    m_hashTable->initVAO();
 
     // setting up basic mesh from ngl::vaoprimitive
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-    prim->createCylinder("cylinder",0.5f*0.1f,0.1f,4,1);
+    prim->createCylinder("cylinder",0.5f*0.1f,0.5f,4,1);
 
     m_globalGoal = ngl::Vec3(0.0f,0.0f,0.0f);
 }
@@ -241,6 +243,7 @@ void System::draw()
     loadMatricesToShader();
     m_bounds.recalculate();
     m_bounds.draw();
+    /*if(m_spatialDivision == HASH)*/m_hashTable->draw();
     BOOST_FOREACH(Agent* a, m_agents)
     {
         a->loadMatricesToShader();

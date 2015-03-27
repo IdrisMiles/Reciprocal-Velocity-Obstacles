@@ -1152,6 +1152,9 @@ obj/HashTable.o: src/HashTable.cpp include/HashTable.h \
 		/home/i7283718/NGL/include/ngl/Vec4.h \
 		/home/i7283718/NGL/include/ngl/Vec2.h \
 		/home/i7283718/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7283718/NGL/include/ngl/VAOPrimitives.h \
+		/home/i7283718/NGL/include/ngl/Singleton.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QMutexLocker \
 		include/Agent.h \
 		/home/i7283718/NGL/include/ngl/Obj.h \
 		/home/i7283718/NGL/include/ngl/Texture.h \
