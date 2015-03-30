@@ -50,7 +50,7 @@ State *Integrator::getState()const
 //--------RK4 integrating methods-----------
 ngl::Vec3 Integrator::motion(const State &_state)
 {
-    return (m_state->m_invMass * m_state->m_force);
+    return (m_state->m_force);
 }
 
 State Integrator::evaluate(const float _dt,  const State &_deriv)
@@ -91,7 +91,7 @@ void Integrator::integrateRK4(const float &_dt)
 //--------Euler integrating methods---------
 void Integrator::integrateEuler(const float &_dt)
 {
-    m_state->m_acc = m_state->m_invMass * m_state->m_force;
+    m_state->m_acc = m_state->m_force;
     m_state->m_vel += m_state->m_acc * _dt;
     if(m_state->m_vel == ngl::Vec3(0,0,0)){return;}
     if(m_state->m_vel.length() > m_desSpeed)

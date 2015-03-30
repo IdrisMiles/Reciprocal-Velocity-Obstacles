@@ -34,6 +34,7 @@ public:
     void setUpDraw(const ngl::Camera &_cam, const ngl::Mat4 &_tx);
     ngl::Camera getCam()const;
     ngl::Mat4 getGlobalTX()const;
+    float getSystemWidth()const;
 
     void updateHashTable();
 
@@ -60,6 +61,7 @@ private:
 
     int m_numAgents;
     int m_numBoundaries;
+    float m_systemWidth;
 
 };
 

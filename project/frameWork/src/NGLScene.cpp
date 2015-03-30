@@ -133,11 +133,11 @@ void NGLScene::initialize()
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
   m_system = new System();
-  for(int i=0;i<200;i++)
+  for(int i=0;i<100;i++)
   {
-      m_system->addAgent(FLOCKING);
-      //m_system->addAgent(RVO);
-//      m_system->addAgent(SOCIAL);
+      //m_system->addAgent(FLOCKING);
+      m_system->addAgent(RVO);
+      //m_system->addAgent(SOCIAL);
   }
 
   startTimer(10);

@@ -12,18 +12,19 @@ System::System()
 {
     m_numAgents = 0;
     m_numBoundaries = 0;
+    m_systemWidth = 20.0f;
 
     //m_bounds = ngl::BBox(ngl::Vec3(0,0,0),20,20,20);
     BoundingBox bb;
     bb.m_minx = bb.m_miny = bb.m_minz = -10.0;
     bb.m_maxx = bb.m_maxy = bb.m_maxz = 10.0;
 
-    setBounds(ngl::BBox(ngl::Vec3(0,5,0),20,10,20));
+    setBounds(ngl::BBox(ngl::Vec3(0,5,0),m_systemWidth,10,m_systemWidth));
     setSpatialDivision(HASH);
 
     m_octree = new AgentOctree (5, bb);
 
-    m_hashTable = new HashTable(20,20,0.5,ngl::Vec3(0,0,0));
+    m_hashTable = new HashTable(m_systemWidth,m_systemWidth,0.5,ngl::Vec3(0,0,0));
     m_hashTable->initVAO();
 
     // setting up basic mesh from ngl::vaoprimitive
@@ -219,7 +220,7 @@ void System::setRandomGoal()
     BOOST_FOREACH(Agent* a,m_agents)
     {
         ngl::Random *r = ngl::Random::instance();
-        ngl::Vec3 goal = r->getRandomVec3()*10;
+        ngl::Vec3 goal = r->getRandomVec3()*0.5*(m_systemWidth-1);
         a->getBrain()->setGoal(goal);
     }
 }
@@ -273,6 +274,11 @@ ngl::Mat4 System::getGlobalTX()const
     return m_globalTX;
 }
 
+float System::getSystemWidth() const
+{
+    return m_systemWidth;
+}
+
 
 
 void System::updateHashTable()
@@ -296,7 +302,8 @@ void System::setScene(const int &_scene)
   {
       for(int i=0;i<m_numAgents;i++)
       {
-          ngl::Vec3 pos = ngl::Vec3(9*sin((i*360)/m_numAgents),0,9*cos((i*360)/m_numAgents));
+          float rad = m_systemWidth * 0.5 -1;
+          ngl::Vec3 pos = ngl::Vec3(rad*sin((i*360)/m_numAgents),0,rad*cos((i*360)/m_numAgents));
           m_agents[i]->setPos(pos);
           m_agents[i]->setGoal(-pos);
       }
@@ -307,7 +314,7 @@ void System::setScene(const int &_scene)
       for(int i=0;i<m_numAgents;i++)
       {
           ngl::Random *r = ngl::Random::instance();
-          ngl::Vec3 pos = 7.0f * r->getRandomVec3();
+          ngl::Vec3 pos = (m_systemWidth-1) * 0.5 * r->getRandomVec3();
           m_agents[i]->setPos(pos);
       }
       setRandomGoal();

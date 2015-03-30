@@ -28,7 +28,23 @@ public:
     void findBoundaries();
 
     void rvo();
-    float cross2D(const ngl::Vec3 &_v1,const ngl::Vec3 &_v2);
+
+    /// @brief method to check if two lines segments intersect
+    /// @param [in] const ngl::Vec3 &_vel this is a direction vector from _p1
+    /// @param [in] const ngl::Vec3 &_p1 this is the start point of the first line segment
+    /// @param [in] const ngl::Vec3 &_edge this is a direction vector from _p2
+    /// @param [in] const ngl::Vec3 &_p2 this is the start point of the second line segment
+    /// @return float , this is the t value for the first line segment,
+    /// how long along the segment intersection occurs. \n
+    /// If no intersection returns -1
+    float checkIntersection(const ngl::Vec3 &_vel,const ngl::Vec3 &_p1,
+                            const ngl::Vec3 &_edge, const ngl::Vec3 &_p2) const;
+    /// @brief method to find the determinant of 2 2D vectors - cross product of 2D vectors
+    /// @param [in] const ngl::Vec3 &_v1
+    /// @param [in] const ngl::Vec3 &_v2
+    /// @return float , this is the value of the determinant.
+    float det2D(const ngl::Vec3 &_v1,const ngl::Vec3 &_v2)const;
+    ngl::Vec3 normal2D(const ngl::Vec3 &_vec)const;
 
     void flocking();
     ngl::Vec3 flockSeparation();

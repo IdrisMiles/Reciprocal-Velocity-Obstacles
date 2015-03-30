@@ -8,17 +8,16 @@
 
 Agent::Agent(System *_system, const Avoidance &_avoidType)
 {
+    // linking system to agent
+    m_system = _system;
+
     ngl::Random *r = ngl::Random::instance();
-    m_currentState.m_pos = 7.0f * r->getRandomVec3();
+    m_currentState.m_pos = (    (m_system->getSystemWidth() * 0.5)-1) * r->getRandomVec3();
     m_origState = m_currentState;
 
     // set up AABB - will be used for spatial hashing
     m_bbox = ngl::BBox(m_currentState.m_pos,m_currentState.m_rad,
                        m_currentState.m_rad,m_currentState.m_rad);
-
-
-    // linking system to agent
-    m_system = _system;
 
     // initializing brain
     m_brain = new Brain(this,_system);

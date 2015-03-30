@@ -62,6 +62,7 @@ private:
 
     bool m_isVAOinit;
     ngl::VertexArrayObject *m_vao;
+    ngl::VertexArrayObject *m_cellVao;
 
 };
 

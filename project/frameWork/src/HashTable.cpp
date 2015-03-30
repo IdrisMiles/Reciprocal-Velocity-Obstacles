@@ -23,6 +23,7 @@ HashTable::HashTable(const ngl::BBox &_bound, int _cellSize)
 HashTable::~HashTable()
 {
   m_vao->removeVOA();
+  m_cellVao->removeVOA();
 }
 
 
@@ -233,20 +234,41 @@ void HashTable::initVAO()
     //m_vao->createVOA(GL_LINES);
     m_vao = ngl::VertexArrayObject::createVOA(GL_LINES);
     m_vao->bind();
-
     m_vao->setData(verts.size()*sizeof(ngl::Vec3),verts[0].m_x);
     m_vao->setVertexAttributePointer(0,3,GL_FLOAT,0,0);
     m_vao->setNumIndices(verts.size());
-
     m_vao->unbind();
+
+    m_cellVao = ngl::VertexArrayObject::createVOA(GL_TRIANGLE_STRIP);
 
     m_isVAOinit = true;
 }
 void HashTable::draw()
 {
   if(!m_isVAOinit){return;}
+  std::vector<ngl::Vec3> verts;
+
+  for(int i=0;i<m_numXcells+1;i++)
+  {
+      ngl::Vec3 p1,p2;
+      p1 = ngl::Vec3((i*m_cellSize) - (0.5*m_width),0,0.5*m_height);
+      p2 = ngl::Vec3((i*m_cellSize) - (0.5*m_width),0,-0.5*m_height);
+      verts.push_back(p1);
+      verts.push_back(p2);
+  }
+
+  for(int i=0;i<m_numYcells+1;i++)
+  {
+      ngl::Vec3 p1,p2;
+      p1 = ngl::Vec3(0.5*m_width,0,(i*m_cellSize) - (0.5*m_height));
+      p2 = ngl::Vec3(-0.5*m_width,0,(i*m_cellSize) - (0.5*m_height));
+      verts.push_back(p1);
+      verts.push_back(p2);
+  }
 
   m_vao->bind();
+  m_vao->updateData(verts.size()*sizeof(ngl::Vec3),verts[0].m_x);
+  m_vao->setVertexAttributePointer(0,3,GL_FLOAT,0,0);
   m_vao->draw();
   m_vao->unbind();
 }
