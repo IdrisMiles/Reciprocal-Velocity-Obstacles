@@ -145,6 +145,9 @@ void Agent::setForce(const ngl::Vec3 &_force)
 void Agent::setVel(const ngl::Vec3 &_vel)
 {
     m_currentState.m_vel = _vel;
+
+    float orient = atan2(_vel.m_z,_vel.m_x);
+    m_currentState.m_orien = orient;
 }
 
 void Agent::setPos(const ngl::Vec3 &_pos)

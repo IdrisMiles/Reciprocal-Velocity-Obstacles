@@ -4,6 +4,7 @@
 #include <vector>
 #include<boost/shared_ptr.hpp>
 #include <ngl/Vec3.h>
+#include <ngl/Mat4.h>
 
 class System;
 class Agent;
@@ -45,6 +46,7 @@ public:
     /// @return float , this is the value of the determinant.
     float det2D(const ngl::Vec3 &_v1,const ngl::Vec3 &_v2)const;
     ngl::Vec3 normal2D(const ngl::Vec3 &_vec)const;
+    ngl::Vec3 matXvec(const ngl::Mat4 &_mat,const ngl::Vec3 &_pos)const;
 
     void flocking();
     ngl::Vec3 flockSeparation();

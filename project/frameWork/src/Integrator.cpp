@@ -2,6 +2,7 @@
 #include <math.h>
 #include <iostream>
 
+#define PI 3.14159265
 
 Integrator::Integrator()
 {
@@ -107,6 +108,8 @@ void Integrator::integrateEuler(const float &_dt)
     //tmpVel *= -1.0f;
     tmpVel.normalize();
     float alpha = (tmpVel.m_x);
-    //m_state->m_orien = sinh((alpha*180.0f)/3.14f);
-    //std::cout<<m_state->m_orien<<" orienttion\n";
+
+    float orient = atan2(m_state->m_vel.m_z,m_state->m_vel.m_x) * 180/PI;
+
+    m_state->m_orien = orient;
 }

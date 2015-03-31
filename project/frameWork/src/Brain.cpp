@@ -4,6 +4,7 @@
 #include <math.h>
 #include <boost/foreach.hpp>
 #include <ngl/NGLStream.h>
+#include <ngl/Transformation.h>
 
 #include "Agent.h"
 
@@ -16,7 +17,7 @@ Brain::Brain(Agent *_agent, System *_system)
     m_perceiveRad = 1.0f;
     m_perceiveAng = 360.0f;
     m_desSpeed = 0.1;
-    m_maxVel = 0.1;
+    m_maxVel = 0.2;
     m_maxAcc = 0.1;
     m_goal = -m_agent->getCurrentState().m_pos;
 
@@ -116,16 +117,126 @@ void Brain::findBoundaries()
 //===============RVO==================
 void Brain::rvo()
 {
-    // Ray intersection test for current agent with circle around neighbour agent
-    // with radius aRad + bRad.
+    // ------TO DO------
+    /*
+     * find velocities based on desired velocity to sample - 10(for now)
+     * iterate through velocities and either:
+     *    o find the first velocity that lies outside VO
+     *    o find velocity with smallestt penalty
+     * To find velocity with smallest penalty:
+     *    o find velocity with longest time until collision - t
+     *    o take into account distance between chosen velocity and desired velocity.
+    */
+
+    std::vector<ngl::Vec3> testVelocities;
+    testVelocities.push_back(m_desVel);
+    ngl::Vec3 tmpVel = m_desVel;
+    tmpVel.normalize();
+    ngl::Vec3 minVel = 0.05 * tmpVel;
+    ngl::Vec3 maxVel = m_maxVel * tmpVel;
+    testVelocities.push_back(maxVel);
+    testVelocities.push_back(minVel);
+
+
+    for(int i=0;i<10;i++)
+    {
+        ngl::Mat4 rot;
+        rot.rotateY((i*180)/10);
+        tmpVel = matXvec(rot,m_desVel);
+        // push back test velocities to sample
+        testVelocities.push_back(tmpVel);
+
+        rot.identity();
+        rot.rotateY((-i*180)/10);
+        tmpVel = matXvec(rot,m_desVel);
+        testVelocities.push_back(tmpVel);
+    }
 
     ngl::Vec3 newVel = m_desVel;
-
-    float time;
-    time = 1.0f;
-    //std::cout<<"RVO avoidance in use\n"<<std::endl;
-    BOOST_FOREACH(Agent *n, m_neighbours)
+    bool velInside = true;
+    for(unsigned int i=0; i<testVelocities.size() && velInside;i++)
     {
+        newVel = testVelocities[i];
+        int j = 0;
+        std::vector<bool> velAcceptance;
+        BOOST_FOREACH(Agent *n, m_neighbours)
+        {
+            j++;
+            // vector between current agent and test agent
+            ngl::Vec3 dist = n->getOrigState().m_pos  - m_agent->getOrigState().m_pos;
+            // vector orthogonal to dist vector
+            ngl::Vec3 distNormal = normal2D(dist);
+            distNormal.normalize();
+
+            // cobined radius of current agent and test agent
+            float r1 = m_agent->getOrigState().m_rad;
+            float r2 = n->getOrigState().m_rad;
+            float rad = r1+r2;
+
+            // velocity obstacle apex offset
+            ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getOrigState().m_vel);
+
+            // 3 points of Velocity Obstacle triangle - this is my own simplification
+            // p1 is the apex of the VO
+            ngl::Vec3 p1 = m_agent->getOrigState().m_pos + apexOffset;
+            ngl::Vec3 p2 = n->getOrigState().m_pos + apexOffset + (rad * distNormal);
+            ngl::Vec3 p3 = n->getOrigState().m_pos + apexOffset - (rad * distNormal);
+
+            // 3 edges of Velocity Obstacle triangle
+            ngl::Vec3 E1 = p3 - p2;
+            ngl::Vec3 E2 = p2 - p1;
+            ngl::Vec3 E3 = p1 - p3;
+
+            // heuristic to find test velocity
+            ngl::Vec3 testVel = m_desVel;
+
+            // check if test velocity intersects multipe edges of the VO triangle
+            float i1 = checkIntersection(testVel,m_agent->getOrigState().m_pos,E1,p1);
+            float i2 = checkIntersection(testVel,m_agent->getOrigState().m_pos,E2,p2);
+            float i3 = checkIntersection(testVel,m_agent->getOrigState().m_pos,E3,p3);
+
+            // if only 1 intersection, test velocity inside VO
+            // if 0 or 2 intersections, test velocity outside VO - acceptable velocity
+            if( (i1 != -1 && i2 != -1) ||
+                (i2 != -1 && i3 != -1) ||
+                (i3 != -1 && i1 != -1) ||
+                (i1 == -1 && i2 == -1 && i3 == -1))
+            {
+                // tested velcity is acceptable!
+                velAcceptance.push_back(true);
+
+            }
+            else
+            {
+                // tested velocity inside VO - not acceptable, will result in collision
+                newVel = ngl::Vec3(0,0,0);
+                velAcceptance.push_back(false);
+                // could break neighbour foreach loop and go to next test velocity
+            }
+        } // end of neighbour boost foreach loop
+
+        if(j==m_neighbours.size())
+        {
+            // check if all elements of velAccepted are true
+            // if so current test velocity is outside all VO's
+            // we can break out of testVelocities for loop
+            //velInside = false;
+            bool accept = true;
+            for(int k=0;k<velAcceptance.size();k++)
+            {
+                if(!velAcceptance[i])
+                {
+                    accept = false;
+                }
+            }
+
+        }
+
+    } // end of testVelocities for loop
+
+
+//    BOOST_FOREACH(Agent *n, m_neighbours)
+//    {
         //----------------tmp shizzle------------------------
         /*float t,u;
         //Velocity Ray: P + t*r  Triangle Edge: Q + u*s
@@ -152,6 +263,7 @@ void Brain::rvo()
 
         //-------------actuall implementation-------------------
 
+/*
         // vector between current agent and test agent
         ngl::Vec3 dist = n->getOrigState().m_pos  - m_agent->getOrigState().m_pos;
         // vector orthogonal to dist vector
@@ -173,8 +285,8 @@ void Brain::rvo()
         ngl::Vec3 p3 = n->getOrigState().m_pos + apexOffset - (rad * distNormal);
 
         // 3 edges of Velocity Obstacle triangle
-        ngl::Vec3 E1 = p2 - p1;
-        ngl::Vec3 E2 = p3 - p2;
+        ngl::Vec3 E1 = p3 - p2;
+        ngl::Vec3 E2 = p2 - p1;
         ngl::Vec3 E3 = p1 - p3;
 
         // heuristic to find test velocity
@@ -197,9 +309,11 @@ void Brain::rvo()
         else
         {
             // tested velocity inside VO - not acceptable, will result in collision
+            newVel = ngl::Vec3(0,0,0);
         }
 
     }
+    */
 
 
     // set new velocity
@@ -213,19 +327,20 @@ float Brain::checkIntersection(const ngl::Vec3 &_vel, const ngl::Vec3 &_p1, cons
     //t = (q − p) × s / (r × s)
     //u = (q − p) × r / (r × s)
     // replace with desired direction
-    float t,u;
+    float t;
     float time = 1.0f;
     float dirCross = det2D(_vel,_edge);
     if(dirCross != 0)
     {
+        // two agents will collide
         ngl::Vec3 dist = _p2 - _p1;
         float tCross = det2D(dist,_edge);
         float uCross = det2D(dist,_vel);
 
         t = tCross / dirCross;
-        u = uCross / dirCross;
+        //u = uCross / dirCross;
 
-        // two agents will collide
+
         if(t>=0 && t<=time)
         {
             return t;
@@ -246,6 +361,20 @@ ngl::Vec3 Brain::normal2D(const ngl::Vec3 &_vec)const
     tmp.m_x = _vec.m_y;
     tmp.m_y = -_vec.m_x;
     return tmp;
+}
+
+ngl::Vec3 Brain::matXvec(const ngl::Mat4 &_mat, const ngl::Vec3 &_pos)const
+{
+    ngl::Vec4 output;
+      for(int i=0;i<4;i++)
+      {
+          for(int j=0;j<4;j++)
+          {
+              output.m_openGL[i] += _mat.m_m[i][j] * _pos.m_openGL[j];
+          }
+      }
+
+      return ngl::Vec3(output.m_x,output.m_y,output.m_z);
 }
 
 //=============flocking===============
