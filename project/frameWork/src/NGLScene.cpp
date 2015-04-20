@@ -121,7 +121,7 @@ void NGLScene::initialize()
   // transformations
   ngl::Mat4 iv=m_cam->getViewMatrix();
   iv.transpose();
-  m_light = new ngl::Light(ngl::Vec3(0,5,10),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::POINTLIGHT );
+  m_light = new ngl::Light(ngl::Vec3(0,-5,10),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::POINTLIGHT );
   m_light->setTransform(iv);
   // load these values to the shader as well
   m_light->loadToShader("light");
@@ -133,7 +133,7 @@ void NGLScene::initialize()
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
   m_system = new System();
-  for(int i=0;i<100;i++)
+  for(int i=0;i<3;i++)
   {
       //m_system->addAgent(FLOCKING);
       m_system->addAgent(RVO);

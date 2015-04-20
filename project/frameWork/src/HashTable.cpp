@@ -164,22 +164,23 @@ void HashTable::addNeighbours()
             if(x>0)
             {
                 //check left hand side cells
-                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1              ].m_agents,0);
-            }
-            if(x>0 && y< m_numYcells)
-            {
-                // check top left cell
-                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1 + m_numXcells].m_agents,0);
-            }
-            if(x>0 && y>0)
-            {
-                // check bottom left cell
-                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1 - m_numXcells].m_agents,0);
+                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x-1,y)->m_agents,0);
+                //checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1].m_agents,0);
             }
             if(y>0)
             {
                 // cehck bottom cell
-                checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - m_numXcells].m_agents,0);
+                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x,y-1)->m_agents,0);
+            }
+            if(x>0 && y< m_numYcells)
+            {
+                // check top left cell
+                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x-1,y+1)->m_agents,0);
+            }
+            if(x>0 && y>0)
+            {
+                // check bottom left cell
+                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x-1,y-1)->m_agents,0);
             }
         }
 
@@ -188,7 +189,7 @@ void HashTable::addNeighbours()
 
 void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_testAgents,int startIndex)
 {
-    if(_testAgents.size() == 0){return;}
+    //if(_testAgents.size() == 0){return;}
     // iterate through agents in cell
     for(unsigned int i=startIndex;i<_testAgents.size();i++)
     {
@@ -198,7 +199,7 @@ void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_tes
         distL -= (currentAgent->getCurrentState().m_rad + _testAgents[i]->getCurrentState().m_rad);
 
         // if distance+radius is less than perceived radius add to neighbour list
-        if(distL <= /*currentAgent->getBrain()->getPerceiveRad()*/0)
+        if(distL <= currentAgent->getBrain()->getPerceiveRad())
         {
             // add to each others neighbours
             currentAgent->getBrain()->addNeighbour(_testAgents[i]);
@@ -231,7 +232,6 @@ void HashTable::initVAO()
         verts.push_back(p2);
     }
 
-    //m_vao->createVOA(GL_LINES);
     m_vao = ngl::VertexArrayObject::createVOA(GL_LINES);
     m_vao->bind();
     m_vao->setData(verts.size()*sizeof(ngl::Vec3),verts[0].m_x);

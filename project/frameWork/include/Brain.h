@@ -5,6 +5,7 @@
 #include<boost/shared_ptr.hpp>
 #include <ngl/Vec3.h>
 #include <ngl/Mat4.h>
+#include <ngl/VertexArrayObject.h>
 
 class System;
 class Agent;
@@ -29,6 +30,17 @@ public:
     void findBoundaries();
 
     void rvo();
+    void initVoVAO();
+    void loadMatricesToShader();
+
+    std::vector<ngl::Vec3> createSampleVel()const;
+    /// @brief method to check if a point lies on the left hand side of an edge
+    /// @param [in] const ngl::Vec3 &_point this is the point being tested
+    /// @param [in] const ngl::Vec3 &_edge direction vector of line segment
+    /// @param [in] const ngl::Vec3 &_edgePoint starting point of edge(line segment)
+    /// @return bool, true if point left of edge, false if point right of edge
+    bool pointLeftOfEdge(const ngl::Vec3 &_point,
+                         const ngl::Vec3 &_edge, const ngl::Vec3 &_edgePoint)const;
 
     /// @brief method to check if two lines segments intersect
     /// @param [in] const ngl::Vec3 &_vel this is a direction vector from _p1
@@ -96,6 +108,7 @@ private:
     float m_cohesionWeight;
     float m_separationWeight;
 
+    ngl::VertexArrayObject *m_voVAO;
 
 };
 

@@ -1004,23 +1004,23 @@ obj/Brain.o: src/Brain.cpp include/Brain.h \
 		/usr/include/qt5/QtOpenGL/qtopenglglobal.h \
 		/usr/include/qt5/QtGui/QSurfaceFormat \
 		/usr/include/qt5/QtGui/qsurfaceformat.h \
+		/home/idris/NGL/include/ngl/Mat4.h \
+		/home/idris/NGL/include/ngl/rapidxml/rapidxml.hpp \
+		/home/idris/NGL/include/ngl/VertexArrayObject.h \
 		/home/idris/NGL/include/ngl/NGLStream.h \
+		/home/idris/NGL/include/ngl/Transformation.h \
+		/home/idris/NGL/include/ngl/NGLassert.h \
+		/home/idris/NGL/include/ngl/Vec4.h \
+		/home/idris/NGL/include/ngl/Vec2.h \
 		include/Agent.h \
 		/home/idris/NGL/include/ngl/Obj.h \
 		/home/idris/NGL/include/ngl/Texture.h \
 		/home/idris/NGL/include/ngl/Colour.h \
-		/home/idris/NGL/include/ngl/Vec4.h \
-		/home/idris/NGL/include/ngl/Vec2.h \
 		/home/idris/NGL/include/ngl/AbstractMesh.h \
 		/home/idris/NGL/include/ngl/BBox.h \
-		/home/idris/NGL/include/ngl/VertexArrayObject.h \
 		/home/idris/NGL/include/ngl/RibExport.h \
-		/home/idris/NGL/include/ngl/NGLassert.h \
 		/home/idris/NGL/include/ngl/Camera.h \
-		/home/idris/NGL/include/ngl/Mat4.h \
-		/home/idris/NGL/include/ngl/rapidxml/rapidxml.hpp \
 		/home/idris/NGL/include/ngl/Plane.h \
-		/home/idris/NGL/include/ngl/Transformation.h \
 		/home/idris/NGL/include/ngl/Material.h \
 		include/State.h \
 		include/System.h \

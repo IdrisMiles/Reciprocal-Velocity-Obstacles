@@ -14,7 +14,7 @@ public:
         m_acc     = ngl::Vec3(0.0f,0.0f,0.0f);
         m_force   = ngl::Vec3(0.0f,0.0f,0.0f);
         m_orien   = 0.0f;
-        m_rad     = 0.3f;
+        m_rad     = 0.2f;
     }
 
     State(const State &_state)

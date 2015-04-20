@@ -24,12 +24,12 @@ System::System()
 
     m_octree = new AgentOctree (5, bb);
 
-    m_hashTable = new HashTable(m_systemWidth,m_systemWidth,0.5,ngl::Vec3(0,0,0));
+    m_hashTable = new HashTable(m_systemWidth,m_systemWidth,2.0,ngl::Vec3(0,0,0));
     m_hashTable->initVAO();
 
     // setting up basic mesh from ngl::vaoprimitive
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-    prim->createCylinder("cylinder",0.5f*0.1f,0.5f,4,1);
+    prim->createCylinder("cylinder",0.1f,0.5f,4,1);
 
     m_globalGoal = ngl::Vec3(0.0f,0.0f,0.0f);
 }
@@ -299,11 +299,11 @@ void System::setScene(const int &_scene)
 {
   m_scene = _scene;
   if(m_scene == 0)
-  {
+  {     //circle scene
       for(int i=0;i<m_numAgents;i++)
       {
           float rad = m_systemWidth * 0.5 -1;
-          ngl::Vec3 pos = ngl::Vec3(rad*sin((i*360)/m_numAgents),0,rad*cos((i*360)/m_numAgents));
+          ngl::Vec3 pos = ngl::Vec3(rad*sin((i*6.28)/m_numAgents),0,rad*cos((i*6.28)/m_numAgents));
           m_agents[i]->setPos(pos);
           m_agents[i]->setGoal(-pos);
       }

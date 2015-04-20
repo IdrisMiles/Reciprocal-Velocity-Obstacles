@@ -111,5 +111,5 @@ void Integrator::integrateEuler(const float &_dt)
 
     float orient = atan2(m_state->m_vel.m_z,m_state->m_vel.m_x) * 180/PI;
 
-    m_state->m_orien = orient;
+    //m_state->m_orien = orient;
 }
