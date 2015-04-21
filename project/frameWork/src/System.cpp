@@ -24,7 +24,7 @@ System::System()
 
     m_octree = new AgentOctree (5, bb);
 
-    m_hashTable = new HashTable(m_systemWidth,m_systemWidth,2.0,ngl::Vec3(0,0,0));
+    m_hashTable = new HashTable(m_systemWidth,m_systemWidth,1.0,ngl::Vec3(0,0,0));
     m_hashTable->initVAO();
 
     // setting up basic mesh from ngl::vaoprimitive

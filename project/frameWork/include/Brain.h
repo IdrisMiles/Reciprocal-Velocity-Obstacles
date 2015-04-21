@@ -72,6 +72,7 @@ public:
     float getPerceiveRad()const;
     float getPerceiveAng()const;
     float getDesSpeed()const;
+    ngl::Vec3 getDesVel()const;
 
     void clearNeighbours();
     void clearBoundary();

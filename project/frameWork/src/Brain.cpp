@@ -218,8 +218,10 @@ void Brain::rvo()
             float rad = r1+r2;
 
             // velocity obstacle apex offset
-            //ngl::Vec3 apexOffset = n->getOrigState().m_vel;
-            ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getOrigState().m_vel);
+            //ngl::Vec3 apexOffset = n->getCurrentState().m_vel;
+            //ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getOrigState().m_vel);
+            //ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getCurrentState().m_vel);
+            ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getBrain()->getDesVel());
 
             // 3 points of Velocity Obstacle triangle - this is my own simplification
             // p1 is the apex of the VO
@@ -228,9 +230,27 @@ void Brain::rvo()
             ngl::Vec3 p3 = n->getOrigState().m_pos - (rad * distNormal) + apexOffset;
 
             // 3 edges of Velocity Obstacle triangle
-            ngl::Vec3 E1 = p3 - p2; //back of collision area
-            ngl::Vec3 E2 = p1 - p3; //one side
+            ngl::Vec3 E1 = p3 - p2; //back of collision area  - 2 * opposite
+            ngl::Vec3 E2 = p1 - p3; //one side                - hypotonuse
             ngl::Vec3 E3 = p2 - p1; //other side
+
+            // find length to bottom of VO
+            float A = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).length();
+            float H = E2.length();
+            float newH = (A - rad) * tan(asin(rad / H));
+
+            E2.normalize();
+            E2 *= newH;
+            E3.normalize();
+            E3 *= newH;
+
+            ngl::Vec3 p4 = p1 + E3;
+            ngl::Vec3 p5 = p1 - E2;
+
+            E1 = p5 - p4;
+            ngl::Vec3 leftEdge = p2 - p4;
+            ngl::Vec3 rightEdge = p3 - p5;
+            ngl::Vec3 frontEdge = p5 - p4;
 
             voData.push_back(p1);
             voData.push_back(p2);
@@ -244,11 +264,15 @@ void Brain::rvo()
             bool leftOfEdge2 = pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel,E3,p1);
             bool leftOfEdge3 = pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel,E1,p2);
 
+            bool leftPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel, leftEdge,p4);
+            bool rightPlane = !pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel, rightEdge,p4);
+            bool frontPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel, frontEdge,p4);
+
             //std::cout<<"checking intersections:\n";
             // check if test velocity intersects multipe edges of the VO triangle
-            float i1 = checkIntersection(newVel,m_agent->getOrigState().m_pos,E1,p2);
-            float i2 = checkIntersection(newVel,m_agent->getOrigState().m_pos,E2,p3);
-            float i3 = checkIntersection(testVel,m_agent->getOrigState().m_pos,E3,p1);
+            float i1 = checkIntersection(newVel,m_agent->getOrigState().m_pos,frontEdge,p4);
+            float i2 = checkIntersection(newVel,m_agent->getOrigState().m_pos,E2,p5);
+            float i3 = checkIntersection(testVel,m_agent->getOrigState().m_pos,E3,p4);
 
             // if only 1 intersection, test velocity inside VO
             // if 0 or 2 intersections, test velocity outside VO - acceptable velocity
@@ -256,7 +280,8 @@ void Brain::rvo()
 //                (i1 != -1 && i2 == -1 && i3 != -1) ||
 //                (i2 != -1 && i2 != -1 && i3 == -1) ||
 //                (i1 == -1 && i2 == -1 && i3 == -1))
-            if(leftOfEdge1 && leftOfEdge2 /*&& leftOfEdge3*/)
+//            if(leftOfEdge1 && leftOfEdge2 && !leftOfEdge3)
+            if(leftPlane || rightPlane || frontPlane)
             {
                 // tested velcity is acceptable!
                 velAcceptance.push_back(true);
@@ -361,8 +386,10 @@ std::vector<ngl::Vec3> Brain::createSampleVel()const
     tmpVel.normalize();
     ngl::Vec3 minVel = 0.05 * tmpVel;
     ngl::Vec3 maxVel = m_maxVel * tmpVel;
+
     testVelocities.push_back(maxVel);
     testVelocities.push_back(minVel);
+
     int numSamples = 50;
     for(int i=0;i<numSamples;i++)
     {
@@ -387,13 +414,9 @@ std::vector<ngl::Vec3> Brain::createSampleVel()const
 bool Brain::pointLeftOfEdge(const ngl::Vec3 &_point,
                      const ngl::Vec3 &_edge, const ngl::Vec3 &_edgePoint)const
 {
-//    ngl::Vec3 tmp = _point - _edgePoint;
-//    float result = det2D(_edge,tmp);
-//    return (result >= 0);
-
-    ngl::Vec3 perp(-_edge.m_y,0, _edge.m_x);
-    float d = (_point - _edgePoint).dot(perp);
-    return (d >= 0);
+    ngl::Vec3 tmp = _point - _edgePoint;
+    float result = det2D(_edge,tmp);
+    return (result >= 0);
 }
 
 float Brain::checkIntersection(const ngl::Vec3 &_vel, const ngl::Vec3 &_p1, const ngl::Vec3 &_edge, const ngl::Vec3 &_p2)const
@@ -404,7 +427,7 @@ float Brain::checkIntersection(const ngl::Vec3 &_vel, const ngl::Vec3 &_p1, cons
     //u = (q − p) × r / (r × s)
     // replace with desired direction
     float t,u;
-    float time = 1*m_perceiveRad / _vel.length();
+    float time = 2*m_perceiveRad / _vel.length();
     float dirCross = det2D(_vel,_edge);
     if(dirCross != 0)
     {
@@ -463,7 +486,7 @@ ngl::Vec3 Brain::matXvec(const ngl::Mat4 &_mat, const ngl::Vec3 &_pos)const
       return ngl::Vec3(output.m_x,output.m_y,output.m_z);
 }
 
-//=============flocking===============
+//=============flocking=========================================
 void Brain::flocking()
 {
     //---------------goal rule----------------------
@@ -633,7 +656,7 @@ ngl::Vec3 Brain::flockGoal()
 //----------------Social forces-----------------------
 void Brain::socialForces()
 {
-    ////std::cout<<"social forces avoidance in use\n"<<std::endl;
+    //std::cout<<"social forces avoidance in use\n"<<std::endl;
 }
 
 //-----------------------------------------------------
@@ -650,6 +673,11 @@ float Brain::getPerceiveAng()const
 float Brain::getDesSpeed()const
 {
     return m_desSpeed;
+}
+
+ngl::Vec3 Brain::getDesVel()const
+{
+  return m_desVel;
 }
 
 
