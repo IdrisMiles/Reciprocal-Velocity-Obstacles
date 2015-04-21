@@ -33,6 +33,8 @@ public:
     void initVoVAO();
     void loadMatricesToShader();
 
+    ngl::Vec3 findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities);
+
     std::vector<ngl::Vec3> createSampleVel()const;
     /// @brief method to check if a point lies on the left hand side of an edge
     /// @param [in] const ngl::Vec3 &_point this is the point being tested
