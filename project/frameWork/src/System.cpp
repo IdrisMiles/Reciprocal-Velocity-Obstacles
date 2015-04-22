@@ -19,13 +19,12 @@ System::System()
     bb.m_minx = bb.m_miny = bb.m_minz = -10.0;
     bb.m_maxx = bb.m_maxy = bb.m_maxz = 10.0;
 
-    setBounds(ngl::BBox(ngl::Vec3(0,5,0),m_systemWidth,10,m_systemWidth));
-    setSpatialDivision(HASH);
-
     m_octree = new AgentOctree (5, bb);
 
     m_hashTable = new HashTable(m_systemWidth,m_systemWidth,1.0,ngl::Vec3(0,0,0));
     m_hashTable->initVAO();
+    setSpatialDivision(HASH);
+    setBounds(ngl::BBox(ngl::Vec3(0,5,0),m_systemWidth,10,m_systemWidth));
 
     // setting up basic mesh from ngl::vaoprimitive
     ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
@@ -49,7 +48,6 @@ void System::update()
     BOOST_FOREACH( Agent* a, m_agents)
     {
         a->update();
-        //a->printInfo();
     }
 
     clearNeighbours();
@@ -58,7 +56,6 @@ void System::update()
     BOOST_FOREACH( Agent* a, m_agents)
     {
         a->updateState();
-        //a->printInfo();
     }
 }
 
@@ -131,15 +128,23 @@ void System::addBoundaries()
         break;
 
     case HASH :
-        BOOST_FOREACH( Agent* a, m_agents)
+//        BOOST_FOREACH( Agent* a, m_agents)
+//        {
+//            BOOST_FOREACH(Boundary *b, m_Boundaries)
+//            {
+//                // check distance to boundary
+//                // add if within perceive rad
+//                a->getBrain()->addBoundary(b);
+//            }
+//        }
+        BOOST_FOREACH(Boundary *b, m_Boundaries)
         {
-            BOOST_FOREACH(Boundary *b, m_Boundaries)
-            {
-                // check distance to boundary
-                // add if within perceive rad
-                a->getBrain()->addBoundary(b);
-            }
+            // check distance to boundary
+            // add if within perceive rad
+            //m_hashTable->addBoundaryToHash(b);
+            m_hashTable->addBoundaryToAgent(b);
         }
+        //std::cout<<"number of bounds in systme: "<<m_Boundaries.size()<<"\n";
         break;
       }
 
@@ -196,12 +201,21 @@ void System::setBounds(ngl::BBox _bounds)
 
     // left side
     m_Boundaries.push_back(new Boundary(BL,TL));
+    m_hashTable->addBoundaryToHash(m_Boundaries[0]);
     // right side
     m_Boundaries.push_back(new Boundary(TR,BR));
+    m_hashTable->addBoundaryToHash(m_Boundaries[1]);
     // top side
     m_Boundaries.push_back(new Boundary(TL,TR));
+    m_hashTable->addBoundaryToHash(m_Boundaries[2]);
     // bottom side
     m_Boundaries.push_back(new Boundary(BR,BL));
+    m_hashTable->addBoundaryToHash(m_Boundaries[3]);
+
+    m_Boundaries.push_back(new Boundary(ngl::Vec3(-2,0,0),ngl::Vec3(2,0,0)));
+    m_hashTable->addBoundaryToHash(m_Boundaries[4]);
+
+
 
     m_numBoundaries += 4;
 }
@@ -322,6 +336,38 @@ void System::setScene(const int &_scene)
   }
   else if(m_scene == 2)
   {
+    if(m_numAgents > 3)
+    {
+        int numGroup = (int)(m_numAgents / 4);
+        for(int i=0;i<m_numAgents;i++)
+        {
+            ngl::Random *r = ngl::Random::instance();
+            if(i<numGroup)
+            {
+                ngl::Vec3 pos = (m_systemWidth-1) * 0.1 * r->getRandomVec3() - ngl::Vec3(-m_systemWidth*0.4,0,0);
+                m_agents[i]->setPos(pos);
+                m_agents[i]->setGoal(-pos);
+            }
+            else if(i<2*numGroup)
+            {
+                ngl::Vec3 pos = (m_systemWidth-1) * 0.1 * r->getRandomVec3() - ngl::Vec3(m_systemWidth*0.4,0,0);
+                m_agents[i]->setPos(pos);
+                m_agents[i]->setGoal(-pos);
+            }
+            else if(i<3*numGroup)
+            {
+                ngl::Vec3 pos = (m_systemWidth-1) * 0.1 * r->getRandomVec3() - ngl::Vec3(0,0,-m_systemWidth*0.4);
+                m_agents[i]->setPos(pos);
+                m_agents[i]->setGoal(-pos);
+            }
+            else
+            {
+                ngl::Vec3 pos = (m_systemWidth-1) * 0.1 * r->getRandomVec3() - ngl::Vec3(0,0,m_systemWidth*0.4);
+                m_agents[i]->setPos(pos);
+                m_agents[i]->setGoal(-pos);
+            }
+        }
+    }
     return;
   }
 

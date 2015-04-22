@@ -33,7 +33,9 @@ public:
     void emptyAgents();
     void emptyTable();
 
-    void addBoundary(Boundary* _boundary);
+    void addBoundaryToHash(Boundary* _boundary);
+    void addBoundaryToAgent(Boundary* _boundary);
+    void addBoundaryToAgent();
 
     Cell *getCell(int _x, int _y);
     Cell *getCell(const ngl::Vec3 &_pos);
@@ -41,7 +43,7 @@ public:
     std::vector<Cell> getCells()const;
 
     void addNeighbours();
-    void checkCollisionOnCell(Agent *currentAgent, std::vector<Agent *> _testAgents, int startIndex);
+    void checkNeighboursInCell(Agent *currentAgent, std::vector<Agent *> _testAgents, int startIndex);
 
     void initVAO();
     void updateVAO();

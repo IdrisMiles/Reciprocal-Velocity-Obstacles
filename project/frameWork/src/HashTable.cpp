@@ -94,23 +94,81 @@ void HashTable::emptyTable()
     }
 }
 
-void HashTable::addBoundary(Boundary* _boundary)
+void HashTable::addBoundaryToHash(Boundary* _boundary)
 {
 
   // find the range along the x axis
-  int deltaX = ceil(_boundary->getBoundaryPoint(0).m_x - _boundary->getBoundaryPoint(1).m_x);
-  int x = ceil(_boundary->getBoundaryPoint(0).m_x);
-  int deltaY = ceil(_boundary->getBoundaryPoint(0).m_z - _boundary->getBoundaryPoint(1).m_z);
-  for(int i=0; i<deltaX; i++)
+  int deltaX    = (int)(_boundary->getBoundaryPoint(1).m_x - _boundary->getBoundaryPoint(0).m_x);
+  int x         = (int)(_boundary->getBoundaryPoint(0).m_x + 0.5 * m_width) / m_cellSize;
+  int deltaY    = (int)(_boundary->getBoundaryPoint(1).m_z - _boundary->getBoundaryPoint(0).m_z);
+  int y         = (int)(_boundary->getBoundaryPoint(0).m_z + 0.5 * m_width) / m_cellSize;
+
+  std::cout<<"adding bound to hash\n";
+  for(int i=x; i<x+deltaX; i++)
   {
+      for(int j=y; j<y+deltaY; j++)
+      {
+          // add this boundary to cells with coord (i,j)
+          //m_cells[(j * m_numXcells) + i].m_bounds.push_back(_boundary);
+          getCell(i,j)->m_bounds.push_back(_boundary);
+          _boundary->setHashID((j*m_numXcells)+i);
+
+          // add boundary to agents in this cell
+          // make this part another function
+          // because it can then be called seperate from addbound
+      }
+
       // find y coordinate for current x coord into the hashtable
-      int y = (int)( ( (deltaY/deltaX) * i ) + _boundary->getBoundaryPoint(0).m_z );
+      /*int y = (int)( ( (deltaY/deltaX) * i ) + _boundary->getBoundaryPoint(0).m_z );
       ngl::Vec3 point = ngl::Vec3(x,0,y);
-      Cell *tmpCell = getCell(point);
-
-      x++;
-
+      Cell *tmpCell = getCell(point);*/
   }
+
+  addBoundaryToAgent(_boundary);
+}
+
+void HashTable::addBoundaryToAgent(Boundary* _boundary)
+{
+    for(unsigned int i=0;i<_boundary->getHashID().size();i++)
+    {
+        // all agent in cell[i] add boundary to once!
+        // must check if boundary is already in agent
+
+        for(unsigned int j=0;j<m_cells[i].m_agents.size();j++)
+        {
+
+        }
+    }
+}
+
+void HashTable::addBoundaryToAgent()
+{
+    for(unsigned int i=0;i<m_cells.size();i++)
+    {
+        // iterate hrough all cells and if they have a boundary and agent add them
+        if(m_cells[i].m_agents.size() != 0)
+        {
+            if(m_cells[i].m_bounds.size() != 0)
+            {
+                //add boudaries to agents
+                for(int j=0;j<m_cells[i].m_agents.size();j++)
+                {
+                    for(int k=0;k<m_cells[i].m_bounds.size();k++)
+                    {
+                        std::vector<Boundary*>::iterator it;
+                        it = std::find(m_cells[i].m_agents[j]->getBrain()->getBoundaries().begin(),
+                                       m_cells[i].m_agents[j]->getBrain()->getBoundaries().end(),
+                                       m_cells[i].m_bounds[k]);
+                        if(it == m_cells[i].m_agents[j]->getBrain()->getBoundaries().end())
+                        {
+                            // boundary not found
+                            m_cells[i].m_agents[j]->getBrain()->addBoundary(m_cells[i].m_bounds[k]);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 Cell *HashTable::getCell(int _x, int _y)
@@ -158,38 +216,37 @@ void HashTable::addNeighbours()
         for(int j=0;j<m_cells[i].m_agents.size();j++)
         {
             // check whether agent is in perceived radius of other agents in cell
-            checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i].m_agents,j+1);
+            checkNeighboursInCell(m_cells[i].m_agents[j],m_cells[i].m_agents,j+1);
 
             // check neighbouring cells
             if(x>0)
             {
                 //check left hand side cells
-                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x-1,y)->m_agents,0);
-                //checkCollisionOnCell(m_cells[i].m_agents[j],m_cells[i - 1].m_agents,0);
+                checkNeighboursInCell(m_cells[i].m_agents[j],getCell(x-1,y)->m_agents,0);
+                //checkNeighboursInCell(m_cells[i].m_agents[j],m_cells[i - 1].m_agents,0);
             }
             if(y>0)
             {
                 // cehck bottom cell
-                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x,y-1)->m_agents,0);
+                checkNeighboursInCell(m_cells[i].m_agents[j],getCell(x,y-1)->m_agents,0);
             }
             if(x>0 && y< m_numYcells)
             {
                 // check top left cell
-                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x-1,y+1)->m_agents,0);
+                checkNeighboursInCell(m_cells[i].m_agents[j],getCell(x-1,y+1)->m_agents,0);
             }
             if(x>0 && y>0)
             {
                 // check bottom left cell
-                checkCollisionOnCell(m_cells[i].m_agents[j],getCell(x-1,y-1)->m_agents,0);
+                checkNeighboursInCell(m_cells[i].m_agents[j],getCell(x-1,y-1)->m_agents,0);
             }
         }
 
     }
 }
 
-void HashTable::checkCollisionOnCell(Agent *currentAgent,std::vector<Agent*>_testAgents,int startIndex)
+void HashTable::checkNeighboursInCell(Agent *currentAgent,std::vector<Agent*>_testAgents,int startIndex)
 {
-    //if(_testAgents.size() == 0){return;}
     // iterate through agents in cell
     for(unsigned int i=startIndex;i<_testAgents.size();i++)
     {

@@ -172,6 +172,7 @@ void Brain::loadMatricesToShader()
 void Brain::rvo()
 {
     std::cout<<"size of neighbour list: "<<m_neighbours.size()<<"\n";
+    std::cout<<"size of bound list: "<<m_Boundaries.size()<<"\n";
     //std::cout<<"\n---------Agent RVO------------\n";
 
     std::vector<ngl::Vec3> testVelocities;
@@ -186,18 +187,6 @@ void Brain::rvo()
 
 ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
 {
-    // ------TO DO------
-    /*
-     * find velocities based on desired velocity to sample - 10(for now)
-     * iterate through velocities and either:
-     *    o find the first velocity that lies outside VO
-     *    o find velocity with smallestt penalty
-     * To find velocity with smallest penalty:
-     *    o find velocity with longest time until collision - t
-     *    o take into account distance between chosen velocity and desired velocity.
-    */
-
-    //std::cout<<"iterating through velocities\n";
     std::vector<float> tValues;
     ngl::Vec3 newVel = m_desVel;
     bool velInside = true;
@@ -209,97 +198,19 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
 
         BOOST_FOREACH(Agent *n, m_neighbours)
         {
-            // vector between current agent and test agent
-            ngl::Vec3 dist = n->getOrigState().m_pos  - m_agent->getOrigState().m_pos;
-            // vector orthogonal to dist vector
-            ngl::Vec3 distNormal = normal2D(dist);
-            distNormal.normalize();
-
-            // cobined radius of current agent and test agent
-            float r1 = m_agent->getOrigState().m_rad;
-            float r2 = n->getOrigState().m_rad;
-            float rad = r1+r2;
-
-            // velocity obstacle apex offset
-            //ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getBrain()->getDesVel());
-            //ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getCurrentState().m_vel);
-            ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getOrigState().m_vel);
-
-            // 3 points of Velocity Obstacle triangle - this is my own simplification
-            // p1 is the apex of the VO
-            ngl::Vec3 p1 = m_agent->getOrigState().m_pos + apexOffset;
-            ngl::Vec3 p2 = n->getOrigState().m_pos + (rad * distNormal) + apexOffset;
-            ngl::Vec3 p3 = n->getOrigState().m_pos - (rad * distNormal) + apexOffset;
-
-            // 3 edges of Velocity Obstacle triangle
-            ngl::Vec3 E1 = p3 - p2; //back of collision area  - 2 * opposite
-            ngl::Vec3 E2 = p1 - p3; //one side                - hypotonuse
-            ngl::Vec3 E3 = p2 - p1; //other side
-
-            // find length to bottom of VO
-            float A = (m_agent->getOrigState().m_pos - n->getOrigState().m_pos).length();
-            float H = E2.length();
-            float newH = (A - rad) * tan(asin(rad / H));
-
-            E2.normalize();
-            E2 *= newH;
-            E3.normalize();
-            E3 *= newH;
-
-            ngl::Vec3 p4 = p1 + E3;
-            ngl::Vec3 p5 = p1 - E2;
-
-            E1 = p5 - p4;
-            ngl::Vec3 leftEdge = p2 - p4;
-            ngl::Vec3 rightEdge = p3 - p5;
-            ngl::Vec3 frontEdge = p5 - p4;
-
-            // heuristic to find test velocity
-            ngl::Vec3 testVel = testVelocities[i];
-
-            bool leftPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel, leftEdge,p4);
-            bool rightPlane = !pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel, rightEdge,p5);
-            bool frontPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + newVel, frontEdge,p4);
-
-            //std::cout<<"checking intersections:\n";
-            // check if test velocity intersects multipe edges of the VO triangle
-            float i1 = checkIntersection(newVel,m_agent->getOrigState().m_pos,frontEdge,p4);
-            float i2 = checkIntersection(newVel,m_agent->getOrigState().m_pos,rightEdge,p5);
-            float i3 = checkIntersection(testVel,m_agent->getOrigState().m_pos,leftEdge,p4);
-
-            if(leftPlane || rightPlane || frontPlane)
-            {
-                // tested velcity is acceptable!
-                velAcceptance.push_back(true);
-            }
-            else // ------TO DO------
-                /*
-                 * find velocities based on desired velocity to sample - 10(for now)
-                 * iterate through velocities and either:
-                 *    o find the first velocity that lies outside VO
-                 *    o find velocity with smallestt penalty
-                 * To find velocity with smallest penalty:
-                 *    o find velocity with longest time until collision - t
-                 *    o take into account distance between chosen velocity and desired velocity.
-                */
-
-            {
-                // tested velocity inside VO - not acceptable, will result in collision
-                // need to find the smallest positive value for t - time to intersection
-                velAcceptance.push_back(false);
-
-                float tmp1 = (i1>0)?i1:MAX;
-                float tmp2 = (i2>0)?i2:MAX;
-                float tmp3 = (i3>0)?i3:MAX;
-
-                float lowestT   = (tmp1<tmp2)   ?tmp1:tmp2;
-                lowestT         = (tmp3<lowestT)?tmp3:lowestT;
-
-                agentTvalues.push_back(lowestT);
-            }
+            // check if velocity is acceptable with current test agent
+            velAcceptance.push_back(testVO(newVel,n->getOrigState(),agentTvalues));
 
         } // end of neighbour boost foreach loop
 
+        /*BOOST_FOREACH(Boundary *b, m_Boundaries)
+        {
+
+            // check if velocity is acceptable with current test agent
+            velAcceptance.push_back(testVO(newVel,b->getOrigState(),agentTvalues));
+
+        } // end of neighbour boost foreach loop
+        */
 
         // check if all elements of velAccepted are true
         // if so current test velocity is outside all VO's
@@ -334,7 +245,6 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
 
     } // end of testVelocities for loop
 
-
     // if acceptable velocity was found exit now
     if(!velInside){return newVel;}
 
@@ -356,6 +266,89 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
     //newVel = 0.5 * (t*testVelocities[index] + m_agent->getOrigState().m_vel);
     newVel = t*testVelocities[index];
     return newVel;
+}
+
+bool Brain::testVO(const ngl::Vec3 &_testVel, const State &_testAgentState, std::vector<float> &_agentTvalues)
+{
+    ngl::Vec3 dist = _testAgentState.m_pos  - m_agent->getOrigState().m_pos;
+    // vector orthogonal to dist vector
+    ngl::Vec3 distNormal = normal2D(dist);
+    distNormal.normalize();
+
+    // cobined radius of current agent and test agent
+    float r1 = _testAgentState.m_rad;
+    float r2 = _testAgentState.m_rad;
+    float rad = r1+r2;
+
+    // velocity obstacle apex offset
+    //ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getBrain()->getDesVel());
+    //ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + n->getCurrentState().m_vel);
+    ngl::Vec3 apexOffset = 0.5 * (m_agent->getOrigState().m_vel + _testAgentState.m_vel);
+
+    // 3 points of Velocity Obstacle triangle - this is my own simplification
+    // p1 is the apex of the VO
+    ngl::Vec3 p1 = m_agent->getOrigState().m_pos + apexOffset;
+    ngl::Vec3 p2 = _testAgentState.m_pos + (rad * distNormal) + apexOffset;
+    ngl::Vec3 p3 = _testAgentState.m_pos - (rad * distNormal) + apexOffset;
+
+    // 3 edges of Velocity Obstacle triangle
+    ngl::Vec3 E1 = p3 - p2; //back of collision area  - 2 * opposite
+    ngl::Vec3 E2 = p1 - p3; //one side                - hypotonuse
+    ngl::Vec3 E3 = p2 - p1; //other side
+
+    // find length to bottom of VO
+    float A = (m_agent->getOrigState().m_pos - _testAgentState.m_pos).length();
+    float H = E2.length();
+    float newH = (A - rad) * tan(asin(rad / H));
+
+    E2.normalize();
+    E2 *= newH;
+    E3.normalize();
+    E3 *= newH;
+
+    ngl::Vec3 p4 = p1 + E3;
+    ngl::Vec3 p5 = p1 - E2;
+
+    E1 = p5 - p4;
+    ngl::Vec3 leftEdge = p2 - p4;
+    ngl::Vec3 rightEdge = p3 - p5;
+    ngl::Vec3 frontEdge = p5 - p4;
+
+    bool leftPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel, leftEdge,p4);
+    bool rightPlane = !pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel, rightEdge,p5);
+    bool frontPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel, frontEdge,p4);
+
+    // check if test velocity intersects multipe edges of the VO triangle
+    float i1 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,frontEdge,p4);
+    float i2 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,rightEdge,p5);
+    float i3 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,leftEdge,p4);
+
+    if(leftPlane || rightPlane || frontPlane)
+    {
+        // tested velcity is acceptable!
+        return true;
+    }
+    else
+
+    {
+        // tested velocity inside VO - not acceptable, will result in collision
+        // need to find the smallest positive value for t - time to intersection
+
+        float tmp1 = (i1>0)?i1:MAX;
+        float tmp2 = (i2>0)?i2:MAX;
+        float tmp3 = (i3>0)?i3:MAX;
+
+        float lowestT   = (tmp1<tmp2)   ?tmp1:tmp2;
+        lowestT         = (tmp3<lowestT)?tmp3:lowestT;
+
+        _agentTvalues.push_back(lowestT);
+        return false;
+    }
+}
+
+bool testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<float> &_agentTvalues)
+{
+
 }
 
 std::vector<ngl::Vec3> Brain::createSampleVel()const
@@ -673,6 +666,10 @@ void Brain::addBoundary(Boundary *_boundary)
     m_Boundaries.push_back(_boundary);
 }
 
+std::vector<Boundary*> Brain::getBoundaries()const
+{
+    return m_Boundaries;
+}
 
 void Brain::printInfo()
 {

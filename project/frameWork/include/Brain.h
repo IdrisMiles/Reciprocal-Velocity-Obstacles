@@ -10,6 +10,7 @@
 class System;
 class Agent;
 class Boundary;
+class State;
 
 enum Avoidance {FLOCKING,RVO,SOCIAL};
 
@@ -34,6 +35,7 @@ public:
     void loadMatricesToShader();
 
     ngl::Vec3 findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities);
+    bool testVO(const ngl::Vec3 &_testVel, const State &_testAgentState, std::vector<float> &_agentTvalues);
 
     std::vector<ngl::Vec3> createSampleVel()const;
     /// @brief method to check if a point lies on the left hand side of an edge
@@ -75,6 +77,7 @@ public:
     float getPerceiveAng()const;
     float getDesSpeed()const;
     ngl::Vec3 getDesVel()const;
+    std::vector<Boundary*> getBoundaries()const;
 
     void clearNeighbours();
     void clearBoundary();
