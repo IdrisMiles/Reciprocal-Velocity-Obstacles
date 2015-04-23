@@ -648,12 +648,11 @@ ngl::Vec3 Brain::getDesVel()const
 void Brain::clearNeighbours()
 {
     m_neighbours.clear();
-    //m_neighbours.erase(m_neighbours.begin(),m_neighbours.end());
 }
 
 void Brain::clearBoundary()
 {
-    m_neighbours.clear();
+    m_Boundaries.clear();
 }
 
 void Brain::addNeighbour( Agent* _neighbour)
@@ -673,5 +672,5 @@ std::vector<Boundary*> Brain::getBoundaries()const
 
 void Brain::printInfo()
 {
-  //std::cout<<"num neighbours: "<<m_neighbours.size()<<"\n";
+
 }

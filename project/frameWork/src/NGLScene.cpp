@@ -72,6 +72,7 @@ void NGLScene::initialize()
   // grab an instance of shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
 
+  //=============PHONG====================
   // we are creating a shader called Phong
   shader->createShaderProgram("Phong");
 
@@ -103,6 +104,26 @@ void NGLScene::initialize()
   shader->linkProgramObject("Phong");
   // and make it active ready to load values
   (*shader)["Phong"]->use();
+
+  //==============WALL SHADER=================
+  shader->createShaderProgram("Wall");
+
+  shader->attachShader("wallVert",ngl::VERTEX);
+  shader->attachShader("wallFrag",ngl::FRAGMENT);
+
+  shader->loadShaderSource("wallVert","shaders/wallVert.glsl");
+  shader->loadShaderSource("wallFrag","shaders/wallFrag.glsl");
+
+  shader->compileShader("wallVert");
+  shader->compileShader("wallFrag");
+
+  shader->attachShaderToProgram("Wall","wallVert");
+  shader->attachShaderToProgram("Wall","wallFrag");
+  shader->bindAttribute("Wall",0,"inVert");
+  shader->bindAttribute("Wall",1,"inUV");
+  shader->bindAttribute("Wall",2,"inNormal");
+  shader->linkProgramObject("Wall");
+
 
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once

@@ -87,6 +87,7 @@ void Agent::draw()
 void Agent::loadMatricesToShader()
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
+  shader->use("Phong");
   m_material.loadToShader("material");
 
   ngl::Mat4 MV;

@@ -96,17 +96,29 @@ void HashTable::emptyTable()
 
 void HashTable::addBoundaryToHash(Boundary* _boundary)
 {
+  int startX = (int)(_boundary->getBoundaryPoint(0).m_x < _boundary->getBoundaryPoint(1).m_x)?_boundary->getBoundaryPoint(0).m_x:_boundary->getBoundaryPoint(1).m_x;
+  startX += (0.5 * m_width);
+  startX /= m_cellSize;
+  startX = (startX >= 0)?startX:0;
 
-  // find the range along the x axis
-  int deltaX    = (int)(_boundary->getBoundaryPoint(1).m_x - _boundary->getBoundaryPoint(0).m_x);
-  int x         = (int)(_boundary->getBoundaryPoint(0).m_x + 0.5 * m_width) / m_cellSize;
-  int deltaY    = (int)(_boundary->getBoundaryPoint(1).m_z - _boundary->getBoundaryPoint(0).m_z);
-  int y         = (int)(_boundary->getBoundaryPoint(0).m_z + 0.5 * m_width) / m_cellSize;
+  int endX = (int)(_boundary->getBoundaryPoint(0).m_x > _boundary->getBoundaryPoint(1).m_x)?_boundary->getBoundaryPoint(0).m_x:_boundary->getBoundaryPoint(1).m_x;
+  endX += (0.5 * m_width);
+  endX /= m_cellSize;
+  endX = (endX <= m_numXcells)?endX:m_numXcells;
 
-  std::cout<<"adding bound to hash\n";
-  for(int i=x; i<x+deltaX; i++)
+  int startY = (int)(_boundary->getBoundaryPoint(0).m_z < _boundary->getBoundaryPoint(1).m_z)?_boundary->getBoundaryPoint(0).m_z:_boundary->getBoundaryPoint(1).m_z;
+  startY += (0.5 * m_width);
+  startY /= m_cellSize;
+  startY = (startY >= 0)?startY:0;
+
+  int endY = (int)(_boundary->getBoundaryPoint(0).m_z > _boundary->getBoundaryPoint(1).m_z)?_boundary->getBoundaryPoint(0).m_z:_boundary->getBoundaryPoint(1).m_z;
+  endY += (0.5 * m_width);
+  endY /= m_cellSize;
+  endY = (endY <= m_numYcells)?endY:m_numYcells;
+
+  for(int i=startX; i<=endX; i++)
   {
-      for(int j=y; j<y+deltaY; j++)
+      for(int j=startY; j<=endY; j++)
       {
           // add this boundary to cells with coord (i,j)
           //m_cells[(j * m_numXcells) + i].m_bounds.push_back(_boundary);
@@ -117,29 +129,35 @@ void HashTable::addBoundaryToHash(Boundary* _boundary)
           // make this part another function
           // because it can then be called seperate from addbound
       }
-
-      // find y coordinate for current x coord into the hashtable
-      /*int y = (int)( ( (deltaY/deltaX) * i ) + _boundary->getBoundaryPoint(0).m_z );
-      ngl::Vec3 point = ngl::Vec3(x,0,y);
-      Cell *tmpCell = getCell(point);*/
   }
-
-  addBoundaryToAgent(_boundary);
 }
 
+
+/*  =======not working do not use!=======
 void HashTable::addBoundaryToAgent(Boundary* _boundary)
 {
+  std::vector<int> cells = _boundary->getHashID();
+  std::cout<<"cell contains: "<<cells.size()<<" num bounds\n";
     for(unsigned int i=0;i<_boundary->getHashID().size();i++)
     {
-        // all agent in cell[i] add boundary to once!
+        // iterate through number of cells boundary spans
+
+        // all agent in cell[_boundary->getHashID()[i]] add boundary to once!
         // must check if boundary is already in agent
 
-        for(unsigned int j=0;j<m_cells[i].m_agents.size();j++)
+        for(unsigned int j=0;j<m_cells[_boundary->getHashID()[i]].m_agents.size();j++)
         {
-
+            //iterate through number of agents in cell
+            // boundary to agent in this cell
+            m_cells[_boundary->getHashID()[i]].m_agents[j]->getBrain()->addBoundary(_boundary);
+            std::vector<Boundary*>::iterator it;
+            it = std::find(m_cells[_boundary->getHashID()[i]].m_agents[j]->getBrain()->getBoundaries().begin(),
+                           m_cells[_boundary->getHashID()[i]].m_agents[j]->getBrain()->getBoundaries().end(),
+                           _boundary);
         }
     }
 }
+*/
 
 void HashTable::addBoundaryToAgent()
 {

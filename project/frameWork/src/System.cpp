@@ -108,8 +108,6 @@ void System::addBoundaries()
         {
             BOOST_FOREACH(Boundary *b, m_Boundaries)
             {
-                // check distance to boundary
-                // add if within perceive rad
                 a->getBrain()->addBoundary(b);
             }
         }
@@ -120,31 +118,13 @@ void System::addBoundaries()
         {
             BOOST_FOREACH(Boundary *b, m_Boundaries)
             {
-                // check distance to boundary
-                // add if within perceive rad
                 a->getBrain()->addBoundary(b);
             }
         }
         break;
 
     case HASH :
-//        BOOST_FOREACH( Agent* a, m_agents)
-//        {
-//            BOOST_FOREACH(Boundary *b, m_Boundaries)
-//            {
-//                // check distance to boundary
-//                // add if within perceive rad
-//                a->getBrain()->addBoundary(b);
-//            }
-//        }
-        BOOST_FOREACH(Boundary *b, m_Boundaries)
-        {
-            // check distance to boundary
-            // add if within perceive rad
-            //m_hashTable->addBoundaryToHash(b);
-            m_hashTable->addBoundaryToAgent(b);
-        }
-        //std::cout<<"number of bounds in systme: "<<m_Boundaries.size()<<"\n";
+        m_hashTable->addBoundaryToAgent();
         break;
       }
 
@@ -200,19 +180,19 @@ void System::setBounds(ngl::BBox _bounds)
     TR = ngl::Vec3(right,0,top);
 
     // left side
-    m_Boundaries.push_back(new Boundary(BL,TL));
+    m_Boundaries.push_back(new Boundary(TL,BL));
     m_hashTable->addBoundaryToHash(m_Boundaries[0]);
     // right side
-    m_Boundaries.push_back(new Boundary(TR,BR));
+    m_Boundaries.push_back(new Boundary(BR,TR));
     m_hashTable->addBoundaryToHash(m_Boundaries[1]);
     // top side
-    m_Boundaries.push_back(new Boundary(TL,TR));
+    m_Boundaries.push_back(new Boundary(TR,TL));
     m_hashTable->addBoundaryToHash(m_Boundaries[2]);
     // bottom side
-    m_Boundaries.push_back(new Boundary(BR,BL));
+    m_Boundaries.push_back(new Boundary(BL,BR));
     m_hashTable->addBoundaryToHash(m_Boundaries[3]);
 
-    m_Boundaries.push_back(new Boundary(ngl::Vec3(-2,0,0),ngl::Vec3(2,0,0)));
+    m_Boundaries.push_back(new Boundary(ngl::Vec3(-2,0,0),ngl::Vec3(2,0,0),true));
     m_hashTable->addBoundaryToHash(m_Boundaries[4]);
 
 
@@ -265,7 +245,12 @@ void System::draw()
     loadMatricesToShader();
     m_bounds.recalculate();
     m_bounds.draw();
-    /*if(m_spatialDivision == HASH)*/m_hashTable->draw();
+    m_hashTable->draw();
+    BOOST_FOREACH(Boundary* b, m_Boundaries)
+    {
+      b->loadMatricesToShader(m_globalTX,m_cam);
+      b->draw();
+    }
     BOOST_FOREACH(Agent* a, m_agents)
     {
         a->loadMatricesToShader();
