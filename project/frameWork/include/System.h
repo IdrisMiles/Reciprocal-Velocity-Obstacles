@@ -26,6 +26,7 @@ public:
 
     void setSpatialDivision(const SpatialDivision &_type);
     void setBounds(ngl::BBox _bounds);
+    void addBounds(Boundary *_boundary);
     void setGloablGoal(const ngl::Vec3 &_goal);
     void setRandomGoal();
 

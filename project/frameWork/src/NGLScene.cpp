@@ -29,6 +29,7 @@ NGLScene::NGLScene(QWindow *_parent) : OpenGLWindow(_parent)
   setTitle("Qt5 Simple NGL Demo");
   m_scene = 0;
   m_pause = true;
+  m_moveModel = true;
  
 }
 
@@ -123,6 +124,7 @@ void NGLScene::initialize()
   shader->bindAttribute("Wall",1,"inUV");
   shader->bindAttribute("Wall",2,"inNormal");
   shader->linkProgramObject("Wall");
+  //shader->use("Wall");
 
 
   // Now we will create a basic Camera from the graphics library
@@ -154,6 +156,10 @@ void NGLScene::initialize()
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
   m_system = new System();
+  m_system->addBounds(new Boundary(ngl::Vec3(-1,0,1),ngl::Vec3(1,0,1),true));
+  m_system->addBounds(new Boundary(ngl::Vec3(-1,0,-1),ngl::Vec3(1,0,-1),true));
+  m_system->addBounds(new Boundary(ngl::Vec3(-1,0,-1),ngl::Vec3(-1,0,1),true));
+  m_system->addBounds(new Boundary(ngl::Vec3(1,0,-1),ngl::Vec3(1,0,1),true));
   for(int i=0;i<10;i++)
   {
       //m_system->addAgent(FLOCKING);
@@ -170,6 +176,23 @@ void NGLScene::update()
     m_system->update();
 }
 
+void NGLScene::editMode()
+{
+    m_pause = false;
+    m_moveModel = false;
+}
+
+void NGLScene::pausePlaySim()
+{
+    m_pause = !m_pause;
+    m_moveModel = true;
+}
+
+void NGLScene::toggleScene()
+{
+    m_moveModel = true;
+    m_system->setScene((m_scene++)%3);
+}
 
 //void NGLScene::loadMatricesToShader()
 //{
@@ -215,6 +238,18 @@ void NGLScene::render()
   m_mouseGlobalTX.m_m[3][1] = m_modelPos.m_y;
   m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
 
+  if(!m_moveModel)
+  {
+      ngl::Mat4 rot;
+      rot.rotateX(90);
+      // multiply the rotations
+      m_mouseGlobalTX=rot;
+      // add the translations
+      m_mouseGlobalTX.m_m[3][0] = 0.0f;
+      m_mouseGlobalTX.m_m[3][1] = 0.0f;
+      m_mouseGlobalTX.m_m[3][2] = -15.0f;
+  }
+
   //---------System drawing methods------------
   m_system->setUpDraw(*m_cam,m_mouseGlobalTX);
   m_system->draw();
@@ -227,7 +262,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   // note the method buttons() is the button state when event was called
   // this is different from button() which is used to check which button was
   // pressed when the mousePress/Release event is generated
-  if(m_rotate && _event->buttons() == Qt::LeftButton)
+  if(m_rotate && m_moveModel && _event->buttons() == Qt::LeftButton)
   {
     int diffx=_event->x()-m_origX;
     int diffy=_event->y()-m_origY;
@@ -239,7 +274,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
 
   }
         // right mouse translate code
-  else if(m_translate && _event->buttons() == Qt::RightButton)
+  else if(m_translate && m_moveModel && _event->buttons() == Qt::RightButton)
   {
     int diffX = (int)(_event->x() - m_origXPos);
     int diffY = (int)(_event->y() - m_origYPos);
@@ -294,6 +329,7 @@ void NGLScene::mouseReleaseEvent ( QMouseEvent * _event )
 void NGLScene::wheelEvent(QWheelEvent *_event)
 {
 
+    if(!m_moveModel){return;}
 	// check the diff of the wheel position (0 means no change)
 	if(_event->delta() > 0)
 	{
@@ -323,17 +359,17 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   case Qt::Key_F : showFullScreen(); break;
   // show windowed
   case Qt::Key_N : showNormal(); break;
-  case Qt::Key_P : m_pause = !(m_pause&true);break;
+  case Qt::Key_P : pausePlaySim(); break;
+  case Qt::Key_E : editMode();break;
   case Qt::Key_O : m_system->setSpatialDivision(OCTREE);break;
   case Qt::Key_U : m_system->setSpatialDivision(BRUTE);break;
   case Qt::Key_I : m_system->setSpatialDivision(HASH);break;
   case Qt::Key_Space : m_system->printInfo();break;
 
-  case Qt::Key_Z : {ngl::Vec3 goal = ngl::Vec3(1.0f,0.0f,-5.0f);
-                    m_system->setGloablGoal(goal);} break;
+  case Qt::Key_Z : m_system->setGloablGoal(ngl::Vec3(1.0f,0.0f,-5.0f)); break;
   case Qt::Key_X : m_system->setRandomGoal(); break;
 
-  case Qt::Key_Tab : m_system->setScene((m_scene++)%3);break;
+  case Qt::Key_Tab : toggleScene();break;
 
   case Qt::Key_1 : m_system->addAgent(FLOCKING);break;
   case Qt::Key_2 : m_system->addAgent(RVO);break;

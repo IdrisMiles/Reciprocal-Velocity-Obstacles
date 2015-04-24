@@ -192,12 +192,15 @@ void System::setBounds(ngl::BBox _bounds)
     m_Boundaries.push_back(new Boundary(BL,BR));
     m_hashTable->addBoundaryToHash(m_Boundaries[3]);
 
-    m_Boundaries.push_back(new Boundary(ngl::Vec3(-2,0,0),ngl::Vec3(2,0,0),true));
-    m_hashTable->addBoundaryToHash(m_Boundaries[4]);
-
-
 
     m_numBoundaries += 4;
+}
+
+void System::addBounds(Boundary *_boundary)
+{
+    //new Boundary(ngl::Vec3(-2,0,0),ngl::Vec3(2,0,0),true)
+    m_Boundaries.push_back(_boundary);
+    m_hashTable->addBoundaryToHash(m_Boundaries.back());
 }
 
 void System::setGloablGoal(const ngl::Vec3 &_goal)
@@ -355,6 +358,7 @@ void System::setScene(const int &_scene)
     }
     return;
   }
+
 
   updateHashTable();
 }

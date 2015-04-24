@@ -138,36 +138,6 @@ void Brain::initVoVAO()
     m_voVAO->unbind();
 }
 
-void Brain::loadMatricesToShader()
-{
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-
-  ngl::Mat4 MV;
-  ngl::Mat4 MVP;
-  ngl::Mat3 normalMatrix;
-  ngl::Mat4 worldM;
-  ngl::Mat4 M;
-  M.identity();
-  ngl::Mat4 stand;
-  stand.rotateX(90);
-  // add agents orientation
-  M.rotateY(m_agent->getCurrentState().m_orien);
-  // add agents position
-  M.m_m[3][0] = m_agent->getCurrentState().m_pos.m_x;
-  //M.m_m[3][1] = m_agent->getCurrentState().m_pos.m_y;
-  M.m_m[3][2] = m_agent->getCurrentState().m_pos.m_z;
-
-  worldM   = stand * M * m_system->getGlobalTX();
-  MV  = worldM * m_system->getCam().getViewMatrix();
-  MVP = worldM * m_system->getCam().getVPMatrix();
-  normalMatrix = MV;
-  normalMatrix.inverse();
-
-  shader->setShaderParamFromMat4("MV",MV);
-  shader->setShaderParamFromMat4("MVP",MVP);
-  shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
-  shader->setShaderParamFromMat4("M",worldM);
-}
 
 void Brain::rvo()
 {
@@ -203,14 +173,25 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
 
         } // end of neighbour boost foreach loop
 
-        /*BOOST_FOREACH(Boundary *b, m_Boundaries)
+        BOOST_FOREACH(Boundary *b, m_Boundaries)
         {
 
             // check if velocity is acceptable with current test agent
-            velAcceptance.push_back(testVO(newVel,b->getOrigState(),agentTvalues));
+
+            ngl::Vec3 p0 = b->getBoundaryPoint(0);
+            ngl::Vec3 edge = b->getBoundaryPoint(1) - p0;
+            ngl::Vec3 agentEdge = m_agent->getOrigState().m_pos -p0;
+            float t = agentEdge.dot(edge) / edge.lengthSquared();
+            ngl::Vec3 closestPoint = p0 + t*edge;
+
+            State tmpState;
+            tmpState.m_pos = closestPoint;
+            tmpState.m_rad = 0.5;
+
+            velAcceptance.push_back(testVO(newVel,b,agentTvalues));
 
         } // end of neighbour boost foreach loop
-        */
+
 
         // check if all elements of velAccepted are true
         // if so current test velocity is outside all VO's
@@ -346,8 +327,21 @@ bool Brain::testVO(const ngl::Vec3 &_testVel, const State &_testAgentState, std:
     }
 }
 
-bool testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<float> &_agentTvalues)
+bool Brain::testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<float> &_agentTvalues)
 {
+    ngl::Vec3 p0 = n->getBoundaryPoint(0);
+    ngl::Vec3 edge = n->getBoundaryPoint(1) - p0;
+
+    float t = checkIntersection(_testVel,m_agent->getOrigState().m_pos,edge,p0);
+    if(t == -1)
+    {
+        // no intersection, not going to collide with boundary
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 
 }
 

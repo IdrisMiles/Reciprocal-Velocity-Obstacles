@@ -78,10 +78,8 @@ void Boundary::loadMatricesToShader(ngl::Mat4 &_globalTX,ngl::Camera &_cam)
   normalMatrix=MV;
   normalMatrix.inverse();
 
-  shader->setShaderParamFromMat4("MV",MV);
   shader->setShaderParamFromMat4("MVP",MVP);
-  shader->setShaderParamFromMat3("normalMatrix",normalMatrix);
-  shader->setShaderParamFromMat4("M",M);
+
 }
 
 void Boundary::updateVAO()
