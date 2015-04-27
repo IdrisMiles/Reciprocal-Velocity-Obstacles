@@ -48,6 +48,7 @@ OBJECTS_DIR   = obj/
 SOURCES       = src/Agent.cpp \
 		src/agentOctree.cpp \
 		src/Boundary.cpp \
+		src/boundary4.cpp \
 		src/Brain.cpp \
 		src/HashTable.cpp \
 		src/Integrator.cpp \
@@ -59,6 +60,7 @@ SOURCES       = src/Agent.cpp \
 OBJECTS       = obj/Agent.o \
 		obj/agentOctree.o \
 		obj/Boundary.o \
+		obj/boundary4.o \
 		obj/Brain.o \
 		obj/HashTable.o \
 		obj/Integrator.o \
@@ -304,7 +306,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d obj/crowd1.0.0 || mkdir -p obj/crowd1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/crowd1.0.0/ && $(COPY_FILE) --parents include/AbstractOctree.h include/Agent.h include/agentOctree.h include/Boundary.h include/Brain.h include/HashTable.h include/Integrator.h include/NGLScene.h include/OpenGLWindow.h include/State.h include/System.h obj/crowd1.0.0/ && $(COPY_FILE) --parents src/Agent.cpp src/agentOctree.cpp src/Boundary.cpp src/Brain.cpp src/HashTable.cpp src/Integrator.cpp src/main.cpp src/NGLScene.cpp src/OpenGLWindow.cpp src/State.cpp src/System.cpp obj/crowd1.0.0/ && (cd `dirname obj/crowd1.0.0` && $(TAR) crowd1.0.0.tar crowd1.0.0 && $(COMPRESS) crowd1.0.0.tar) && $(MOVE) `dirname obj/crowd1.0.0`/crowd1.0.0.tar.gz . && $(DEL_FILE) -r obj/crowd1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/crowd1.0.0/ && $(COPY_FILE) --parents include/AbstractOctree.h include/Agent.h include/agentOctree.h include/Boundary.h include/boundary4.h include/Brain.h include/HashTable.h include/Integrator.h include/NGLScene.h include/OpenGLWindow.h include/State.h include/System.h obj/crowd1.0.0/ && $(COPY_FILE) --parents src/Agent.cpp src/agentOctree.cpp src/Boundary.cpp src/boundary4.cpp src/Brain.cpp src/HashTable.cpp src/Integrator.cpp src/main.cpp src/NGLScene.cpp src/OpenGLWindow.cpp src/State.cpp src/System.cpp obj/crowd1.0.0/ && (cd `dirname obj/crowd1.0.0` && $(TAR) crowd1.0.0.tar crowd1.0.0 && $(COMPRESS) crowd1.0.0.tar) && $(MOVE) `dirname obj/crowd1.0.0`/crowd1.0.0.tar.gz . && $(DEL_FILE) -r obj/crowd1.0.0
 
 
 clean:compiler_clean 
@@ -894,6 +896,9 @@ obj/Boundary.o: src/Boundary.cpp include/Boundary.h \
 		/usr/include/qt5/QtCore/QMutexLocker \
 		/home/idris/NGL/include/ngl/Mat3.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Boundary.o src/Boundary.cpp
+
+obj/boundary4.o: src/boundary4.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/boundary4.o src/boundary4.cpp
 
 obj/Brain.o: src/Brain.cpp include/Brain.h \
 		/home/idris/NGL/include/ngl/Vec3.h \
@@ -1672,6 +1677,7 @@ obj/NGLScene.o: src/NGLScene.cpp /usr/include/qt5/QtGui/QMouseEvent \
 		include/agentOctree.h \
 		include/AbstractOctree.h \
 		include/Boundary.h \
+		/home/idris/NGL/include/ngl/NGLStream.h \
 		/home/idris/NGL/include/ngl/NGLInit.h \
 		/home/idris/NGL/include/ngl/Singleton.h \
 		/usr/include/qt5/QtCore/QMutexLocker \

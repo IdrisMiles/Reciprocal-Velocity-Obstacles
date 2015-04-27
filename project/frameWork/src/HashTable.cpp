@@ -96,35 +96,37 @@ void HashTable::emptyTable()
 
 void HashTable::addBoundaryToHash(Boundary* _boundary)
 {
-  int startX = (int)(_boundary->getBoundaryPoint(0).m_x < _boundary->getBoundaryPoint(1).m_x)?_boundary->getBoundaryPoint(0).m_x:_boundary->getBoundaryPoint(1).m_x;
+  int startX = (int)(_boundary->getBoundaryPoint(0).m_x < _boundary->getBoundaryPoint(2).m_x)?_boundary->getBoundaryPoint(0).m_x:_boundary->getBoundaryPoint(2).m_x;
   startX += (0.5 * m_width);
   startX /= m_cellSize;
   startX = (startX >= 0)?startX:0;
 
-  int endX = (int)(_boundary->getBoundaryPoint(0).m_x > _boundary->getBoundaryPoint(1).m_x)?_boundary->getBoundaryPoint(0).m_x:_boundary->getBoundaryPoint(1).m_x;
+  int endX = (int)(_boundary->getBoundaryPoint(0).m_x > _boundary->getBoundaryPoint(2).m_x)?_boundary->getBoundaryPoint(0).m_x:_boundary->getBoundaryPoint(2).m_x;
   endX += (0.5 * m_width);
   endX /= m_cellSize;
   endX = (endX <= m_numXcells)?endX:m_numXcells;
 
-  int startY = (int)(_boundary->getBoundaryPoint(0).m_z < _boundary->getBoundaryPoint(1).m_z)?_boundary->getBoundaryPoint(0).m_z:_boundary->getBoundaryPoint(1).m_z;
+  int startY = (int)(_boundary->getBoundaryPoint(0).m_z < _boundary->getBoundaryPoint(2).m_z)?_boundary->getBoundaryPoint(0).m_z:_boundary->getBoundaryPoint(2).m_z;
   startY += (0.5 * m_width);
   startY /= m_cellSize;
   startY = (startY >= 0)?startY:0;
 
-  int endY = (int)(_boundary->getBoundaryPoint(0).m_z > _boundary->getBoundaryPoint(1).m_z)?_boundary->getBoundaryPoint(0).m_z:_boundary->getBoundaryPoint(1).m_z;
+  int endY = (int)(_boundary->getBoundaryPoint(0).m_z > _boundary->getBoundaryPoint(2).m_z)?_boundary->getBoundaryPoint(0).m_z:_boundary->getBoundaryPoint(2).m_z;
   endY += (0.5 * m_width);
   endY /= m_cellSize;
   endY = (endY <= m_numYcells)?endY:m_numYcells;
 
-  for(int i=startX; i<=endX; i++)
+  for(int i=startX-1; i<=endX+1; i++)
   {
-      for(int j=startY; j<=endY; j++)
+      for(int j=startY-1; j<=endY+1; j++)
       {
           // add this boundary to cells with coord (i,j)
           //m_cells[(j * m_numXcells) + i].m_bounds.push_back(_boundary);
-          getCell(i,j)->m_bounds.push_back(_boundary);
-          _boundary->setHashID((j*m_numXcells)+i);
-
+          if(i>=0 && i<= m_numXcells && j >=0 && j <= m_numYcells)
+          {
+              getCell(i,j)->m_bounds.push_back(_boundary);
+              _boundary->setHashID((j*m_numXcells)+i);
+          }
           // add boundary to agents in this cell
           // make this part another function
           // because it can then be called seperate from addbound
@@ -132,6 +134,9 @@ void HashTable::addBoundaryToHash(Boundary* _boundary)
   }
 }
 
+void HashTable::addBoundary4ToHash(Boundary4* _boundary)
+{
+}
 
 /*  =======not working do not use!=======
 void HashTable::addBoundaryToAgent(Boundary* _boundary)
@@ -169,9 +174,9 @@ void HashTable::addBoundaryToAgent()
             if(m_cells[i].m_bounds.size() != 0)
             {
                 //add boudaries to agents
-                for(int j=0;j<m_cells[i].m_agents.size();j++)
+                for(unsigned int j=0;j<m_cells[i].m_agents.size();j++)
                 {
-                    for(int k=0;k<m_cells[i].m_bounds.size();k++)
+                    for(unsigned int k=0;k<m_cells[i].m_bounds.size();k++)
                     {
                         std::vector<Boundary*>::iterator it;
                         it = std::find(m_cells[i].m_agents[j]->getBrain()->getBoundaries().begin(),
@@ -225,13 +230,13 @@ std::vector<Cell> HashTable::getCells()const
 void HashTable::addNeighbours()
 {
     // loop through all cells
-    for(int i=0;i<m_cells.size();i++)
+    for(unsigned int i=0;i<m_cells.size();i++)
     {
         int x = i % m_numXcells;
         int y = (int) (i / m_numXcells);
 
         // loops through all agents in cell
-        for(int j=0;j<m_cells[i].m_agents.size();j++)
+        for(unsigned int j=0;j<m_cells[i].m_agents.size();j++)
         {
             // check whether agent is in perceived radius of other agents in cell
             checkNeighboursInCell(m_cells[i].m_agents[j],m_cells[i].m_agents,j+1);
@@ -355,7 +360,7 @@ void HashTable::printInfo()const
     y = -1;
     x = 0;
     numAgents = 0;
-    for(unsigned int i=0;i<numCells;i++)
+    for(int i=0;i<numCells;i++)
     {
         if(x == 0)
         {

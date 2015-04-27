@@ -8,11 +8,11 @@
 
 #include "HashTable.h"
 
-System::System()
+System::System(float _width)
 {
     m_numAgents = 0;
     m_numBoundaries = 0;
-    m_systemWidth = 20.0f;
+    m_systemWidth = _width;
 
     //m_bounds = ngl::BBox(ngl::Vec3(0,0,0),20,20,20);
     BoundingBox bb;
@@ -104,23 +104,9 @@ void System::addBoundaries()
     switch (m_spatialDivision)
       {
       case BRUTE :
-        BOOST_FOREACH( Agent* a, m_agents)
-        {
-            BOOST_FOREACH(Boundary *b, m_Boundaries)
-            {
-                a->getBrain()->addBoundary(b);
-            }
-        }
         break;
 
       case OCTREE :
-        BOOST_FOREACH( Agent* a, m_agents)
-        {
-            BOOST_FOREACH(Boundary *b, m_Boundaries)
-            {
-                a->getBrain()->addBoundary(b);
-            }
-        }
         break;
 
     case HASH :
@@ -179,6 +165,9 @@ void System::setBounds(ngl::BBox _bounds)
     BR = ngl::Vec3(right,0,bottom);
     TR = ngl::Vec3(right,0,top);
 
+    //m_Boundaries.push_back(new Boundary(TL,TR,BR,BL,false));
+
+    /*
     // left side
     m_Boundaries.push_back(new Boundary(TL,BL));
     m_hashTable->addBoundaryToHash(m_Boundaries[0]);
@@ -191,16 +180,20 @@ void System::setBounds(ngl::BBox _bounds)
     // bottom side
     m_Boundaries.push_back(new Boundary(BL,BR));
     m_hashTable->addBoundaryToHash(m_Boundaries[3]);
+    */
 
-
-    m_numBoundaries += 4;
+    //m_numBoundaries += 4;
 }
 
 void System::addBounds(Boundary *_boundary)
 {
-    //new Boundary(ngl::Vec3(-2,0,0),ngl::Vec3(2,0,0),true)
     m_Boundaries.push_back(_boundary);
     m_hashTable->addBoundaryToHash(m_Boundaries.back());
+}
+
+void System::addBounds4(Boundary4 * _boundary)
+{
+    m_Bounds4.push_back(_boundary);
 }
 
 void System::setGloablGoal(const ngl::Vec3 &_goal)
@@ -302,13 +295,33 @@ void System::setScene(const int &_scene)
   m_scene = _scene;
   if(m_scene == 0)
   {     //circle scene
-      for(int i=0;i<m_numAgents;i++)
+      int numAgentsPerCircle = 100;
+      int numCircles = (m_numAgents / numAgentsPerCircle);
+      int remainderAgents = m_numAgents % numAgentsPerCircle;
+      int index = 0;
+      for(int i=0;i<numCircles;i++)
       {
-          float rad = m_systemWidth * 0.5 -1;
-          ngl::Vec3 pos = ngl::Vec3(rad*sin((i*6.28)/m_numAgents),0,rad*cos((i*6.28)/m_numAgents));
-          m_agents[i]->setPos(pos);
-          m_agents[i]->setGoal(-pos);
+          for(int j=0;j<100;j++)
+          {
+              float rad = m_systemWidth * 0.5 - i;
+              ngl::Vec3 pos = ngl::Vec3(rad*sin((j*6.28)/numAgentsPerCircle),0,rad*cos((j*6.28)/numAgentsPerCircle));
+              m_agents[index]->setPos(pos);
+              m_agents[index]->setGoal(-pos);
+
+              index++;
+          }
       }
+      int lastCircle = remainderAgents;
+      for(int j=0;j<lastCircle;j++)
+      {
+          float rad = m_systemWidth * 0.5 - numCircles;
+          ngl::Vec3 pos = ngl::Vec3(rad*sin((j*6.28)/lastCircle),0,rad*cos((j*6.28)/lastCircle));
+          m_agents[index]->setPos(pos);
+          m_agents[index]->setGoal(-pos);
+
+          index++;
+      }
+
       return;
   }
   else if(m_scene == 1)

@@ -9,13 +9,14 @@
 #include <ngl/VAOPrimitives.h>
 
 #include "Agent.h"
-#include "Boundary.h"
+#include "boundary4.h"
 
 
 struct Cell
 {
     std::vector<Agent*> m_agents;
     std::vector<Boundary*> m_bounds;
+    std::vector<Boundary4*> m_bounds4;
 };
 
 class HashTable
@@ -34,6 +35,7 @@ public:
     void emptyTable();
 
     void addBoundaryToHash(Boundary* _boundary);
+    void addBoundary4ToHash(Boundary4* _boundary);
     void addBoundaryToAgent(Boundary* _boundary);
     void addBoundaryToAgent();
 

@@ -6,7 +6,7 @@
 #include <ngl/Mat4.h>
 #include "Agent.h"
 #include "agentOctree.h"
-#include "Boundary.h"
+#include "boundary4.h"
 
 enum SpatialDivision {BRUTE,OCTREE,HASH};
 class AgentOctree;
@@ -14,7 +14,7 @@ class HashTable;
 class System
 {
 public:
-    System();
+    System(float _width);
     ~System();
 
     void update();
@@ -27,6 +27,8 @@ public:
     void setSpatialDivision(const SpatialDivision &_type);
     void setBounds(ngl::BBox _bounds);
     void addBounds(Boundary *_boundary);
+    void addBounds4(Boundary4 * _boundary);
+
     void setGloablGoal(const ngl::Vec3 &_goal);
     void setRandomGoal();
 
@@ -48,6 +50,7 @@ private:
 
     std::vector< Agent* > m_agents;
     std::vector<Boundary*> m_Boundaries;
+    std::vector<Boundary4*> m_Bounds4;
     int m_scene;
 
     SpatialDivision m_spatialDivision;

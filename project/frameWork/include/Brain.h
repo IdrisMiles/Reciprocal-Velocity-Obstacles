@@ -55,7 +55,8 @@ public:
     /// how long along the segment intersection occurs. \n
     /// If no intersection returns -1
     float checkIntersection(const ngl::Vec3 &_vel,const ngl::Vec3 &_p1,
-                            const ngl::Vec3 &_edge, const ngl::Vec3 &_p2) const;
+                            const ngl::Vec3 &_edge, const ngl::Vec3 &_p2,
+                            const float &_time) const;
     /// @brief method to find the determinant of 2 2D vectors - cross product of 2D vectors
     /// @param [in] const ngl::Vec3 &_v1
     /// @param [in] const ngl::Vec3 &_v2

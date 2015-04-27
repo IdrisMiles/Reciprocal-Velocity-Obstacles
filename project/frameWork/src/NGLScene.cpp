@@ -2,6 +2,7 @@
 #include <QGuiApplication>
 
 #include "NGLScene.h"
+#include <ngl/NGLStream.h>
 #include <ngl/Camera.h>
 #include <ngl/Light.h>
 #include <ngl/Material.h>
@@ -29,7 +30,7 @@ NGLScene::NGLScene(QWindow *_parent) : OpenGLWindow(_parent)
   setTitle("Qt5 Simple NGL Demo");
   m_scene = 0;
   m_pause = true;
-  m_moveModel = true;
+  m_editMode = false;
  
 }
 
@@ -155,12 +156,9 @@ void NGLScene::initialize()
 
   //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
 
-  m_system = new System();
-  m_system->addBounds(new Boundary(ngl::Vec3(-1,0,1),ngl::Vec3(1,0,1),true));
-  m_system->addBounds(new Boundary(ngl::Vec3(-1,0,-1),ngl::Vec3(1,0,-1),true));
-  m_system->addBounds(new Boundary(ngl::Vec3(-1,0,-1),ngl::Vec3(-1,0,1),true));
-  m_system->addBounds(new Boundary(ngl::Vec3(1,0,-1),ngl::Vec3(1,0,1),true));
-  for(int i=0;i<10;i++)
+  m_system = new System(40.0f);
+
+  for(int i=0;i<1;i++)
   {
       //m_system->addAgent(FLOCKING);
       m_system->addAgent(RVO);
@@ -179,18 +177,18 @@ void NGLScene::update()
 void NGLScene::editMode()
 {
     m_pause = false;
-    m_moveModel = false;
+    m_editMode = true;
 }
 
 void NGLScene::pausePlaySim()
 {
     m_pause = !m_pause;
-    m_moveModel = true;
+    m_editMode = false;
 }
 
 void NGLScene::toggleScene()
 {
-    m_moveModel = true;
+    m_editMode = false;
     m_system->setScene((m_scene++)%3);
 }
 
@@ -238,7 +236,7 @@ void NGLScene::render()
   m_mouseGlobalTX.m_m[3][1] = m_modelPos.m_y;
   m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
 
-  if(!m_moveModel)
+  if(m_editMode)
   {
       ngl::Mat4 rot;
       rot.rotateX(90);
@@ -262,7 +260,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
   // note the method buttons() is the button state when event was called
   // this is different from button() which is used to check which button was
   // pressed when the mousePress/Release event is generated
-  if(m_rotate && m_moveModel && _event->buttons() == Qt::LeftButton)
+  if(m_rotate && !m_editMode && _event->buttons() == Qt::LeftButton)
   {
     int diffx=_event->x()-m_origX;
     int diffy=_event->y()-m_origY;
@@ -271,10 +269,17 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
     m_origX = _event->x();
     m_origY = _event->y();
     renderLater();
+  }
+  else if(m_editMode && _event->buttons() == Qt::LeftButton)
+  {
+      //edit mode, draw boundaries.
+
+      m_endXbound = (float)(_event->x() - 0.5*width())/width();
+      m_endYbound = (float)(_event->y() - 0.5*height())/height();
 
   }
         // right mouse translate code
-  else if(m_translate && m_moveModel && _event->buttons() == Qt::RightButton)
+  else if(m_translate && !m_editMode && _event->buttons() == Qt::RightButton)
   {
     int diffX = (int)(_event->x() - m_origXPos);
     int diffY = (int)(_event->y() - m_origYPos);
@@ -298,6 +303,12 @@ void NGLScene::mousePressEvent ( QMouseEvent * _event)
     m_origX = _event->x();
     m_origY = _event->y();
     m_rotate =true;
+
+    if(m_editMode)
+    {
+        m_origXbound = (float)(_event->x() - 0.5*width())/width();
+        m_origYbound = (float)(_event->y() - 0.5*height())/height();
+    }
   }
   // right mouse translate mode
   else if(_event->button() == Qt::RightButton)
@@ -317,6 +328,33 @@ void NGLScene::mouseReleaseEvent ( QMouseEvent * _event )
   if (_event->button() == Qt::LeftButton)
   {
     m_rotate=false;
+    if(m_editMode)
+    {
+        std::cout<<"edit mode, about to add bound\n";
+
+        // orig x = minX
+        // end x = maxX
+        // orig y = maxY
+        // end y = minY
+        /*  minX,minY---------------maxX,minY
+         *  |                           |
+         *  |                           |
+         *  |                           |
+         *  minX,maxY---------------MaxX,MaxY
+         *
+         *  minX,maxY---------------maxX,maxY
+         *  |                           |
+         *  |                           |
+         *  |                           |
+         *  minX,minY---------------MaxX,MinY
+         *
+         */
+        ngl::Vec3 p0 = 20 * ngl::Vec3(m_origXbound,0,m_origYbound);
+        ngl::Vec3 p1 = 20 * ngl::Vec3(m_endXbound,0,m_origYbound);
+        ngl::Vec3 p2 = 20 * ngl::Vec3(m_endXbound,0,m_endYbound);
+        ngl::Vec3 p3 = 20 * ngl::Vec3(m_origXbound,0,m_endYbound);
+        m_system->addBounds(new Boundary(p0,p1,p2,p3,true));
+    }
   }
         // right mouse translate mode
   if (_event->button() == Qt::RightButton)
@@ -329,7 +367,7 @@ void NGLScene::mouseReleaseEvent ( QMouseEvent * _event )
 void NGLScene::wheelEvent(QWheelEvent *_event)
 {
 
-    if(!m_moveModel){return;}
+    if(m_editMode){return;}
 	// check the diff of the wheel position (0 means no change)
 	if(_event->delta() > 0)
 	{

@@ -15,10 +15,10 @@ public:
 
     Boundary();
     Boundary(const ngl::Vec3 &_p1, const ngl::Vec3 &_p2, const bool &_drawFlag = false);
+    Boundary(const ngl::Vec3 &_p0, const ngl::Vec3 &_p1,
+             const ngl::Vec3 &_p2, const ngl::Vec3 &_p3,
+             const bool &_drawFlag);
     ~Boundary();
-
-    void setBoundary(const ngl::Vec3 &_p1, const ngl::Vec3 &_p2);
-    void setBoundary(const int &_i,const ngl::Vec3 &_p);
 
     ngl::Vec3 *getBoundaryPoints();
     ngl::Vec3 getBoundaryPoint(const int &_i)const;
@@ -40,7 +40,7 @@ public:
 
 private:
 
-        ngl::Vec3 m_p[2];
+        ngl::Vec3 m_points[4];
 
         bool m_isVAOinit;
         ngl::VertexArrayObject *m_vao;
