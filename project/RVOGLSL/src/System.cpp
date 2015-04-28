@@ -32,6 +32,8 @@ System::System(float _width)
     prim->createCylinder("cylinder",0.1f,0.5f,4,1);
 
     m_globalGoal = ngl::Vec3(0.0f,0.0f,0.0f);
+
+    initRVOCS();
 }
 
 System::~System()
@@ -45,9 +47,22 @@ System::~System()
     glDeleteTextures(1,&m_neighIdsTEX);
     glDeleteBuffers(1,&m_neighIdsBO);
 
+    glDeleteBuffers(1,&m_desVelBO);
+
+    glDeleteBuffers(1,&m_newVelSSBO);
+
     glDeleteVertexArrays(1,&m_rvoVAO);
 
 }
+
+
+typedef struct AGENTDATA{
+    ngl::Vec3 pos;
+    ngl::Vec3 vel;
+    float rad;
+    unsigned int numNeighbours;
+    unsigned int startNeighIdIndex;
+}AgentData;
 
 void System::initRVOCS()
 {
@@ -59,7 +74,7 @@ void System::initRVOCS()
     shader->compileShader("rvoCS");
     shader->attachShaderToProgram("rvo","rvoCS");
     shader->linkProgramObject("rvo");
-    shader->use("rvoCS");
+    shader->use("rvo");
 
     glGenVertexArrays(1,&m_rvoVAO);
     glBindVertexArray(m_rvoVAO);
@@ -67,69 +82,104 @@ void System::initRVOCS()
     // setting up neighbour sampler buffer
     glGenBuffers(1,&m_neighboursBO);
     glBindBuffer(GL_TEXTURE_BUFFER,m_neighboursBO);
-    glBufferData(GL_TEXTURE_BUFFER,size,data,GL_DYNAMIC_DRAW);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*sizeof(AgentData),NULL,GL_DYNAMIC_DRAW);
     glGenTextures(1,&m_neighboursTEX);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_BUFFER,m_neighboursTEX);
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
-    glUniform1i(glGetUniformLocation(shader->getProgramID("rvoCS"), "neighbours"), 0);
+    glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "neighbours"), 0);
 
     // setting up neighbour ID sampler buffer
+    // This is an array of ints holding the ID of agents,
+    // Stored in an order such that an agent can locate it's neighbours ID,
+    // by accessing the current_agent_id*10 if each agent has 10 neighbours
+    // alternative is to access at current_agent.startNeighIdIndex and end at +=numNeigh
     glGenBuffers(1,&m_neighIdsBO);
     glBindBuffer(GL_TEXTURE_BUFFER,m_neighIdsBO);
-    glBufferData(GL_TEXTURE_BUFFER,size,data,GL_DYNAMIC_DRAW);
+    glBufferData(GL_TEXTURE_BUFFER,NULL,NULL,GL_DYNAMIC_DRAW);
     glGenTextures(1,&m_neighIdsTEX);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER,m_neighIdsTEX);
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
-    glUniform1i(glGetUniformLocation(shader->getProgramID("rvoCS"), "neighbour_ids"), 1);
+    glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "neighbour_ids"), 1);
 
     // setting up agent buffer attribute
-    glGenBuffers(1,&m_agentBO);
-    glBindBuffer(GL_ARRAY_BUFFER,m_agentBO);
-    glBufferData(GL_ARRAY_BUFFER,size,data,GL_DYNAMIC_DRAW);
+    glGenBuffers(1,&m_desVelBO);
+    glBindBuffer(GL_ARRAY_BUFFER,m_desVelBO);
+    glBufferData(GL_ARRAY_BUFFER,m_numAgents*sizeof(ngl::Vec3),NULL,GL_DYNAMIC_DRAW);
+    // desVel
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,size,type,GL_FALSE,stride,offset);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(ngl::Vec3),0);
+
+
+    // setting up shader storage buffer for new computed velocity
+    glGenBuffers(1,&m_newVelSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER,m_newVelSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER,m_numAgents*sizeof(ngl::Vec3),NULL,GL_STATIC_DRAW);
+    GLint bufMask = GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT;
+    ngl::Vec3 *newVels = (ngl::Vec3 *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER,
+                                                       0,
+                                                       m_numAgents*sizeof(ngl::Vec3),
+                                                       bufMask);
+    for(int i=0;i<m_numAgents;i++)
+    {
+        newVels[i].m_x = 0;
+        newVels[i].m_y = 0;
+        newVels[i].m_z = 0;
+    }
+    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+
 
     glBindVertexArray(0);
 
 
 }
 
-typedef struct AGENTDATA{
-    ngl::Vec3 pos;
-    ngl::Vec3 vel;
-    float rad;
-    unsigned int numNeighbours;
-    unsigned int startNeighIdIndex;
-}AgentData;
-
 void System::updateRVOCS()
 {
-
-    struct AgentData ad;
-
     std::vector<AgentData> neighbours;
+    std::vector<int> neighbourIDs;
+    std::vector<ngl::Vec3> desVels;
+
     unsigned int _startNeighIdIndex;
     unsigned int _numNeighbours;
     BOOST_FOREACH(Agent *a,m_agents)
     {
         _startNeighIdIndex = neighbours.size();
         _numNeighbours = a->getBrain()->getNeighbours().size();
-        if (_numNeighbours > 0);
-        {
-            for(unsigned int i=0;i<_numNeighbours;i++)
-            {
-                ad.pos = a->getOrigState().m_pos;
-                ad.vel = a->getOrigState().m_vel;
-                ad.rad = a->getOrigState().m_rad;
-                ad.numNeighbours = _numNeighbours;
-                ad.startNeighIdIndex = _startNeighIdIndex;
-                neighbours.push_back(ad);
-            }
 
+        // add agent to neighbour vector
+        AgentData ad;
+        ad.pos = a->getOrigState().m_pos;
+        ad.vel = a->getOrigState().m_vel;
+        ad.rad = a->getOrigState().m_rad;
+        ad.numNeighbours = _numNeighbours;
+        ad.startNeighIdIndex = _startNeighIdIndex;
+        neighbours.push_back(ad);
+
+        // ad agents desired velocity to attribute buffer
+        desVels.push_back(a->getBrain()->getDesVel());
+
+
+        for(unsigned int i=0;i<_numNeighbours;i++)
+        {
+            // add neighbour ids to neighbourIDs vector
+            neighbourIDs.push_back(a->getBrain()->getNeighbours()[i]->getID());
         }
+
     }
+
+    glBindVertexArray(m_rvoVAO);
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER,4,m_newVelSSBO);
+
+    ngl::ShaderLib *shader = ngl::ShaderLib::instance();
+    shader->use("rvo");
+    glDispatchCompute(m_numAgents/128,1,1);
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+    glBindVertexArray(0);
 }
 
 void System::update()

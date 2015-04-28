@@ -68,7 +68,6 @@ public:
     ngl::Vec3 flockSeparation();
     ngl::Vec3 flockCohesion();
     ngl::Vec3 flockAlignment();
-    ngl::Vec3 flockGoal();
 
     void socialForces();
 
@@ -78,6 +77,7 @@ public:
     float getDesSpeed()const;
     ngl::Vec3 getDesVel()const;
     std::vector<Boundary*> getBoundaries()const;
+    std::vector<Agent*> getNeighbours();
 
     void clearNeighbours();
     void clearBoundary();

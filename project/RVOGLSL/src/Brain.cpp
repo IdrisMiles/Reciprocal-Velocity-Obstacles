@@ -633,11 +633,6 @@ ngl::Vec3 Brain::flockAlignment()
     return alignment;
 }
 
-ngl::Vec3 Brain::flockGoal()
-{
-
-}
-
 //----------------Social forces-----------------------
 void Brain::socialForces()
 {
@@ -691,6 +686,10 @@ void Brain::addBoundary(Boundary *_boundary)
 std::vector<Boundary*> Brain::getBoundaries()const
 {
     return m_Boundaries;
+}
+std::vector<Agent*> Brain::getNeighbours()
+{
+  return m_neighbours;
 }
 
 void Brain::printInfo()

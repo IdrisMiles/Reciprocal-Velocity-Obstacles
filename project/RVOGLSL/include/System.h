@@ -11,6 +11,11 @@
 enum SpatialDivision {BRUTE,OCTREE,HASH};
 class AgentOctree;
 class HashTable;
+
+
+
+
+
 class System
 {
 public:
@@ -72,12 +77,14 @@ private:
     int m_numBoundaries;
     float m_systemWidth;
 
+    // compute shader stuff
     GLuint m_rvoVAO;
     GLuint m_neighboursBO;
     GLuint m_neighboursTEX;
     GLuint m_neighIdsBO;
     GLuint m_neighIdsTEX;
-    GLuint m_agentBO;
+    GLuint m_desVelBO;
+    GLuint m_newVelSSBO;
 
 };
 
