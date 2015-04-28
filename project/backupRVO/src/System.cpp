@@ -39,14 +39,6 @@ System::~System()
     delete [] m_octree;
     delete [] m_hashTable;
 
-    glDeleteTextures(1,&m_neighboursTEX);
-    glDeleteBuffers(1,&m_neighboursBO);
-
-    glDeleteTextures(1,&m_neighIdsTEX);
-    glDeleteBuffers(1,&m_neighIdsBO);
-
-    glDeleteVertexArrays(1,&m_rvoVAO);
-
 }
 
 void System::initRVOCS()
@@ -59,77 +51,8 @@ void System::initRVOCS()
     shader->compileShader("rvoCS");
     shader->attachShaderToProgram("rvo","rvoCS");
     shader->linkProgramObject("rvo");
-    shader->use("rvoCS");
-
-    glGenVertexArrays(1,&m_rvoVAO);
-    glBindVertexArray(m_rvoVAO);
-
-    // setting up neighbour sampler buffer
-    glGenBuffers(1,&m_neighboursBO);
-    glBindBuffer(GL_TEXTURE_BUFFER,m_neighboursBO);
-    glBufferData(GL_TEXTURE_BUFFER,size,data,GL_DYNAMIC_DRAW);
-    glGenTextures(1,&m_neighboursTEX);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_BUFFER,m_neighboursTEX);
-    glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
-    glUniform1i(glGetUniformLocation(shader->getProgramID("rvoCS"), "neighbours"), 0);
-
-    // setting up neighbour ID sampler buffer
-    glGenBuffers(1,&m_neighIdsBO);
-    glBindBuffer(GL_TEXTURE_BUFFER,m_neighIdsBO);
-    glBufferData(GL_TEXTURE_BUFFER,size,data,GL_DYNAMIC_DRAW);
-    glGenTextures(1,&m_neighIdsTEX);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_BUFFER,m_neighIdsTEX);
-    glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
-    glUniform1i(glGetUniformLocation(shader->getProgramID("rvoCS"), "neighbour_ids"), 1);
-
-    // setting up agent buffer attribute
-    glGenBuffers(1,&m_agentBO);
-    glBindBuffer(GL_ARRAY_BUFFER,m_agentBO);
-    glBufferData(GL_ARRAY_BUFFER,size,data,GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,size,type,GL_FALSE,stride,offset);
-
-    glBindVertexArray(0);
 
 
-}
-
-typedef struct AGENTDATA{
-    ngl::Vec3 pos;
-    ngl::Vec3 vel;
-    float rad;
-    unsigned int numNeighbours;
-    unsigned int startNeighIdIndex;
-}AgentData;
-
-void System::updateRVOCS()
-{
-
-    struct AgentData ad;
-
-    std::vector<AgentData> neighbours;
-    unsigned int _startNeighIdIndex;
-    unsigned int _numNeighbours;
-    BOOST_FOREACH(Agent *a,m_agents)
-    {
-        _startNeighIdIndex = neighbours.size();
-        _numNeighbours = a->getBrain()->getNeighbours().size();
-        if (_numNeighbours > 0);
-        {
-            for(unsigned int i=0;i<_numNeighbours;i++)
-            {
-                ad.pos = a->getOrigState().m_pos;
-                ad.vel = a->getOrigState().m_vel;
-                ad.rad = a->getOrigState().m_rad;
-                ad.numNeighbours = _numNeighbours;
-                ad.startNeighIdIndex = _startNeighIdIndex;
-                neighbours.push_back(ad);
-            }
-
-        }
-    }
 }
 
 void System::update()

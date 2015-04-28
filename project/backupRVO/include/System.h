@@ -18,7 +18,6 @@ public:
     ~System();
 
     void initRVOCS();
-    void updateRVOCS();
 
     void update();
     void addAgent(const Avoidance &_avoidType);
@@ -71,13 +70,6 @@ private:
     int m_numAgents;
     int m_numBoundaries;
     float m_systemWidth;
-
-    GLuint m_rvoVAO;
-    GLuint m_neighboursBO;
-    GLuint m_neighboursTEX;
-    GLuint m_neighIdsBO;
-    GLuint m_neighIdsTEX;
-    GLuint m_agentBO;
 
 };
 
