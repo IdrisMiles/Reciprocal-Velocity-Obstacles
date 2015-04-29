@@ -84,6 +84,7 @@ private:
     GLuint m_neighIdsBO;
     GLuint m_neighIdsTEX;
     GLuint m_desVelBO;
+    GLuint m_desVelTEX;
     GLuint m_newVelSSBO;
 
 };

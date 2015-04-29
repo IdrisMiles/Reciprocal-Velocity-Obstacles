@@ -1,5 +1,6 @@
 #include "System.h"
 
+#include <ngl/NGLStream.h>
 #include <ngl/ShaderLib.h>
 #include <ngl/Random.h>
 #include <ngl/ShaderLib.h>
@@ -79,17 +80,19 @@ void System::initRVOCS()
     glGenVertexArrays(1,&m_rvoVAO);
     glBindVertexArray(m_rvoVAO);
 
-    // setting up neighbour sampler buffer
+
+
+    // -------setting up neighbour sampler buffer-------
     glGenBuffers(1,&m_neighboursBO);
     glBindBuffer(GL_TEXTURE_BUFFER,m_neighboursBO);
-    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*sizeof(AgentData),NULL,GL_DYNAMIC_DRAW);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*sizeof(AgentData),NULL,GL_STATIC_DRAW);
     glGenTextures(1,&m_neighboursTEX);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_BUFFER,m_neighboursTEX);
-    glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
+    glTexBuffer(GL_TEXTURE_BUFFER,GL_RGB32F, m_neighboursBO);
     glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "neighbours"), 0);
 
-    // setting up neighbour ID sampler buffer
+    // -------setting up neighbour ID sampler buffer---------
     // This is an array of ints holding the ID of agents,
     // Stored in an order such that an agent can locate it's neighbours ID,
     // by accessing the current_agent_id*10 if each agent has 10 neighbours
@@ -103,32 +106,22 @@ void System::initRVOCS()
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
     glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "neighbour_ids"), 1);
 
-    // setting up agent buffer attribute
+
+    // -------setting up agent buffer attribute--------
     glGenBuffers(1,&m_desVelBO);
-    glBindBuffer(GL_ARRAY_BUFFER,m_desVelBO);
-    glBufferData(GL_ARRAY_BUFFER,m_numAgents*sizeof(ngl::Vec3),NULL,GL_DYNAMIC_DRAW);
-    // desVel
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(ngl::Vec3),0);
+    glBindBuffer(GL_TEXTURE_BUFFER,m_desVelBO);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*sizeof(ngl::Vec3),NULL,GL_STATIC_DRAW);
+    glGenTextures(1,&m_desVelTEX);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_BUFFER,m_desVelTEX);
+    glTexBuffer(GL_TEXTURE_BUFFER,GL_RGB32F, m_desVelBO);
+    glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "des_vel"), 2);
 
 
-    // setting up shader storage buffer for new computed velocity
+
+
+    // ---------setting up shader storage buffer for new computed velocity--------
     glGenBuffers(1,&m_newVelSSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER,m_newVelSSBO);
-    glBufferData(GL_SHADER_STORAGE_BUFFER,m_numAgents*sizeof(ngl::Vec3),NULL,GL_STATIC_DRAW);
-    GLint bufMask = GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT;
-    ngl::Vec3 *newVels = (ngl::Vec3 *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER,
-                                                       0,
-                                                       m_numAgents*sizeof(ngl::Vec3),
-                                                       bufMask);
-    for(int i=0;i<m_numAgents;i++)
-    {
-        newVels[i].m_x = 0;
-        newVels[i].m_y = 0;
-        newVels[i].m_z = 0;
-    }
-    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
 
 
     glBindVertexArray(0);
@@ -138,6 +131,9 @@ void System::initRVOCS()
 
 void System::updateRVOCS()
 {
+  ngl::ShaderLib *shader = ngl::ShaderLib::instance();
+  shader->use("rvo");
+
     std::vector<AgentData> neighbours;
     std::vector<int> neighbourIDs;
     std::vector<ngl::Vec3> desVels;
@@ -170,16 +166,62 @@ void System::updateRVOCS()
 
     }
 
+    // bind vertex array
     glBindVertexArray(m_rvoVAO);
 
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER,4,m_newVelSSBO);
 
-    ngl::ShaderLib *shader = ngl::ShaderLib::instance();
-    shader->use("rvo");
-    glDispatchCompute(m_numAgents/128,1,1);
+    // update neighbour buffer
+    glBindBuffer(GL_TEXTURE_BUFFER,m_neighboursBO);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*sizeof(AgentData),&neighbours[0].pos.m_x,GL_STATIC_DRAW);
+
+    // update neighbour ID buffer
+    glBindBuffer(GL_TEXTURE_BUFFER,m_neighIdsBO);
+    glBufferData(GL_TEXTURE_BUFFER,neighbourIDs.size()*sizeof(int),&neighbourIDs[0],GL_STATIC_DRAW);
+
+    // update desired velocity buffer
+    glBindBuffer(GL_TEXTURE_BUFFER,m_desVelBO);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*sizeof(ngl::Vec3),&desVels[0].m_x,GL_STATIC_DRAW);
+    glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "des_vel"), 2);
+
+
+    // bind shader storage buffer
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER,0,m_newVelSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER,m_numAgents*sizeof(ngl::Vec4),NULL,GL_STATIC_DRAW);
+
+    // call compute shader
+    glDispatchCompute((m_numAgents/16)+m_numAgents%16,1,1);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER,0,0);
+    glBindBuffer(GL_TEXTURE_BUFFER,0);
+    // This makes sure all GPU stuff is done
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_newVelSSBO);
+    // want to make buffer readable
+    GLint bufAccess = GL_MAP_READ_BIT;
+    ngl::Vec4 *newVels = (ngl::Vec4 *)glMapBufferRange(GL_ARRAY_BUFFER,
+                                                       0,
+                                                       m_numAgents*sizeof(ngl::Vec4),
+                                                       bufAccess);
+
+    if(newVels == (ngl::Vec4 *)NULL){std::cout<<"mapping buffer failed\n";}
+
+    ngl::Vec4 result[m_numAgents];
+    memcpy(result,newVels,m_numAgents*sizeof(ngl::Vec4));
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+
+//    for(int i=0;i<m_numAgents;i++)
+//    {
+//        std::cout<<m_agents[i]->getOrigState().m_vel<<"\n";
+//        std::cout<<result[i]<<"\n";
+//        //m_agents[i]->setVel(result[i]);
+//    }
+
+
     glBindVertexArray(0);
+
 }
 
 void System::update()
@@ -187,12 +229,16 @@ void System::update()
     addNeighbours();
     addBoundaries();
 
+
+    // call compute shader here
+    updateRVOCS();
+
     BOOST_FOREACH( Agent* a, m_agents)
     {
         a->update();
     }
 
-    // call compute shader here
+
 
     clearNeighbours();
     clearBoundaries();

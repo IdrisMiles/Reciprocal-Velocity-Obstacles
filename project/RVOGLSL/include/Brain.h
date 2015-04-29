@@ -25,6 +25,7 @@ public:
     void setSystem(System *_system);
     void setAvoidanceType(const Avoidance &_avoidance);
     void setGoal(const ngl::Vec3 &_goal);
+    void setDesVel(const ngl::Vec3 &_desVel);
     void mapRoute();
     void findNextGoal();
     void setSocialAttraction(const float &_socialAttract);

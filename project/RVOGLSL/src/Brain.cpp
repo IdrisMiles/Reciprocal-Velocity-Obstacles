@@ -92,6 +92,11 @@ void Brain::setGoal(const ngl::Vec3 &_goal)
     m_desVel *= m_desSpeed;
 }
 
+void Brain::setDesVel(const ngl::Vec3 &_desVel)
+{
+  m_desVel = _desVel;
+}
+
 void Brain::mapRoute()
 {
 
