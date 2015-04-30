@@ -60,9 +60,10 @@ System::~System()
 typedef struct AGENTDATA{
     ngl::Vec3 pos;
     ngl::Vec3 vel;
-    float rad;
-    int numNeighbours;
-    int startNeighIdIndex;
+    ngl::Vec3 info;
+//    float rad;
+//    int numNeighbours;
+//    int startNeighIdIndex;
 }AgentData;
 
 void System::initRVOCS()
@@ -149,9 +150,10 @@ void System::updateRVOCS()
         AgentData ad;
         ad.pos = a->getOrigState().m_pos;
         ad.vel = a->getOrigState().m_vel;
-        ad.rad = a->getOrigState().m_rad;
-        ad.numNeighbours = _numNeighbours;
-        ad.startNeighIdIndex = _startNeighIdIndex;
+        ad.info = ngl::Vec3(a->getOrigState().m_rad,_numNeighbours,_startNeighIdIndex);
+        //ad.rad = a->getOrigState().m_rad;
+        //ad.numNeighbours = _numNeighbours;
+        //ad.startNeighIdIndex = _startNeighIdIndex;
         neighbours.push_back(ad);
 
         // ad agents desired velocity to attribute buffer
@@ -193,7 +195,7 @@ void System::updateRVOCS()
     glBufferData(GL_SHADER_STORAGE_BUFFER,m_numAgents*sizeof(ngl::Vec4),NULL,GL_STATIC_DRAW);
 
     // call compute shader
-    glDispatchCompute((m_numAgents/16)+m_numAgents%16,1,1);
+    glDispatchCompute(m_numAgents,1,1);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER,0,0);
     glBindBuffer(GL_TEXTURE_BUFFER,0);
     // This makes sure all GPU stuff is done
@@ -255,7 +257,10 @@ void System::update()
 void System::addAgent(const Avoidance &_avoidType)
 {
     m_agents.push_back(new Agent(this,_avoidType,m_numAgents));
-    m_numAgents++;
+    m_agents.push_back(new Agent(this,_avoidType,m_numAgents));
+    m_agents.push_back(new Agent(this,_avoidType,m_numAgents));
+    m_agents.push_back(new Agent(this,_avoidType,m_numAgents));
+    m_numAgents+=4;
 }
 
 void System::addNeighbours()

@@ -1,6 +1,6 @@
 #version 440 core
 
-layout (local_size_x = 16) in;
+layout (local_size_x = 1) in;
 
 uniform samplerBuffer neighbours;       //texture location 0
 uniform samplerBuffer neighbour_ids;    //texture location 1
@@ -26,8 +26,8 @@ void createSampleVelocities(in vec3 desVel, inout vec3 testVels[72])
     {
         //testVels[i].xz    = desVel.xz;
         //testVels[i].xz    = desVel.xz;
-        testVels[i].xz    = speed * vec2(cos(theta+(i*5)),sin(theta+(i*5)));
-        testVels[i+1].xz  = speed * vec2(cos(theta-(i*5)),sin(theta-(i*5)));
+        testVels[i].xz    = speed * vec2(cos(theta+radians(i*5)),sin(theta+radians(i*5)));
+        testVels[i+1].xz  = speed * vec2(cos(theta-radians(i*5)),sin(theta-radians(i*5)));
     }
 }
 
@@ -174,6 +174,7 @@ void main()
 
     // current agents neighbour size
     int num_neigh = int(texelFetch(neighbours,(agentID*3) + 2).y);
+    num_neigh =10;
 
     // start index into neighbour_ids for agents neighbours
     int start_neigh_index = int(texelFetch(neighbours,(agentID*3) + 2).z);

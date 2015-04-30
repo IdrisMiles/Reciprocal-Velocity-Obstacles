@@ -164,7 +164,7 @@ void NGLScene::initialize()
 
   m_system = new System(40.0f);
 
-  for(int i=0;i<1;i++)
+  for(int i=0;i<4;i++)
   {
       //m_system->addAgent(FLOCKING);
       m_system->addAgent(RVO);
