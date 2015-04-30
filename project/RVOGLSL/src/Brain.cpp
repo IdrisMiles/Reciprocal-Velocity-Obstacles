@@ -43,7 +43,7 @@ void Brain::update()
         case FLOCKING:
             flocking();break;
         case RVO:
-            rvo();break;
+            //rvo();break;
         case SOCIAL:
             socialForces();break;
         default:
@@ -173,7 +173,7 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
     std::vector<float> tValues;
     ngl::Vec3 newVel = m_desVel;
     bool velInside = true;
-    for(unsigned int i=0; i<testVelocities.size() && velInside;i++)
+    for(unsigned int i=0; i<testVelocities.size() /*&& velInside*/;i++)
     {
         newVel = testVelocities[i];
         std::vector<bool> velAcceptance;
@@ -210,6 +210,7 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
         {
             // velocity is outside VO, thus is acceptable
             velInside = false;
+            i=10000;
         }
         else
         {
@@ -228,7 +229,7 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
     } // end of testVelocities for loop
 
     // if acceptable velocity was found exit now
-    if(!velInside){return newVel;}
+    if(!velInside){newVel.m_y  = 0;std::cout<<"new vel: "<<newVel<<"\n";return newVel;}
 
     // work out penalty for velocities
     int index=-1;
@@ -247,6 +248,8 @@ ngl::Vec3 Brain::findNewVelRVO(const std::vector<ngl::Vec3> &testVelocities)
     // set new velocity
     //newVel = 0.5 * (t*testVelocities[index] + m_agent->getOrigState().m_vel);
     newVel = t*testVelocities[index];
+    newVel.m_y  = 0;
+    std::cout<<"new vel: "<<newVel<<"\n";
     return newVel;
 }
 

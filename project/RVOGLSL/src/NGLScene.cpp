@@ -31,6 +31,11 @@ NGLScene::NGLScene(QWindow *_parent) : OpenGLWindow(_parent)
   m_scene = 0;
   m_pause = true;
   m_editMode = false;
+
+  //fps stuff
+  m_startClock = std::clock();
+  m_fps=0;
+  m_frames=0;
  
 }
 
@@ -154,7 +159,8 @@ void NGLScene::initialize()
   // etc by using the pixel ratio as a multiplyer
   glViewport(0,0,width()*devicePixelRatio(),height()*devicePixelRatio());
 
-  //m_vao = new ngl::VertexArrayObject::createVOA(GL_POINT);
+  m_text = new ngl::Text(QFont("Arial",14));
+  m_text->setScreenSize(width(),height());
 
   m_system = new System(40.0f);
 
@@ -221,6 +227,13 @@ void NGLScene::render()
   // grab an instance of the shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
   (*shader)["Phong"]->use();
+
+  //-----------fps counter---------
+  ++m_frames;
+  if(m_pause){std::cout<<"FPS: "<<m_fps<<"\n";}
+  //m_text->setColour(1,1,0);
+//  QString text=QString("FPS: %2 ").arg(m_fps);
+//  m_text->renderText(10,20,text);
 
   //-------------Global TX matrix sent to Agents---------------
   // Rotation based on the mouse position for our global transform
@@ -424,5 +437,15 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
     update();
+
+    m_timeElapsed = ( std::clock() - m_startClock ) / (double) CLOCKS_PER_SEC;
+    if(m_timeElapsed >= 0.5)
+    {
+        //reset clock and frames
+        m_startClock = std::clock();
+        m_fps = m_frames / m_timeElapsed;
+        m_frames = 0;
+    }
+
     renderNow();
 }

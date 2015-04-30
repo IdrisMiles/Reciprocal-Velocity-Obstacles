@@ -68,12 +68,13 @@ void Agent::update()
 {
     // update brain, find new path/forces/velocity etc
     m_brain->update();
-    // update position and move agent
-    m_integrator.update();
+
 }
 
 void Agent::updateState()
 {
+    // update position and move agent
+    m_integrator.update();
     m_origState = m_currentState;
 }
 

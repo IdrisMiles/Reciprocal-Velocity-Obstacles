@@ -13,19 +13,25 @@ layout (std430, binding = 0) buffer New_Vel_Buffer
     vec4 new_vel[];
 };
 
+//----------------------------------------------------------------------------
 
 void createSampleVelocities(in vec3 desVel, inout vec3 testVels[72])
 {
     float speed = length(desVel);
     vec3 u_DesVel = desVel;
     normalize(u_DesVel);
-    float theta = asin(u_DesVel.x);
+    float theta = atan(u_DesVel.z,u_DesVel.x);
+
     for(int i=0;i<36;i+=2)
     {
+        //testVels[i].xz    = desVel.xz;
+        //testVels[i].xz    = desVel.xz;
         testVels[i].xz    = speed * vec2(cos(theta+(i*5)),sin(theta+(i*5)));
         testVels[i+1].xz  = speed * vec2(cos(theta-(i*5)),sin(theta-(i*5)));
     }
 }
+
+//----------------------------------------------------------------------------
 
 bool pointLeftOfEdge(in vec3 point, in vec3 edge, in vec3 edgeOrig)
 {
@@ -39,6 +45,8 @@ bool pointLeftOfEdge(in vec3 point, in vec3 edge, in vec3 edgeOrig)
 
 }
 
+//----------------------------------------------------------------------------
+
 float timeToIntersection(in vec3 vel, in vec3 p1, in vec3 edge, in vec3 p2, in float time)
 {
     mat2 edges;
@@ -46,16 +54,20 @@ float timeToIntersection(in vec3 vel, in vec3 p1, in vec3 edge, in vec3 p2, in f
     edges[1] = edge.xz;
     float detVE = determinant(edges);
 
+    vec3 dist;
+    mat2 edgeDist;
+    float detED;
+    float t;
+
     if(detVE != 0)
     {
         //edges will collide
 
-        vec3 dist = p2 - p1;
-        mat2 edgeDist;
+        dist = p2 - p1;
         edgeDist[0] = dist.xz;
         edgeDist[1] = edge.xz;
-        float detED = determinant(edgeDist);
-        float t = - detED / detVE;
+        detED = determinant(edgeDist);
+        t = - (detED / detVE);
 
         if(t>=0 && t<=time)
         {
@@ -67,8 +79,10 @@ float timeToIntersection(in vec3 vel, in vec3 p1, in vec3 edge, in vec3 p2, in f
     return -1.0f;
 }
 
+//----------------------------------------------------------------------------
+
 bool testVO(in vec3 testVel, in vec3 neighPos, in vec3 neighVel, in float neighRad,
-            in vec3 agentPos, in vec3 agentVel, in float agentRad, out float tValuesNeigh[10])
+            in vec3 agentPos, in vec3 agentVel, in float agentRad, out float tValuesNeigh[10], in int invoc)
 {
     vec3 dist = neighPos - agentPos;
     vec3 perpDist;
@@ -123,15 +137,26 @@ bool testVO(in vec3 testVel, in vec3 neighPos, in vec3 neighVel, in float neighR
     }
 
     // velocity inside VO, find time to collision
-    float time = 100;
-    float t1 = timeToCollision(testVel,agentPos,frontEdge,p4,time);
-    float t2 = timeToCollision(testVel,agentPos,rightEdge,p5,time);
-    float t3 = timeToCollision(testVel,agentPos,leftEdge,p4,time);
+    float time = 1000000;
+    float t1 = timeToIntersection(testVel,agentPos,frontEdge,p4,time);
+    float t2 = timeToIntersection(testVel,agentPos,rightEdge,p5,time);
+    float t3 = timeToIntersection(testVel,agentPos,leftEdge,p4,time);
 
+    float MAX = 10000000;
+    float tmp1 = (t1>0)?t1:MAX;
+    float tmp2 = (t2>0)?t2:MAX;
+    float tmp3 = (t3>0)?t3:MAX;
+
+    float lowestT   = (tmp1<tmp2)   ?tmp1:tmp2;
+          lowestT   = (tmp3<lowestT)?tmp3:lowestT;
+
+    tValuesNeigh[invoc] = 0.0001 * lowestT;
 
     return false;
 
 }
+
+//----------------------------------------------------------------------------
 
 void main()
 {
@@ -145,7 +170,7 @@ void main()
     vec3 agentVel = texelFetch(neighbours,(agentID*3) + 1).xyz;
 
     // current agents radius
-    float rad = texelFetch(neighbours,(agentID*3) + 2).x;
+    float agentRad = texelFetch(neighbours,(agentID*3) + 2).x;
 
     // current agents neighbour size
     int num_neigh = int(texelFetch(neighbours,(agentID*3) + 2).y);
@@ -156,6 +181,22 @@ void main()
     // find current agents desired velocity
     vec3 agentDesVel = texelFetch(des_vel,agentID).xyz;
 
+    //neighbour position array
+    vec3 neighPos[10];
+
+    //neighbour position array
+    vec3 neighVel[10];
+
+    //neighbour position array
+    float neighRad[10];
+
+    for(int i=0;i<num_neigh;i++)
+    {
+        int neigh_id = int(texelFetch(neighbour_ids,start_neigh_index+1).x);
+        neighPos[i] = texelFetch(neighbours,neigh_id*3).xyz;
+        neighVel[i] = texelFetch(neighbours,neigh_id*3 + 1).xyz;
+        neighRad[i] = texelFetch(neighbours,neigh_id*3 + 2).x;
+    }
 
     // create sample velocities
     vec3 test_velocity[72];
@@ -164,19 +205,90 @@ void main()
     //------------do FUNKY RVO stuff!----------------
 
 
-    float tValues[];
+    float tValuesVel[72];
     bool velInside = true;
+    vec3 newVel;
+    int velIndex = -1;
 
-//    for(int i=0;i<72;i++)
-//    {
+    int i=0;
+    for(int i=0;i<72 /*&& velInside*/;i++)
+    {
+        newVel = test_velocity[i];
+        float tValuesNeigh[10];
+        bool velAccept[10];
+
+        for(int j=0;j<num_neigh;j++)
+        {
+            //testVO against neighbour agents
+            velAccept[j] = testVO(newVel,neighPos[j],neighVel[j],neighRad[j],
+                                  agentPos,agentVel,agentRad,tValuesNeigh,j);
 
 
-//    }
+        }// end test neighbour loop
 
-    // write results to newVel
-    new_vel[agentID] = vec4(agentVel,0);
+        bool accept = true;
+        for(int j=0;j<10;j++)
+        {
+            if(!velAccept[j])
+            {
+                accept = false;
+            }
+        }
+
+        // Lowest t value
+        float lowestT = 100;
+        if(accept)
+        {
+            // velocityis acceptable
+            velInside = false;
+            velIndex = i;
+            i = 73; //1000 to be safe;
+        }
+        else
+        {
+            for(int j=0;j<num_neigh;j++)
+            {
+                if(tValuesNeigh[j]<lowestT && lowestT>0)
+                {
+                    lowestT = tValuesNeigh[j];
+                }
+            }
+            tValuesVel[i] = lowestT;
+            velIndex = i;
+        }
+
+        i++;
+    }//end test velocity loop
 
 
+    //find penalty values and chose best vel
+    int index=-1;
+    float penalty = 1000000000;
+    float t = 1;
+    if(!velInside)
+    {
+        //velocity acceptable
+        new_vel[agentID] = vec4(newVel,0);
+        //return;
+    }
+    else
+    {
+        for(int i=0;i<72;i++)
+        {
+            float tmpPenalty = (10/tValuesVel[i]);// + (m_desVel-testVelocities[i]).length();
+            if(tmpPenalty < penalty && tmpPenalty>0)
+            {
+                penalty = tmpPenalty;
+                t = tValuesVel[i];
+                index = i;
+            }
+        }
+        // set new velocity
+        //newVel = 0.5 * (t*testVelocities[index] + m_agent->getOrigState().m_vel);
+        newVel = t*test_velocity[index];
 
-
+        // write results to newVel
+        new_vel[agentID] = vec4(newVel,0);
+    }
+    return;
 }

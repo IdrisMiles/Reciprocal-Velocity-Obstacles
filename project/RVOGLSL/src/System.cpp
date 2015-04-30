@@ -61,8 +61,8 @@ typedef struct AGENTDATA{
     ngl::Vec3 pos;
     ngl::Vec3 vel;
     float rad;
-    unsigned int numNeighbours;
-    unsigned int startNeighIdIndex;
+    int numNeighbours;
+    int startNeighIdIndex;
 }AgentData;
 
 void System::initRVOCS()
@@ -99,11 +99,11 @@ void System::initRVOCS()
     // alternative is to access at current_agent.startNeighIdIndex and end at +=numNeigh
     glGenBuffers(1,&m_neighIdsBO);
     glBindBuffer(GL_TEXTURE_BUFFER,m_neighIdsBO);
-    glBufferData(GL_TEXTURE_BUFFER,NULL,NULL,GL_DYNAMIC_DRAW);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*10*sizeof(int),NULL,GL_DYNAMIC_DRAW);
     glGenTextures(1,&m_neighIdsTEX);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER,m_neighIdsTEX);
-    glTexBuffer(GL_TEXTURE_BUFFER,GL_R32F, m_neighboursBO);
+    glTexBuffer(GL_TEXTURE_BUFFER,GL_R32I, m_neighboursBO);
     glUniform1i(glGetUniformLocation(shader->getProgramID("rvo"), "neighbour_ids"), 1);
 
 
@@ -158,10 +158,14 @@ void System::updateRVOCS()
         desVels.push_back(a->getBrain()->getDesVel());
 
 
-        for(unsigned int i=0;i<_numNeighbours;i++)
+        for(unsigned int i=0;i</*_numNeighbours*/10;i++)
         {
-            // add neighbour ids to neighbourIDs vector
-            neighbourIDs.push_back(a->getBrain()->getNeighbours()[i]->getID());
+            if(i < _numNeighbours)
+            {
+                // add neighbour ids to neighbourIDs vector
+                neighbourIDs.push_back(a->getBrain()->getNeighbours()[i]->getID());
+            }
+            else{neighbourIDs.push_back(1);}
         }
 
     }
@@ -212,12 +216,14 @@ void System::updateRVOCS()
     glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
-//    for(int i=0;i<m_numAgents;i++)
-//    {
-//        std::cout<<m_agents[i]->getOrigState().m_vel<<"\n";
-//        std::cout<<result[i]<<"\n";
-//        //m_agents[i]->setVel(result[i]);
-//    }
+    std::cout<<"=======================================\n";
+    for(int i=0;i<m_numAgents;i++)
+    {
+        //std::cout<<m_agents[i]->getOrigState().m_vel<<"\n";
+        //std::cout<<"Comp vel: "<<result[i]<<"\n";
+        m_agents[i]->setVel(result[i].toVec3());
+    }
+    std::cout<<"-------------------------\n";
 
 
     glBindVertexArray(0);
@@ -229,16 +235,13 @@ void System::update()
     addNeighbours();
     addBoundaries();
 
-
-    // call compute shader here
-    updateRVOCS();
-
     BOOST_FOREACH( Agent* a, m_agents)
     {
         a->update();
     }
 
-
+    // call compute shader here
+    updateRVOCS();
 
     clearNeighbours();
     clearBoundaries();
