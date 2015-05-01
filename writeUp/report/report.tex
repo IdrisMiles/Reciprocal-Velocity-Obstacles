@@ -1,4 +1,4 @@
-\documentclass[a4paper,teocolumn]{article}
+\documentclass[a4paper,twocolumn]{article}
 \usepackage{graphicx}
 
 \author{Idris Miles}
@@ -7,29 +7,31 @@
 \begin{document}
 
 \maketitle
-\newpage
 
-\tableofcontents
-\newpage
-
-\section{Abstract}
+\hline
+\section*{Abstract}
 This is the abstract \\
+\hline
+\section{Introduction}
+This is the introduction, I will talk about crowd simulations and their usage in games, animation & VFX.
 \newpage
 
 \section{Local Avoidance in Crowd Simulation}
 what is local avoidance, how does it differ from global nav and AI.
+Various methods, Boids, Social Forces, RVO. analyse them and how good/useful they are
 \\
 \section{RVO}
-RVO
-\\
+RVO  is a method of collision avoidance, it is agent based and can be used in crowd  simulation.
+It orignates from robots (cite).
 \subsection{How RVO Works}
-
+It works by magic...
 \subsection{RVO Implementation}
-
+pseudo code of some form can probably go here.
 \newpage
 
 \section{Optimizations}
-
+Changing the VO so not so conservative in dense areas.\\
+Moving heavy computation to a compute shader.\\
 \section{Conclusion}
 My conclusion and evaluation.\\
 \newpage
