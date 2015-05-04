@@ -1,0 +1,61 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: report.aux
+The style file: plain_annote.bst
+Database file #1: references.bib
+You're missing a field name---line 3 of file references.bib
+ : 
+ : %  author = {Anderson, J. L.},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+"{" immediately follows a field name---line 58 of file references.bib
+ : annote
+ :       {Real-time crowd model based on continuum dynamics.},
+I'm skipping whatever remains of this entry
+Too many commas in name 1 of "Sujeong Kim ., Stephen J. Guy ., Dinesh Manocha ., Ming C. Lin" for entry SKim2012CS
+while executing---line 1094 of file plain_annote.bst
+Warning--empty journal in DCherry2013RVO
+Too many commas in name 1 of "Sujeong Kim ., Stephen J. Guy ., Dinesh Manocha ., Ming C. Lin" for entry SKim2012CS
+while executing---line 1135 of file plain_annote.bst
+You've used 5 entries,
+            2163 wiz_defined-function locations,
+            537 strings with 5615 characters,
+and the built_in function-call counts, 1363 in all, are:
+= -- 120
+> -- 83
+< -- 0
++ -- 33
+- -- 28
+* -- 90
+:= -- 257
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 29
+chr.to.int$ -- 0
+cite$ -- 6
+duplicate$ -- 50
+empty$ -- 91
+format.name$ -- 28
+if$ -- 261
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 5
+newline$ -- 33
+num.names$ -- 10
+pop$ -- 31
+preamble$ -- 1
+purify$ -- 24
+quote$ -- 0
+skip$ -- 36
+stack$ -- 0
+substring$ -- 25
+swap$ -- 4
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 1
+while$ -- 10
+width$ -- 6
+write$ -- 56
+(There were 4 error messages)

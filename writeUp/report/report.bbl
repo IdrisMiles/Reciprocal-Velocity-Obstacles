@@ -1,0 +1,45 @@
+\begin{thebibliography}{1}
+
+\bibitem{DCherry2013RVO}
+David Cherry.
+\newblock Rvo collision avoidance in unity 3d.
+\newblock 2013.
+ \begin{quotation}\noindent A students project to incorporate RVO avoidance
+  into a Unity based crowd simulation. \end{quotation}
+
+\bibitem{AGuy2009CP}
+Stephen~J. Guy, Jatin Chhugani, Changkyu Kim, Nadathur Satish, Ming Lin, Dinesh
+  Manocha, and Pradeep Dubey.
+\newblock Clearpath: Highly parallel collision avoidance for multi-agent
+  simulation.
+\newblock {\em Eurographics/ ACM SIGGRAPH Symposium on Computer Animation},
+  2009.
+ \begin{quotation}\noindent optimizations of existing RVO library, tweaks RVO
+  implementation and describes parellizing implemenation. \end{quotation}
+
+\bibitem{NOthman2013SP}
+Wentong~Cai. Nasri Bin~Othman., Linbo~Luo. and Michael Lees.
+\newblock Spatial indexing in agent-based crowd simulation.
+\newblock {\em 6th International ICST Conference on Simulation Tools and
+  Techniques pages 92-100}, 2013.
+ \begin{quotation}\noindent spatial partitioning \end{quotation}
+
+\bibitem{SKim2012CS}
+Dinesh Manocha . Ming C.~Lin Sujeong Kim~., Stephen J. Guy~.
+\newblock Interactive simulation of dynamic crowd behaviors using general
+  adaptation syndrome theory.
+\newblock {\em 12 Proceedings of the ACM SIGGRAPH Symposium on Interactive 3D
+  Graphics and Games, Pages 55-62.}, 2012.
+ \begin{quotation}\noindent Use of stress modelling to drive agent motion in
+  crowd simulation, taking into account psychological phenomena. Different
+  stressors expressed as functions of space and time. \end{quotation}
+
+\bibitem{JBerg2008RVO}
+Jur van~den Berg, Ming Lin, and Dinesh Manocha.
+\newblock Reciprocal velocity obstacles for real-time multi-agent navigation.
+\newblock {\em IEEE, International Conference on Robotics and Automation
+  (ICRA)}, 2008.
+ \begin{quotation}\noindent Velocity Obstacle and many other avoidance models
+  inspired by VO explained and prooved. \end{quotation}
+
+\end{thebibliography}

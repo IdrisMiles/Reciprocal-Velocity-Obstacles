@@ -1,6 +1,6 @@
 #version 440 core
 
-layout (local_size_x = 1) in;
+layout (local_size_x = 4) in;
 
 uniform samplerBuffer neighbours;       //texture location 0
 uniform samplerBuffer neighbour_ids;    //texture location 1
@@ -193,7 +193,7 @@ void main()
 
     for(int i=0;i<num_neigh;i++)
     {
-        int neigh_id = int(texelFetch(neighbour_ids,start_neigh_index+1).x);
+        int neigh_id = int(texelFetch(neighbour_ids,start_neigh_index+i).x);
         neighPos[i] = texelFetch(neighbours,neigh_id*3).xyz;
         neighVel[i] = texelFetch(neighbours,neigh_id*3 + 1).xyz;
         neighRad[i] = texelFetch(neighbours,neigh_id*3 + 2).x;

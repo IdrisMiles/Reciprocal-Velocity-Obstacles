@@ -100,7 +100,7 @@ void System::initRVOCS()
     // alternative is to access at current_agent.startNeighIdIndex and end at +=numNeigh
     glGenBuffers(1,&m_neighIdsBO);
     glBindBuffer(GL_TEXTURE_BUFFER,m_neighIdsBO);
-    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*10*sizeof(int),NULL,GL_DYNAMIC_DRAW);
+    glBufferData(GL_TEXTURE_BUFFER,m_numAgents*10*sizeof(int),NULL,GL_STATIC_DRAW);
     glGenTextures(1,&m_neighIdsTEX);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER,m_neighIdsTEX);
@@ -150,7 +150,7 @@ void System::updateRVOCS()
         AgentData ad;
         ad.pos = a->getOrigState().m_pos;
         ad.vel = a->getOrigState().m_vel;
-        ad.info = ngl::Vec3(a->getOrigState().m_rad,_numNeighbours,_startNeighIdIndex);
+        ad.info = ngl::Vec3(a->getOrigState().m_rad,/*_numNeighbours*/10,_startNeighIdIndex);
         //ad.rad = a->getOrigState().m_rad;
         //ad.numNeighbours = _numNeighbours;
         //ad.startNeighIdIndex = _startNeighIdIndex;
@@ -167,7 +167,7 @@ void System::updateRVOCS()
                 // add neighbour ids to neighbourIDs vector
                 neighbourIDs.push_back(a->getBrain()->getNeighbours()[i]->getID());
             }
-            else{neighbourIDs.push_back(1);}
+            else{neighbourIDs.push_back(0);}
         }
 
     }
@@ -195,7 +195,7 @@ void System::updateRVOCS()
     glBufferData(GL_SHADER_STORAGE_BUFFER,m_numAgents*sizeof(ngl::Vec4),NULL,GL_STATIC_DRAW);
 
     // call compute shader
-    glDispatchCompute(m_numAgents,1,1);
+    glDispatchCompute(m_numAgents/4,1,1);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER,0,0);
     glBindBuffer(GL_TEXTURE_BUFFER,0);
     // This makes sure all GPU stuff is done

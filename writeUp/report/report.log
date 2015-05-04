@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=latex 2014.10.16)  1 MAY 2015 10:11
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.5.1)  4 MAY 2015 21:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **report.tex
 (./report.tex
 LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 2 languages loaded.
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
@@ -39,87 +39,176 @@ Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 (/etc/texmf/tex/latex/config/graphics.cfg
 File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: dvips.def on input line 91.
+Package graphics Info: Driver file: pdftex.def on input line 91.
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvips.def
-File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
 ))
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
-) (./report.aux)
+)
+(./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+ (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count88
+\scratchdimen=\dimen105
+\scratchbox=\box26
+\nofMPsegments=\count89
+\nofMParguments=\count90
+\everyMPshowfont=\toks15
+\MPscratchCnt=\count91
+\MPscratchDim=\dimen106
+\MPnumerator=\count92
+\makeMPintoPDFobject=\count93
+\everyMPtoPDFconversion=\toks16
+)
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 9.
+(Font)              <12> on input line 16.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 9.
+(Font)              <8> on input line 16.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 9.
+(Font)              <6> on input line 16.
 
-! Misplaced \noalign.
-\hline ->\noalign 
-                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
-l.11 \hline
-           
-? 
-! Misplaced \noalign.
-\hline ->\noalign 
-                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
-l.14 \hline
-           
-? 
-
-Underfull \hbox (badness 10000) in paragraph at lines 13--14
+Underfull \hbox (badness 10000) in paragraph at lines 19--20
 
  []
 
-! Misplaced alignment tab character &.
-l.16 ...ions and their usage in games, animation &
-                                                   VFX.
-? 
+<../schedule/specialistSchedule.png, id=1, 1171.37625pt x 261.97874pt>
+File: ../schedule/specialistSchedule.png Graphic file (type png)
 
-Underfull \hbox (badness 10000) in paragraph at lines 20--23
+<use ../schedule/specialistSchedule.png>
+Package pdftex.def Info: ../schedule/specialistSchedule.png used on input line 
+30.
+(pdftex.def)             Requested size: 234.2711pt x 52.39482pt.
+
+<../umlDiagram/Agent_UML_diagram.png, id=2, 1723.14352pt x 1248.42882pt>
+File: ../umlDiagram/Agent_UML_diagram.png Graphic file (type png)
+
+<use ../umlDiagram/Agent_UML_diagram.png>
+Package pdftex.def Info: ../umlDiagram/Agent_UML_diagram.png used on input line
+ 35.
+(pdftex.def)             Requested size: 224.01653pt x 162.30144pt.
+
+Overfull \hbox (13.2711pt too wide) in paragraph at lines 28--36
+[][]
+ []
+
+
+Underfull \hbox (badness 2426) in paragraph at lines 28--36
+\OT1/cmr/m/n/10 flock-ing sys-tem, So-cial forces and Re-cip-ro-cal
+ []
+
+
+Overfull \hbox (7.0906pt too wide) in paragraph at lines 28--36
+[] [] 
+ []
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+
+ <../schedule/specialistSchedule.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 42--45
 
  []
 
-[1
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 47.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 47.
+Missing character: There is no Î in font cmr10!
+Missing character: There is no » in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no ˆ in font cmr10!
+Missing character: There is no ’ in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no ˆ in font cmr10!
+Missing character: There is no © in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no Š in font cmr10!
+Missing character: There is no • in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no ˆ in font cmr10!
+Missing character: There is no ’ in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no ˆ in font cmr10!
+Missing character: There is no … in font cmr10!
 
+Underfull \hbox (badness 10000) in paragraph at lines 51--52
+[]\OT1/cmr/m/n/10 This trans-lates to, the ve-loc-ity ob-sta-cle
+ []
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 33--35
+[2 <../umlDiagram/Agent_UML_diagram.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 62--62
+[]\OT1/cmr/bx/n/14.4 Conclusion and Fu-ture
+ []
 
+(./report.bbl
+Underfull \hbox (badness 1043) in paragraph at lines 7--8
+[]\OT1/cmr/m/n/10 A stu-dents project to in-cor-po-rate
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 36--37
-
+Underfull \hbox (badness 2027) in paragraph at lines 11--17
+\OT1/cmr/m/n/10 Kim, Na-dathur Satish, Ming Lin, Di-nesh
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 40--41
-
+Underfull \hbox (badness 1748) in paragraph at lines 17--18
+[]\OT1/cmr/m/n/10 optimizations of ex-ist-ing RVO li-
  []
 
-[2] (./report.aux) ) 
+
+Underfull \hbox (badness 1067) in paragraph at lines 38--42
+[]\OT1/cmr/m/n/10 Jur van den Berg, Ming Lin, and Di-nesh
+ []
+
+) [3] (./report.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 536 strings out of 495033
- 6349 string characters out of 6181743
- 54410 words of memory out of 5000000
- 3803 multiletter control sequences out of 15000+600000
- 7587 words of font info for 27 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 25i,7n,19p,183b,207s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 1150 strings out of 493308
+ 15111 string characters out of 6140093
+ 76131 words of memory out of 5000000
+ 4643 multiletter control sequences out of 15000+600000
+ 7933 words of font info for 28 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 27i,7n,19p,1266b,219s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmti10.pfb>
+Output written on report.pdf (3 pages, 233222 bytes).
+PDF statistics:
+ 50 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-Output written on report.dvi (2 pages, 1956 bytes).
