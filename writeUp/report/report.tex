@@ -1,7 +1,10 @@
 \documentclass[a4paper,twocolumn]{article}
 %\documentclass[a4paper]{article}
 \usepackage{graphicx}
+\usepackage{url}
 %\usepackage{natbib}
+
+%\addbibresource[<options for bib resources>]{<mybibfile>.bib}
 
 
 %Set up title
@@ -29,7 +32,7 @@ The first call of action was to make a time schedule that I would follow in orde
 \label{schedule}
 \includegraphics[scale=0.2]{../schedule/specialistSchedule.png}
 For my initial research I looked into the various methods used for local avoidance and what techniques current systems used. The three main methods I came across was Craig Reynolds Boids flocking system, Social forces and Reciprocal Velocity Obstacle. I felt flocking was not suitable as it was better for replicating animal behaviour such as birds rather than humans. Social forces is a very interesting technique that is better for producing human behaviours but not necessarily guaranteed object avoidance. Reciprocal Velocity Obstacle, RVO, is a method not so focused on the behaviour of the agent but rather a method that aims to choose an appropriate velocity that will not result in a collision. RVO is a technique used in various systems including Goalem crowd plugin for Maya and Unreal Engine 4. After this initial research I decided to focus on the use of RVO as it seemed the most suitable for my project.\\
-I then set out to create UML diagrams to see how my code should be structured and how the various components fit together, to do this I looked into design patterns. The use of aggregation seemed required as I planned to dynamically add agents and boundaries into the system.\\
+I then set out to create UML diagrams to see how my code should be structured and how the various components fit together, to do this I looked into design patterns \cite{OODPWS}. The use of aggregation seemed required as I planned to dynamically add agents and boundaries into the system.\\
 %UML diagram
 \label{uml diagram}
 \includegraphics[scale=0.13]{../umlDiagram/Agent_UML_diagram.png} 
@@ -41,6 +44,7 @@ RVO  is an agent based method for collision avoidance and was developed by Jur V
 \subsection{How RVO Works}
 \cite{DCherry2013RVO}
 \cite{AGuy2009CP}
+\cite{JBerg2008CS}
 VO, which RVO is based from, works by the following:\\
 \begin{center}
 
