@@ -40,7 +40,7 @@ Jur van~den Berg, Ming Lin, and Dinesh Manocha.
 
 \bibitem{JBerg2008CS}
 Jur van~den Berg, Sachin Patil, Jason Sewall, Dinesh Manocha, and Ming Lin.
-\newblock Interactive navigation of multiple agetns in crowded environments.
+\newblock Interactive navigation of multiple agents in crowded environments.
 \newblock {\em Symposium on Interactive 3D Graphics and Games (I3D)}, 2008.
 \newblock \url{hhtp://gamma.cs.unc.edu/RVO/NAVIGATE/}.
  \begin{quotation}\noindent Paper abour crowd simulation using RVO for local

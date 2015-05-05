@@ -331,17 +331,37 @@ bool Brain::testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<flo
     ngl::Vec3 p2 = n->getBoundaryPoint(2);
     ngl::Vec3 p3 = n->getBoundaryPoint(3);
 
+    ngl::Vec3 centre = 0.25 * (p0 + p1 + p2 + p3);
+
+    // new boundary points taking into account agent radius
+    ngl::Vec3 tmp0 = (m_agent->getOrigState().m_pos - p0);
+    ngl::Vec3 tmp1 = (m_agent->getOrigState().m_pos - p1);
+    ngl::Vec3 tmp2 = (m_agent->getOrigState().m_pos - p2);
+    ngl::Vec3 tmp3 = (m_agent->getOrigState().m_pos - p3);
+
+    tmp0.normalize();
+    tmp1.normalize();
+    tmp2.normalize();
+    tmp3.normalize();
+
+
+
+    ngl::Vec3 np0 = p0 + (m_agent->getOrigState().m_rad)*tmp0;
+    ngl::Vec3 np1 = p1 + (m_agent->getOrigState().m_rad)*tmp1;
+    ngl::Vec3 np2 = p2 + (m_agent->getOrigState().m_rad)*tmp2;
+    ngl::Vec3 np3 = p3 + (m_agent->getOrigState().m_rad)*tmp3;
+
     // create boundary edges
-    ngl::Vec3 e0 = p0 - p1;
-    ngl::Vec3 e1 = p1 - p2;
-    ngl::Vec3 e2 = p2 - p3;
-    ngl::Vec3 e3 = p3 - p0;
+    ngl::Vec3 e0 = np0 - np1;
+    ngl::Vec3 e1 = np1 - np2;
+    ngl::Vec3 e2 = np2 - np3;
+    ngl::Vec3 e3 = np3 - np0;
 
     // test whether the velocity lies outside of the boundary
-    bool leftPlane  = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e0,p1);
-    bool rightPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e1,p2);
-    bool frontPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e2,p3);
-    bool backPlane  = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e3,p0);
+    bool leftPlane  = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e0,np1);
+    bool rightPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e1,np2);
+    bool frontPlane = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e2,np3);
+    bool backPlane  = pointLeftOfEdge(m_agent->getOrigState().m_pos + _testVel,e3,np0);
 
     if(leftPlane || rightPlane || frontPlane || backPlane)
     {
@@ -353,10 +373,10 @@ bool Brain::testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<flo
         float time = 2*m_perceiveRad / _testVel.length();
 
         // find the time to collision
-        float i1 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e0,p0,time);
-        float i2 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e1,p1,time);
-        float i3 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e2,p2,time);
-        float i4 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e3,p3,time);
+        float i1 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e0,np0,time);
+        float i2 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e1,np1,time);
+        float i3 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e2,np2,time);
+        float i4 = checkIntersection(_testVel,m_agent->getOrigState().m_pos,e3,np3,time);
 
         float tmp1 = (i1>0)?i1:MAX;
         float tmp2 = (i2>0)?i2:MAX;

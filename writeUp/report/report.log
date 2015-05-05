@@ -1,15 +1,20 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.5.1)  5 MAY 2015 09:16
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2013.8.13)  5 MAY 2015 10:09
 entering extended mode
- restricted \write18 enabled.
  %&-line parsing enabled.
-**report.tex
+**report
 (./report.tex
-LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 78 languages loaded.
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
-File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+LaTeX2e <2005/12/01>
+Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, arabic, basque, bulgarian, coptic, welsh, czech, slovak, german, ng
+erman, danish, esperanto, spanish, catalan, galician, estonian, farsi, finnish,
+ french, greek, monogreek, ancientgreek, croatian, hungarian, interlingua, ibyc
+us, indonesian, icelandic, italian, latin, mongolian, dutch, norsk, polish, por
+tuguese, pinyin, romanian, russian, slovenian, uppersorbian, serbian, swedish, 
+turkish, ukenglish, ukrainian, loaded.
+(/usr/share/texmf/tex/latex/base/article.cls
+Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
+(/usr/share/texmf/tex/latex/base/size10.clo
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -23,124 +28,107 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texmf/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+(/usr/share/texmf/tex/latex/graphics/keyval.sty
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+(/usr/share/texmf/tex/latex/graphics/graphics.sty
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+(/usr/share/texmf/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/etc/texmf/tex/latex/config/graphics.cfg
-File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+(/usr/share/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: pdftex.def on input line 91.
+Package graphics Info: Driver file: dvips.def on input line 90.
 
-(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
-)
-\Gread@gobject=\count87
+(/usr/share/texmf/tex/latex/graphics/dvips.def
+File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 ))
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
-(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
-\Urlmuskip=\muskip10
-Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-) (./report.aux)
+(/usr/share/texmf/tex/latex/html/url.sty
+Package: url 1999/03/02  ver 1.4  Verb mode for urls, email addresses, and file
+ names
+)
+(/usr/share/texmf/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2002/01/22 v2.2d
+
+(/usr/share/texmf/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2001/10/25 v2.2f
+\@emptytoks=\toks15
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 132.
+)) (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Try loading font information for U+msa on input line 20.
 
-(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count88
-\scratchdimen=\dimen105
-\scratchbox=\box26
-\nofMPsegments=\count89
-\nofMParguments=\count90
-\everyMPshowfont=\toks15
-\MPscratchCnt=\count91
-\MPscratchDim=\dimen106
-\MPnumerator=\count92
-\makeMPintoPDFobject=\count93
-\everyMPtoPDFconversion=\toks16
+(/usr/share/texmf/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2002/01/19 v2.2g AMS font definitions
 )
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 19.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 19.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 19.
+LaTeX Font Info:    Try loading font information for U+msb on input line 20.
 
-Underfull \hbox (badness 10000) in paragraph at lines 22--23
+(/usr/share/texmf/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2002/01/19 v2.2g AMS font definitions
+)
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
 
-<../schedule/specialistSchedule.png, id=1, 1171.37625pt x 261.97874pt>
-File: ../schedule/specialistSchedule.png Graphic file (type png)
 
-<use ../schedule/specialistSchedule.png>
-Package pdftex.def Info: ../schedule/specialistSchedule.png used on input line 
-33.
-(pdftex.def)             Requested size: 234.2711pt x 52.39482pt.
+! LaTeX Error: Cannot determine size of graphic in ../schedule/specialistSchedu
+le.png (no BoundingBox).
 
-<../umlDiagram/Agent_UML_diagram.png, id=2, 1723.14352pt x 1248.42882pt>
-File: ../umlDiagram/Agent_UML_diagram.png Graphic file (type png)
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.34 ...e=0.2]{../schedule/specialistSchedule.png}
+                                                  
+? 
+File: ../schedule/specialistSchedule.png Graphic file (type eps)
+<../schedule/specialistSchedule.png>
 
-<use ../umlDiagram/Agent_UML_diagram.png>
-Package pdftex.def Info: ../umlDiagram/Agent_UML_diagram.png used on input line
- 38.
-(pdftex.def)             Requested size: 224.01653pt x 162.30144pt.
+! LaTeX Error: Cannot determine size of graphic in ../umlDiagram/Agent_UML_diag
+ram.png (no BoundingBox).
 
-Overfull \hbox (13.2711pt too wide) in paragraph at lines 31--39
-[][]
- []
-
-
-Underfull \hbox (badness 2426) in paragraph at lines 31--39
-\OT1/cmr/m/n/10 flock-ing sys-tem, So-cial forces and Re-cip-ro-cal
- []
-
-
-Overfull \hbox (7.0906pt too wide) in paragraph at lines 31--39
-[] [] 
- []
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.39 ...0.13]{../umlDiagram/Agent_UML_diagram.png}
+                                                  
+? s
+OK, entering \scrollmode...
+File: ../umlDiagram/Agent_UML_diagram.png Graphic file (type eps)
+<../umlDiagram/Agent_UML_diagram.png> [1
 
 
- <../schedule/specialistSchedule.png (PNG copy)>]
-Underfull \hbox (badness 10000) in paragraph at lines 45--49
+]
+Underfull \hbox (badness 10000) in paragraph at lines 46--50
 
  []
 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 51.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 51.
 Missing character: There is no Î in font cmr10!
 Missing character: There is no » in font cmr10!
 Missing character: There is no â in font cmr10!
@@ -159,16 +147,16 @@ Missing character: There is no â in font cmr10!
 Missing character: There is no ˆ in font cmr10!
 Missing character: There is no … in font cmr10!
 
-Underfull \hbox (badness 10000) in paragraph at lines 55--56
+Underfull \hbox (badness 10000) in paragraph at lines 57--58
 []\OT1/cmr/m/n/10 This trans-lates to, the ve-loc-ity ob-sta-cle
  []
 
-[2 <../umlDiagram/Agent_UML_diagram.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
 []\OT1/cmr/bx/n/14.4 Conclusion and Fu-ture
  []
 
-(./report.bbl
+[2] (./report.bbl
 Underfull \hbox (badness 1043) in paragraph at lines 13--14
 []\OT1/cmr/m/n/10 A stu-dents project to in-cor-po-rate
  []
@@ -190,26 +178,12 @@ Underfull \hbox (badness 1067) in paragraph at lines 34--38
 
 ) [3] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 1226 strings out of 493308
- 16023 string characters out of 6140093
- 77273 words of memory out of 5000000
- 4714 multiletter control sequences out of 15000+600000
- 8101 words of font info for 29 fonts, out of 8000000 for 9000
- 957 hyphenation exceptions out of 8191
- 27i,7n,19p,1266b,245s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmtt10.pfb>
-Output written on report.pdf (3 pages, 246519 bytes).
-PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
- 0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 908 strings out of 256217
+ 10283 string characters out of 1917095
+ 60548 words of memory out of 1500000
+ 4211 multiletter control sequences out of 10000+200000
+ 11718 words of font info for 46 fonts, out of 1200000 for 2000
+ 645 hyphenation exceptions out of 8191
+ 25i,7n,24p,1262b,219s stack positions out of 5000i,500n,6000p,200000b,15000s
 
+Output written on report.dvi (3 pages, 14156 bytes).
