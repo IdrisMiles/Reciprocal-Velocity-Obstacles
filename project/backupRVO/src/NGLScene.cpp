@@ -349,10 +349,10 @@ void NGLScene::mouseReleaseEvent ( QMouseEvent * _event )
          *  minX,minY---------------MaxX,MinY
          *
          */
-        ngl::Vec3 p0 = 20 * ngl::Vec3(m_origXbound,0,m_origYbound);
-        ngl::Vec3 p1 = 20 * ngl::Vec3(m_endXbound,0,m_origYbound);
-        ngl::Vec3 p2 = 20 * ngl::Vec3(m_endXbound,0,m_endYbound);
-        ngl::Vec3 p3 = 20 * ngl::Vec3(m_origXbound,0,m_endYbound);
+        ngl::Vec3 p0 = 20 * ngl::Vec3(m_origXbound,0,m_origYbound); //top left
+        ngl::Vec3 p1 = 20 * ngl::Vec3(m_endXbound,0,m_origYbound);  //top right
+        ngl::Vec3 p2 = 20 * ngl::Vec3(m_endXbound,0,m_endYbound);   //buttom right
+        ngl::Vec3 p3 = 20 * ngl::Vec3(m_origXbound,0,m_endYbound);  //bottom  left
         m_system->addBounds(new Boundary(p0,p1,p2,p3,true));
     }
   }

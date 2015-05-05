@@ -10,10 +10,10 @@ Boundary::Boundary(const ngl::Vec3 &_p0, const ngl::Vec3 &_p1,
                    const ngl::Vec3 &_p2, const ngl::Vec3 &_p3,
                    const bool &_drawFlag)
 {
-    m_points[0] = _p0;
-    m_points[1] = _p1;
-    m_points[2] = _p2;
-    m_points[3] = _p3;
+    m_points[0] = _p0;  //top left
+    m_points[1] = _p1;  //top right
+    m_points[2] = _p2;  //bottom right
+    m_points[3] = _p3;  //bottom left
     m_isVAOinit = false;
 
     if(_drawFlag){initVAO();}
