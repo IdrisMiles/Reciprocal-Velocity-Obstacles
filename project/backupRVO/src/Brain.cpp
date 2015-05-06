@@ -335,7 +335,7 @@ bool Brain::testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<flo
 
     ngl::Vec3 up = p0 - p3;
     up.normalize();
-    up *= rad;
+    up *= 2*rad;
 
     ngl::Vec3 side = p1 - p0;
     side.normalize();
@@ -349,8 +349,6 @@ bool Brain::testVO(const ngl::Vec3 &_testVel, const Boundary *n, std::vector<flo
     p2 +=side;
     p3 -= up;
     p3 -=side;
-
-    ngl::Vec3 centre = 0.25 * (p0 + p1 + p2 + p3);
 
     // create boundary edges
     ngl::Vec3 e0 = p0 - p1; // top edge

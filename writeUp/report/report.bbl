@@ -3,7 +3,7 @@
 \bibitem{OODPWS}
 Object oriented design patterns.
 \newblock \url{http://www.oodesign.com/}.
-\newblock accessed: 10th March 2015.
+\newblock accessed: 20th March 2015.
  \begin{quotation}\noindent Website designated to various object oriented
   design patterns \end{quotation}
 \bibitem{DCherry2013RVO}
@@ -30,6 +30,27 @@ Wentong~Cai. Nasri Bin~Othman., Linbo~Luo. and Michael Lees.
   Techniques pages 92-100}, 2013.
  \begin{quotation}\noindent spatial partitioning \end{quotation}
 
+\bibitem{GGHT}
+Nvidia.
+\newblock Gpu gems 3.
+\newblock \url{http://http.developer.nvidia.com/GPUGems3/gpugems3_ch07.html}.
+\newblock accessed 3rd May.
+ \begin{quotation}\noindent shader techniques, discusses implementing hash
+  table on GPU \end{quotation}
+\bibitem{GPDSWS}
+Robert Nystrom.
+\newblock Game programming patters.
+\newblock \url{http://gameprogrammingpatterns.com/}.
+\newblock accessed: 21th March 2015.
+ \begin{quotation}\noindent Website describing many objected oriented design
+  patterns, typically found in games. The website gives examples of how each
+  design pattern is used and why, very useful. \end{quotation}
+\bibitem{CRBF}
+Craig Reynolds.
+\newblock Boids.
+\newblock \url{http://www.red3d.com/cwr/boids/}.
+\newblock accessed: 27th March 2015.
+ \begin{quotation}\noindent flocking systems \end{quotation}
 \bibitem{JBerg2008RVO}
 Jur van~den Berg, Ming Lin, and Dinesh Manocha.
 \newblock Reciprocal velocity obstacles for real-time multi-agent navigation.
