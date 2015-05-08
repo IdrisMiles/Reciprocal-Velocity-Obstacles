@@ -11,7 +11,11 @@ David Cherry.
 \newblock Rvo collision avoidance in unity 3d.
 \newblock 2013.
  \begin{quotation}\noindent A students project to incorporate RVO avoidance
-  into a Unity based crowd simulation. \end{quotation}
+  into a Unity based crowd simulation. This paper was useful for looking at how
+  penalty values can be determined, however this paper was focussed on the
+  integration with Unity 3D which was not relevent to my project but
+  interesting none the less and could be useful for future work.
+  \end{quotation}
 
 \bibitem{SG2010PLE}
 Stephen.~J. Guy, Jatin Chhugani, Sean Curtis, Pradeep Dubey, Ming Lin, and
@@ -29,8 +33,18 @@ Stephen~J. Guy, Jatin Chhugani, Changkyu Kim, Nadathur Satish, Ming Lin, Dinesh
   simulation.
 \newblock {\em Eurographics/ ACM SIGGRAPH Symposium on Computer Animation},
   2009.
- \begin{quotation}\noindent optimizations of existing RVO library, tweaks RVO
-  implementation and describes parellizing implemenation. \end{quotation}
+ \begin{quotation}\noindent This paper discuss the use of Reciprocal Velocity
+  Obstacle for collision avoidance and how it can be performed in parallel to
+  increase efficiency of the crowd simulation. Different approaches to
+  parallelizing the code are mentioned along with their pros and cons, This was
+  useful when I started looking into parallelization. It aslo discusses
+  optimizations of RVO which truncates the Velocity Cone by adding extra
+  constraints, this is very useful in dense simulations. Further tweaks to RVO,
+  that the paper introduces, exploit the geometric nature of the VO cones as
+  optimal velocities tend to lie on VO boundaries and Guy et al discuss how
+  these velocities can be found. This is something I did not include but would
+  like to explore further and incorporate into my implementation.
+  \end{quotation}
 
 \bibitem{CLi2010CS}
 Cheng-Te Li and Shou-De Lin.
@@ -64,7 +78,15 @@ Craig Reynolds.
 Adrien Treuille, Seth Cooper, and Zoran Popovic.
 \newblock Continuum crowds.
 \newblock {\em SIGGRAPH '06 ACM SIGGRAPH 2006 papers, Pages 1160-1168.}, 2006.
- \begin{quotation}\noindent Real-time crowd model based on continuum dynamics.
+ \begin{quotation}\noindent This paper was very interesting as it explored the
+  use of continuum dynamics to drive crowd simulation, it integrates global
+  navigation with obstacle avoidance all in real-time. It uses similar
+  techniques to fluid dynamics utilizing vector fields, in this case a
+  combination of fields make up the potential field, then the potential field
+  is found and agents positions are updated according to it. This paper made up
+  some of my initial research while I was looking for a suitable local
+  avoidance technique to investigate, in the future I would like to explore the
+  concepts explained here and look into implementing them myself.
   \end{quotation}
 
 \bibitem{JBerg2008RVO}
@@ -72,8 +94,13 @@ Jur van~den Berg, Ming Lin, and Dinesh Manocha.
 \newblock Reciprocal velocity obstacles for real-time multi-agent navigation.
 \newblock {\em IEEE, International Conference on Robotics and Automation
   (ICRA)}, 2008.
- \begin{quotation}\noindent Velocity Obstacle and many other avoidance models
-  inspired by VO explained and prooved. \end{quotation}
+ \begin{quotation}\noindent This paper discusses Reciprocal Velocity Obstacle
+  as technique for real-time multi-agent navigation, it goes through the
+  mathematical proof that justifies this method. It was an invaluable resource
+  that I constantly referred back to during implementation, although there was
+  no pseudo-code the proof and diagrams together were enough to consolidate my
+  understanding. This paper also explained the use of a penalty value that
+  helps to optimize the techniques in dense situations. \end{quotation}
 
 \bibitem{JBerg2008CS}
 Jur van~den Berg, Sachin Patil, Jason Sewall, Dinesh Manocha, and Ming Lin.

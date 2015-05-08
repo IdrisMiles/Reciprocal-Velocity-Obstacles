@@ -5,7 +5,7 @@
   title = {Reciprocal Velocity Obstacles for Real-Time Multi-Agent Navigation},
   journal = {IEEE, International Conference on Robotics and Automation (ICRA)},
   year = {2008},
-  annote = {Velocity Obstacle and many other avoidance models inspired by VO explained and prooved.}
+  annote = {This paper discusses Reciprocal Velocity Obstacle as technique for real-time multi-agent navigation, it goes through the mathematical proof that justifies this method. It was an invaluable resource that I constantly referred back to during implementation, although there was no pseudo-code the proof and diagrams together were enough to consolidate my understanding. This paper also explained the use of a penalty value that helps to optimize the techniques in dense situations.}
 }
 
 @ARTICLE{AGuy2009CP,
@@ -13,7 +13,7 @@
   title = {ClearPath: Highly Parallel Collision Avoidance for Multi-Agent Simulation},
   journal = {Eurographics/ ACM SIGGRAPH Symposium on Computer Animation},
   year = {2009},
-  annote = {optimizations of existing RVO library, tweaks RVO implementation and describes parellizing implemenation.}
+  annote = {This paper discuss the use of Reciprocal Velocity Obstacle for collision avoidance and how it can be performed in parallel to increase efficiency of the crowd simulation. Different approaches to parallelizing the code are mentioned along with their pros and cons, This was useful when I started looking into parallelization. It aslo discusses optimizations of RVO which truncates the Velocity Cone by adding extra constraints, this is very useful in dense simulations. Further tweaks to RVO, that the paper introduces, exploit the geometric nature of the VO cones as optimal velocities tend to lie on VO boundaries and Guy et al discuss how these velocities can be found. This is something I did not include but would like to explore further and incorporate into my implementation.}
 }
 
 @ARTICLE{DCherry2013RVO,
@@ -21,7 +21,7 @@
   title = {RVO Collision Avoidance in Unity 3d},
   institution = {University of Minnesota},
   year = {2013},
-  annote = {A students project to incorporate RVO avoidance into a Unity based crowd simulation.},
+  annote = {A students project to incorporate RVO avoidance into a Unity based crowd simulation. This paper was useful for looking at how penalty values can be determined, however this paper was focussed on the integration with Unity 3D which was not relevent to my project but interesting none the less and could be useful for future work.},
 }
 
 @ARTICLE{BSilverman2005CS,
@@ -34,19 +34,21 @@
 
 
 @ARTICLE{SKim2012CS,
-author = {Sujeong Kim ., Stephen J. Guy ., Dinesh Manocha ., Ming C. Lin},
+author = {Sujeong Kim and Stephen J. Guy and Dinesh Manocha and Ming C. Lin},
 title = {Interactive Simulation of Dynamic Crowd Behaviors using General Adaptation Syndrome Theory},
 year = {2012},
 journal = {12 Proceedings of the ACM SIGGRAPH Symposium on Interactive 3D Graphics and Games, Pages 55-62.},
-annote = {Use of stress modelling to drive agent motion in crowd simulation, taking into account psychological phenomena. Different stressors expressed as functions of space and time.},
+institution = {University of North Carolina},
+annote = {This paper discusses the use of phychological models to define the behaviour of an agent. The use of various stressors drive the agents motion, stressors are expressed as functions of space and time. These stressors can be used to enforce object avoidance however are better suited for recreating behaviour. I found this interesting however as it links to Social Forces, these techniques can be used in conjunction with RVO if making a full crowd system.},
 }
 
 @ARTICLE{ATreuilleCS,
 author = {Adrien Treuille and Seth Cooper and Zoran Popovic},
 title = {Continuum Crowds},
 year = {2006},
+institution = {University of Washington, Electronic Arts},
 journal = {SIGGRAPH '06 ACM SIGGRAPH 2006 papers, Pages 1160-1168.},
-annote = {Real-time crowd model based on continuum dynamics.},
+annote = {This paper was very interesting as it explored the use of continuum dynamics to drive crowd simulation, it integrates global navigation with obstacle avoidance all in real-time. It uses similar techniques to fluid dynamics utilizing vector fields, in this case a combination of fields make up the potential field, then the potential field is found and agents positions are updated according to it. This paper made up some of my initial research while I was looking for a suitable local avoidance technique to investigate, in the future I would like to explore the concepts explained here and look into implementing them myself.},
 }
 
 @ARTICLE{JBerg2008CS,
@@ -60,7 +62,7 @@ annote = {Paper abour crowd simulation using RVO for local avoidance, discusses 
 }
 
 @ARTICLE{CLi2010CS,
-author = {},
+author = {Cheng-Te Li and Shou-De Lin},
 titlie = {Social Flocks: A Crowd Simulation Framework for
 Social Network Generation, Community Detection,
 and Collective Behavior Modeling},
@@ -76,8 +78,25 @@ author = {Nasri Bin Othman., Linbo Luo., Wentong Cai. and Michael Lees},
 title = {Spatial Indexing in Agent-based Crowd Simulation},
 journal = {6th International ICST Conference on Simulation Tools and Techniques pages 92-100},
 year = {2013},
-annote = {spatial partitioning},
+annote = {spatial partitioning. Each agent is put into a "bucket" that is associated with its position, the hash table consists of an array of these "buckets", and to find the agents neighbours you simply have to query the "bucket" the agent belongs to and the neighbouring "buckets". },
 }
+
+@misc{GGHT,
+author = {Nvidia},
+title = {GPU Gems 3},
+chapter = {chapter 7},
+howpublished = {\url{http://http.developer.nvidia.com/GPUGems3/gpugems3_ch07.html}},
+note = {accessed 3rd May},
+annote = {shader techniques, discusses implementing hash table on GPU},
+}
+
+@ARTICLE{MT2003HS,
+author = {Matthias Teschner and Bruno Heidelberger and Matthias Muller and Danat Pomeranets and Markus Gross},
+title = {Optimized Spatial Hashing for Collision Detection of Deformable Objects},
+year = {2003},
+annote = {hash table},
+}
+
 
 % Design patterns
 @misc{OODPWS,
@@ -89,10 +108,29 @@ annote = {Website designated to various object oriented design patterns},
 }
 
 @misc{GPDSWS,
-author = {},
+author = {Robert Nystrom},
 title = {Game Programming Patters},
 howpublished = {\url{http://gameprogrammingpatterns.com/}},
 note = {accessed: 21th March 2015},
 annote = {Website describing many objected oriented design patterns, typically found in games. The website gives examples of how each design pattern is used and why, very useful.},
 }
 
+%flocking systems
+
+@misc{CRBF,
+author = {Craig Reynolds},
+title = {Boids},
+howpublished = {\url{http://www.red3d.com/cwr/boids/}},
+note = {accessed: 27th March 2015},
+annote = {flocking systems}
+}
+
+%PLE
+@ARTICLE{SG2010PLE,
+author = {Stephen. J. Guy and Jatin Chhugani and Sean Curtis and Pradeep Dubey and Ming Lin and Dinesh Manocha},
+title = {PLEdestrians: A Least-Effort Approach to Crowd Simulation},
+year = {2010},
+institution = {University of North Carolina},
+journal = {Eurographics/ ACM SIGGRAPH Symposium on Computer Animation (2010)},
+annote = {Algorithm for simulating large scale crowd simulation based on principles of least effort.},
+}
