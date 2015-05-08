@@ -45,6 +45,7 @@ annote = {Use of stress modelling to drive agent motion in crowd simulation, tak
 author = {Adrien Treuille and Seth Cooper and Zoran Popovic},
 title = {Continuum Crowds},
 year = {2006},
+institution = {University of Washington, Electronic Arts},
 journal = {SIGGRAPH '06 ACM SIGGRAPH 2006 papers, Pages 1160-1168.},
 annote = {Real-time crowd model based on continuum dynamics.},
 }
@@ -76,7 +77,7 @@ author = {Nasri Bin Othman., Linbo Luo., Wentong Cai. and Michael Lees},
 title = {Spatial Indexing in Agent-based Crowd Simulation},
 journal = {6th International ICST Conference on Simulation Tools and Techniques pages 92-100},
 year = {2013},
-annote = {spatial partitioning},
+annote = {spatial partitioning. Each agent is put into a "bucket" that is associated with its position, the hash table consists of an array of these "buckets", and to find the agents neighbours you simply have to query the "bucket" the agent belongs to and the neighbouring "buckets". },
 }
 
 @misc{GGHT,
@@ -113,4 +114,14 @@ title = {Boids},
 howpublished = {\url{http://www.red3d.com/cwr/boids/}},
 note = {accessed: 27th March 2015},
 annote = {flocking systems}
+}
+
+%PLE
+@ARTICLE{SG2010PLE,
+author = {Stephen. J. Guy and Jatin Chhugani and Sean Curtis and Pradeep Dubey and Ming Lin and Dinesh Manocha},
+title = {PLEdestrians: A Least-Effort Approach to Crowd Simulation},
+year = {2010},
+institution = {University of North Carolina},
+journal = {Eurographics/ ACM SIGGRAPH Symposium on Computer Animation (2010)},
+annote = {Algorithm for simulating large scale crowd simulation based on principles of least effort.},
 }

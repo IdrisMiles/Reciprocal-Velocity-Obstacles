@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{OODPWS}
 Object oriented design patterns.
@@ -13,6 +13,15 @@ David Cherry.
  \begin{quotation}\noindent A students project to incorporate RVO avoidance
   into a Unity based crowd simulation. \end{quotation}
 
+\bibitem{SG2010PLE}
+Stephen.~J. Guy, Jatin Chhugani, Sean Curtis, Pradeep Dubey, Ming Lin, and
+  Dinesh Manocha.
+\newblock Pledestrians: A least-effort approach to crowd simulation.
+\newblock {\em Eurographics/ ACM SIGGRAPH Symposium on Computer Animation
+  (2010)}, 2010.
+ \begin{quotation}\noindent Algorithm for simulating large scale crowd
+  simulation based on principles of least effort. \end{quotation}
+
 \bibitem{AGuy2009CP}
 Stephen~J. Guy, Jatin Chhugani, Changkyu Kim, Nadathur Satish, Ming Lin, Dinesh
   Manocha, and Pradeep Dubey.
@@ -23,12 +32,12 @@ Stephen~J. Guy, Jatin Chhugani, Changkyu Kim, Nadathur Satish, Ming Lin, Dinesh
  \begin{quotation}\noindent optimizations of existing RVO library, tweaks RVO
   implementation and describes parellizing implemenation. \end{quotation}
 
-\bibitem{NOthman2013SP}
-Wentong~Cai. Nasri Bin~Othman., Linbo~Luo. and Michael Lees.
-\newblock Spatial indexing in agent-based crowd simulation.
-\newblock {\em 6th International ICST Conference on Simulation Tools and
-  Techniques pages 92-100}, 2013.
- \begin{quotation}\noindent spatial partitioning \end{quotation}
+\bibitem{CLi2010CS}
+Cheng-Te Li and Shou-De Lin.
+\newblock 2010.
+ \begin{quotation}\noindent Paper on modelling social behaviours in crowd
+  simulation such as the generation of social networks and comminities.
+  \end{quotation}
 
 \bibitem{GGHT}
 Nvidia.
@@ -51,6 +60,13 @@ Craig Reynolds.
 \newblock \url{http://www.red3d.com/cwr/boids/}.
 \newblock accessed: 27th March 2015.
  \begin{quotation}\noindent flocking systems \end{quotation}
+\bibitem{ATreuilleCS}
+Adrien Treuille, Seth Cooper, and Zoran Popovic.
+\newblock Continuum crowds.
+\newblock {\em SIGGRAPH '06 ACM SIGGRAPH 2006 papers, Pages 1160-1168.}, 2006.
+ \begin{quotation}\noindent Real-time crowd model based on continuum dynamics.
+  \end{quotation}
+
 \bibitem{JBerg2008RVO}
 Jur van~den Berg, Ming Lin, and Dinesh Manocha.
 \newblock Reciprocal velocity obstacles for real-time multi-agent navigation.
